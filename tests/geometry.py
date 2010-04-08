@@ -956,10 +956,10 @@ def suite():
         ])
     return unittest.TestSuite(suites)
 
-def run(seed=123456789, shouldExit=False):
+def run(shouldExit=False):
     """Run the tests"""
-    random.seed(seed)
+    random.seed(123456789)
     utilsTests.run(suite(), shouldExit)
 
 if __name__ == '__main__':
-    run()
+    run(True)
