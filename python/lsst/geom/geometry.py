@@ -754,7 +754,7 @@ class SphericalCircle(SphericalRegion):
         if self.radius < 0.0 or self.radius > 180.0:
             raise RuntimeError(
                 'Circle radius is negative or greater than 180 deg')
-        self.center = (reduceTheta(self.center[0]), center[1])
+        self.center = (reduceTheta(self.center[0]), self.center[1])
 
     def getBoundingBox(self):
         """Returns a bounding box for this spherical circle.
