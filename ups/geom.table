@@ -1,1 +1,4 @@
+setupRequired(utils >= 3.4.4)
+setupOptional(doxygen >= 1.5.9)
+
 envPrepend(PYTHONPATH, ${PRODUCT_DIR}/python)

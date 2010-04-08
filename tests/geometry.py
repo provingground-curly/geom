@@ -1,13 +1,10 @@
 import math
-import optparse
 import pdb
 import random
-import sys
-from textwrap import dedent
-import time
 import unittest
 
-import lsst.qserv.master.geometry as g
+import lsst.utils.tests as utilsTests
+import lsst.geom.geometry as g
 
 
 def _pointsOnCircle(c, r, n, clockwise=False):
@@ -943,27 +940,10 @@ class SphericalBoxPartitionMapTestCase(unittest.TestCase):
                 self.assertEqual(xr, exr)
         self.assertEqual(len(results), 0)
 
-
-def main():
-    # The seed value used by the python random number generator can
-    # be passed in on the command line, allowing for unit test
-    # repeatability.
-    parser = optparse.OptionParser("%prog [options]")
-    parser.add_option(
-        "-s", "--seed", type="long", dest="seed",
-        help=dedent("""\
-            Specifies the seed used to initialize the python random number
-            generator. By default, the system time is used to initialize
-            the generator."""))
-    opts, inputs = parser.parse_args()
-    if len(inputs) != 0:
-        parser.error('Command line contains extraneous arguments')
-    seed = opts.seed
-    if seed == None:
-        seed = long(time.time())
-    print 'Seeding random number generator with %d' % seed
-    random.seed(seed)
-    suite = unittest.TestSuite(map(unittest.makeSuite,
+def suite():
+    """Returns a suite containing all the test cases in this module."""
+    utilsTests.init()
+    suites = map(unittest.makeSuite,
         [UtilsTestCase,
          SphericalBoxTestCase,
          SphericalCircleTestCase,
@@ -973,9 +953,13 @@ def main():
          HemisphericalTestCase,
          ConvexTestCase,
          SphericalBoxPartitionMapTestCase
-        ]))
-    run = unittest.TextTestRunner().run(suite)
-    sys.exit(0)
+        ])
+    return unittest.TestSuite(suites)
+
+def run(seed=123456789, shouldExit=False):
+    """Run the tests"""
+    random.seed(seed)
+    utilsTests.run(suite(), shouldExit)
 
 if __name__ == '__main__':
-    main()
+    run()
