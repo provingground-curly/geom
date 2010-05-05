@@ -304,9 +304,9 @@ def segments(phiMin, phiMax, width):
     elif width < 1.0 * DEG_PER_ARCSEC:
         width = 1.0 * DEG_PER_ARCSEC
     p = math.radians(p)
-    cw = math.cos(math.radians(width));
-    sp = math.sin(p);
-    cp = math.cos(p);
+    cw = math.cos(math.radians(width))
+    sp = math.sin(p)
+    cp = math.cos(p)
     x = cw - sp * sp
     u = cp * cp
     y = math.sqrt(abs(u * u - x * x))
@@ -496,7 +496,7 @@ class SphericalBox(SphericalRegion):
                 return False
             if self.wraps():
                 if b.wraps():
-                    return True;
+                    return True
                 else:
                     return b.min[0] <= self.max[0] or b.max[0] >= self.min[0]
             else:
@@ -998,7 +998,7 @@ class SphericalEllipse(SphericalRegion):
         cosAng = math.cos(ang)
         # get coords of input point in (N,E) basis
         n = cosPhi * v[2] - sinPhi * (sinTheta * v[1] + cosTheta * v[0])
-        e = cosTheta * v[1] - sinTheta * v[0];
+        e = cosTheta * v[1] - sinTheta * v[0]
         # rotate by negated major axis angle
         x = sinAng * e + cosAng * n
         y = cosAng * e - sinAng * n
@@ -1114,10 +1114,8 @@ class SphericalConvexPolygon(SphericalRegion):
         v = self.vertices
         n = len(v)
         edges = []
-        prev = n - 1
         for i in xrange(n):
-            edges.append(normalize(cross(v[prev], v[i])))
-            prev = i
+            edges.append(normalize(cross(v[i - 1], v[i])))
         self.edges = edges
 
     def getVertices(self):
@@ -1163,8 +1161,9 @@ class SphericalConvexPolygon(SphericalRegion):
 
     def clip(self, plane):
         """Returns the polygon corresponding to the intersection of this
-        polygon with the positive half space defined by the given plane,
-        which must be specified with a cartesian unit vector.
+        polygon with the positive half space defined by the given plane.
+        The plane must be specified with a cartesian unit vector (its
+        normal) and always passes through the origin.
 
         Clipping is performed using the Sutherland-Hodgman algorithm,
         adapted for spherical polygons.
@@ -1236,6 +1235,32 @@ class SphericalConvexPolygon(SphericalRegion):
             v0 = v1
             d0 = d1
         return SphericalConvexPolygon(vertices, edges)
+
+    def intersect(self, poly):
+        """Returns the intersection of poly with this polygon, or
+        None if the intersection does not exist.
+        """
+        if not isinstance(poly, SphericalConvexPolygon):
+            raise TypeError('Expecting a SphericalConvexPolygon object')
+        p = self
+        for edge in poly.getEdges():
+            p = p.clip(edge)
+            if p == None:
+                break
+        return p
+
+    def area(self):
+        """Returns the area of this spherical convex polygon.
+        """
+        numVerts = len(self.vertices)
+        angleSum = 0.0
+        for i in xrange(numVerts):
+            tmp = cross(self.edges[i - 1], self.edges[i])
+            sina = math.sqrt(dot(tmp, tmp))
+            cosa = -dot(self.edges[i - 1], self.edges[i])
+            a = math.atan2(sina, cosa)
+            angleSum += a
+        return angleSum - (numVerts - 2) * math.pi
 
     def containsPoint(self, v):
         for e in self.edges:
@@ -1324,12 +1349,7 @@ class SphericalConvexPolygon(SphericalRegion):
         """
         pr = pointOrRegion
         if isinstance(pr, SphericalConvexPolygon):
-            p = self
-            for edge in pr.getEdges():
-                p = p.clip(edge)
-                if p == None:
-                    return False;
-            return True
+            return self.intersect(pr) != None
         elif isinstance(pr, SphericalEllipse):
             return self.intersects(pr.getBoundingCircle())
         elif isinstance(pr, SphericalCircle):
@@ -1852,7 +1872,7 @@ def convexHull(points):
         if dot(anchor, v) < COS_MAX and n2 >= CROSS_N2MIN:
             if dot(v, edge) > SIN_MIN:
                 edges[0] = invScale(p, math.sqrt(n2))
-                break;
+                break
         verts.pop()
         edges.pop()
         anchor = verts[-1]

@@ -594,6 +594,11 @@ class SphericalConvexPolygonTestCase(unittest.TestCase):
         p3 = g.SphericalConvexPolygon(_pointsOnCircle((0.25, 0.0), 0.25, 8))
         self.assertTrue(p.contains(p3))
 
+    def testArea(self):
+        verts = [(1.0, 0.0, 0.0), (0.0, 1.0, 0.0), g.normalize((1.0, 1.0, 1.0))]
+        p = g.SphericalConvexPolygon(verts)
+        self.assertAlmostEqual(p.area(), math.pi / 6)
+
 
 class MedianTestCase(unittest.TestCase):
     """Tests the "median-of-medians" median finding algorithm.
