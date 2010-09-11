@@ -1199,7 +1199,8 @@ class SphericalConvexPolygon(SphericalRegion):
             else: d = 0.0
             classification.append(d)
         if not vin and not vout:
-            raise RuntimeError('polygon and clipping plane are coplanar')
+            # polygon and clipping plane are coplanar
+            return None
         if not vout:
             return self
         elif not vin:
