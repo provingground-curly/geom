@@ -1112,8 +1112,8 @@ class SphericalConvexPolygon(SphericalRegion):
             raise RuntimeError('Expecting at least one argument')
         elif len(args) == 1:
             if isinstance(args[0], SphericalConvexPolygon):
-                self.vertices = list(args.vertices)
-                self.edges = list(args.edges)
+                self.vertices = list(args[0].vertices)
+                self.edges = list(args[0].edges)
             else:
                 self.vertices = list(args[0])
                 self._computeEdges()
