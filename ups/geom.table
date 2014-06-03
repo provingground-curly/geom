@@ -1,5 +1,2 @@
 setupRequired(sconsUtils)
-# used by tests
-setupRequired(utils)
-
 envPrepend(PYTHONPATH, ${PRODUCT_DIR}/python)
