@@ -25,9 +25,7 @@ import pdb
 import random
 import unittest
 
-import lsst.utils.tests as utilsTests
 import lsst.geom.geometry as g
-
 
 def _pointsOnCircle(c, r, n, clockwise=False):
     """Generates an n-gon lying on the circle with center c and
@@ -969,7 +967,6 @@ class SphericalBoxPartitionMapTestCase(unittest.TestCase):
 
 def suite():
     """Returns a suite containing all the test cases in this module."""
-    utilsTests.init()
     suites = map(unittest.makeSuite,
         [UtilsTestCase,
          SphericalBoxTestCase,
@@ -986,7 +983,8 @@ def suite():
 def run(shouldExit=False):
     """Run the tests"""
     random.seed(123456789)
-    utilsTests.run(suite(), shouldExit)
+    test_suite = suite()
+    unittest.TextTestRunner(verbosity=2, failfast=shouldExit).run(test_suite)
 
 if __name__ == '__main__':
     run(True)
