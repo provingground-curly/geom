@@ -1,3 +1,4 @@
+from __future__ import division
 from builtins import map
 from builtins import range
 from builtins import object
@@ -735,6 +736,9 @@ class SphericalBox(SphericalRegion):
             return self.min == other.min and self.max == other.max
         return False
 
+    def __hash__(self):
+        return hash((self.min, self.max))
+
     @staticmethod
     def edge(v1, v2, n):
         """Returns a spherical bounding box for the great circle edge
@@ -806,7 +810,7 @@ class SphericalCircle(SphericalRegion):
     def getBoundingBox(self):
         """Returns a bounding box for this spherical circle.
         """
-        if self.boundingBox == None:
+        if self.boundingBox is None:
             if self.isEmpty():
                 self.boundingBox = SphericalBox()
             elif self.isFull():
@@ -873,12 +877,12 @@ class SphericalCircle(SphericalRegion):
                     sphericalAngularSep(c, (maxp[0], minp[1])) > r):
                 return False
             a = alpha(r, c[1], minp[1])
-            if a != None:
+            if a is not None:
                 if (pr.containsPoint((c[0] + a, minp[1])) or
                         pr.containsPoint((c[0] - a, minp[1]))):
                     return False
             a = alpha(r, c[1], maxp[1])
-            if a != None:
+            if a is not None:
                 if (pr.containsPoint((c[0] + a, maxp[1])) or
                         pr.containsPoint((c[0] - a, maxp[1]))):
                     return False
@@ -952,6 +956,8 @@ class SphericalCircle(SphericalRegion):
                     return self.center[0] == other.center[0]
         return False
 
+    def __hash__(self):
+        return hash((self.center, self.radius))
 
 class SphericalEllipse(SphericalRegion):
     """An ellipse on the unit sphere. This is a standard 2D cartesian
@@ -994,7 +1000,7 @@ class SphericalEllipse(SphericalRegion):
         a circle with the same center as this ellipse and with radius
         equal to the arcsine of the semi-major axis length.
         """
-        if self.boundingCircle == None:
+        if self.boundingCircle is None:
             r = math.degrees(math.asin(math.radians(
                 DEG_PER_ARCSEC * self.semiMajorAxisLength)))
             self.boundingCircle = SphericalCircle(self.center, r)
@@ -1004,7 +1010,7 @@ class SphericalEllipse(SphericalRegion):
         """Returns the circle of maximum radius having the same center as
         this ellipse and which is completely contained in the ellipse.
         """
-        if self.innerCircle == None:
+        if self.innerCircle is None:
             r = math.degrees(math.asin(math.radians(
                 DEG_PER_ARCSEC * self.semiMinorAxisLength)))
             self.innerCircle = SphericalCircle(self.center, r)
@@ -1097,6 +1103,9 @@ class SphericalEllipse(SphericalRegion):
                     self.majorAxisAngle == other.majorAxisAngle)
         return False
 
+    def __hash__(self):
+        return hash((self.center, self.semiMajorAxisLength, self.semiMinorAxisLength, self.majorAxisAngle))
+
 
 class SphericalConvexPolygon(SphericalRegion):
     """A convex polygon on the unit sphere with great circle edges. Points
@@ -1139,19 +1148,19 @@ class SphericalConvexPolygon(SphericalRegion):
             raise RuntimeError('Expecting at least one argument')
         elif len(args) == 1:
             if isinstance(args[0], SphericalConvexPolygon):
-                self.vertices = list(args[0].vertices)
-                self.edges = list(args[0].edges)
+                self.vertices = tuple(args[0].vertices)
+                self.edges = tuple(args[0].edges)
             else:
-                self.vertices = list(args[0])
+                self.vertices = tuple(args[0])
                 self._computeEdges()
         elif len(args) == 2:
-            self.vertices = list(args[0])
-            self.edges = list(args[1])
+            self.vertices = tuple(args[0])
+            self.edges = tuple(args[1])
             if len(self.edges) != len(self.vertices):
                 raise RuntimeError(
                     'number of edges does not match number of vertices')
         else:
-            self.vertices = list(args)
+            self.vertices = tuple(args)
             self._computeEdges()
         if len(self.vertices) < 3:
             raise RuntimeError(
@@ -1165,7 +1174,7 @@ class SphericalConvexPolygon(SphericalRegion):
         edges = []
         for i in range(n):
             edges.append(normalize(cross(v[i - 1], v[i])))
-        self.edges = edges
+        self.edges = tuple(edges)
 
     def getVertices(self):
         """Returns the list of polygon vertices.
@@ -1182,7 +1191,7 @@ class SphericalConvexPolygon(SphericalRegion):
         """Returns a bounding circle (not necessarily minimal) for this
         spherical convex polygon.
         """
-        if self.boundingCircle == None:
+        if self.boundingCircle is None:
             center = centroid(self.vertices)
             radius = 0.0
             for v in self.vertices:
@@ -1193,7 +1202,7 @@ class SphericalConvexPolygon(SphericalRegion):
     def getBoundingBox(self):
         """Returns a bounding box for this spherical convex polygon.
         """
-        if self.boundingBox == None:
+        if self.boundingBox is None:
             self.boundingBox = SphericalBox()
             for i in range(0, len(self.vertices)):
                 self.boundingBox.extend(SphericalBox.edge(
@@ -1298,7 +1307,7 @@ class SphericalConvexPolygon(SphericalRegion):
         p = self
         for edge in poly.getEdges():
             p = p.clip(edge)
-            if p == None:
+            if p is None:
                 break
         return p
 
@@ -1402,7 +1411,7 @@ class SphericalConvexPolygon(SphericalRegion):
         """
         pr = pointOrRegion
         if isinstance(pr, SphericalConvexPolygon):
-            return self.intersect(pr) != None
+            return self.intersect(pr) is not None
         elif isinstance(pr, SphericalEllipse):
             return self.intersects(pr.getBoundingCircle())
         elif isinstance(pr, SphericalCircle):
@@ -1423,15 +1432,15 @@ class SphericalConvexPolygon(SphericalRegion):
             bzMax = math.sin(math.radians(pr.getMax()[1]))
             p = self.clip((-math.sin(minTheta), math.cos(minTheta), 0.0))
             if pr.getThetaExtent() > 180.0:
-                if p != None:
+                if p is not None:
                     zMin, zMax = p.getZRange()
                     if zMin <= bzMax and zMax >= bzMin:
                         return True
                 p = self.clip((math.sin(maxTheta), -math.cos(maxTheta), 0.0))
             else:
-                if p != None:
+                if p is not None:
                     p = p.clip((math.sin(maxTheta), -math.cos(maxTheta), 0.0))
-            if p == None:
+            if p is None:
                 return False
             zMin, zMax = p.getZRange()
             return zMin <= bzMax and zMax >= bzMin
@@ -1464,6 +1473,8 @@ class SphericalConvexPolygon(SphericalRegion):
                 return False
         return True
 
+    def __hash__(self):
+        return hash((self.vertices, self.edges))
 
 # -- Finding the median element of an array in linear time ----
 #
@@ -1898,7 +1909,7 @@ def convexHull(points):
         p = cross(anchor, v)
         n2 = dot(p, p)
         if dot(anchor, v) < COS_MAX and n2 >= CROSS_N2MIN:
-            if edge == None:
+            if edge is None:
                 # Compute first edge
                 edge = invScale(p, math.sqrt(n2))
                 verts.append(v)
@@ -2056,8 +2067,8 @@ class SphericalBoxPartitionMap(PartitionMap):
         self.numSCPerChunk = []
         self.subChunkWidth = []
         for i in range(self.numSubStripes):
-            nc = self.numChunks[i / numSubStripesPerStripe]
-            n = segments(i * hs - 90.0, (i + 1) * hs - 90.0, hs) / nc
+            nc = self.numChunks[i//numSubStripesPerStripe]
+            n = segments(i * hs - 90.0, (i + 1) * hs - 90.0, hs)//nc
             self.numSCPerChunk.append(n)
             w = 360.0 / (n * nc)
             self.subChunkWidth.append(w)
@@ -2078,7 +2089,7 @@ class SphericalBoxPartitionMap(PartitionMap):
         with the given latitude angle.
         """
         ss = self.getSubStripe(phi)
-        return ss / self.numSSPerStripe
+        return ss//self.numSSPerStripe
 
     def getSubChunk(self, subStripe, theta):
         """Returns the sub-chunk number of the sub-chunk containing all points
@@ -2087,7 +2098,7 @@ class SphericalBoxPartitionMap(PartitionMap):
         assert subStripe >= 0 and theta >= 0.0 and theta <= 360.0
         sc = int(math.floor(theta / self.subChunkWidth[subStripe]))
         nsc = (self.numSCPerChunk[subStripe] *
-               self.numChunks[subStripe / self.numSSPerStripe])
+               self.numChunks[subStripe//self.numSSPerStripe])
         if sc >= nsc:
             sc = nsc - 1
         return sc
@@ -2099,7 +2110,7 @@ class SphericalBoxPartitionMap(PartitionMap):
         assert stripe >= 0 and theta >= 0.0 and theta <= 360.0
         ss = stripe * self.numSSPerStripe
         sc = self.getSubChunk(ss, theta)
-        return sc / self.numSCPerChunk[ss]
+        return sc//self.numSCPerChunk[ss]
 
     def _getChunkBoundingBox(self, stripe, chunk):
         assert stripe >= 0 and stripe < self.numStripes
@@ -2144,7 +2155,7 @@ class SphericalBoxPartitionMap(PartitionMap):
     def _getSubChunkBoundingBox(self, subStripe, subChunk):
         assert subStripe >= 0
         nsc = (self.numSCPerChunk[subStripe] *
-               self.numChunks[subStripe / self.numSSPerStripe])
+               self.numChunks[subStripe//self.numSSPerStripe])
         assert subChunk >= 0 and subChunk < nsc
         scw = self.subChunkWidth[subStripe]
         minPhi = subStripe * self.subStripeHeight - 90.0
@@ -2173,9 +2184,9 @@ class SphericalBoxPartitionMap(PartitionMap):
         B.contains(p) == True does not imply that p is assigned to SC.
         However, for all points p assigned to SC, B.contains(p) is True.
         """
-        s = chunkId / (self.numStripes * 2)
+        s = chunkId//(self.numStripes * 2)
         c = chunkId - s * self.numStripes * 2
-        ssc = subChunkId / self.maxSCPerChunk
+        ssc = subChunkId//self.maxSCPerChunk
         scc = subChunkId - ssc * self.maxSCPerChunk
         ss = s * self.numSSPerStripe + ssc
         sc = c * self.numSCPerChunk[ss] + scc
@@ -2330,10 +2341,10 @@ class SphericalBoxPartitionMap(PartitionMap):
                     partial = set()
                     break
                 elif br[1].intersects(bbox):
-                    if partial == None:
+                    if partial is None:
                         partial = set()
                     partial.add(br[1])
-            if partial != None:
+            if partial is not None:
                 yield (self.getSubChunkId(minSS, minSC), partial)
             # Finished processing minSC - remove any regions not
             # intersecting sub-chunks > minSC and advance

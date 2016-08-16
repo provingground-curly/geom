@@ -659,7 +659,7 @@ class MedianTestCase(unittest.TestCase):
     def testMedian(self):
         for i in range(2, 100):
             a = [j for j in range(1, i)]
-            m = a[len(a) / 2]
+            m = a[len(a)//2]
             self.assertEqual(geom.median(a), m)
             a.reverse()
             self.assertEqual(geom.median(a), m)
@@ -670,7 +670,7 @@ class MedianTestCase(unittest.TestCase):
             for j in range(1, i):
                 for k in range(random.randint(1, 10)):
                     a.append(j)
-            m = a[len(a) / 2]
+            m = a[len(a)//2]
             self.assertEqual(geom.median(a), m)
             a.reverse()
             self.assertEqual(geom.median(a), m)
@@ -916,19 +916,19 @@ class SphericalBoxPartitionMapTestCase(unittest.TestCase):
         s.append(4)
         s.append(1)
         self.assertEqual(len(s), 4)
-        x = max(a) + 1
+        x = max(s) + 1
         for y in s:
             self.assertTrue(y < x)
             x = y
         s.filter(lambda x: x == 5)
         self.assertEqual(len(s), 3)
-        x = max(a) + 1
+        x = max(s) + 1
         for y in s:
             self.assertTrue(y < x)
             x = y
         s.append(0)
         self.assertEqual(len(s), 4)
-        x = max(a) + 1
+        x = max(s) + 1
         for y in s:
             self.assertTrue(y < x)
             x = y
