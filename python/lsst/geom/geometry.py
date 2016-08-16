@@ -1,7 +1,7 @@
-# 
+#
 # LSST Data Management System
 # Copyright 2008, 2009, 2010 LSST Corporation.
-# 
+#
 # This product includes software developed by the
 # LSST Project (http://www.lsst.org/).
 #
@@ -9,14 +9,14 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
-# You should have received a copy of the LSST License Statement and 
-# the GNU General Public License along with this program.  If not, 
+#
+# You should have received a copy of the LSST License Statement and
+# the GNU General Public License along with this program.  If not,
 # see <http://www.lsstcorp.org/LegalNotices/>.
 #
 
@@ -29,10 +29,10 @@ ARCSEC_PER_DEG = 3600.0
 DEG_PER_ARCSEC = 1.0 / 3600.0
 
 # Angle comparison slack
-ANGLE_EPSILON = 0.001 * DEG_PER_ARCSEC # 1 milli-arcsec in degrees
+ANGLE_EPSILON = 0.001 * DEG_PER_ARCSEC  # 1 milli-arcsec in degrees
 
 # Used in pole proximity tests
-POLE_EPSILON = 1.0 * DEG_PER_ARCSEC # 1 arcsec in degrees
+POLE_EPSILON = 1.0 * DEG_PER_ARCSEC  # 1 arcsec in degrees
 
 # Dot product of 2 cartesian unit vectors must be < COS_MAX,
 # or they are considered degenerate.
@@ -70,10 +70,12 @@ else:
 
 # -- Utility methods ----
 
+
 def dot(v1, v2):
     """Returns the dot product of cartesian 3-vectors v1 and v2.
     """
     return v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2]
+
 
 def cross(v1, v2):
     """Returns the cross product of cartesian 3-vectors v1 and v2.
@@ -82,10 +84,12 @@ def cross(v1, v2):
             v1[2] * v2[0] - v1[0] * v2[2],
             v1[0] * v2[1] - v1[1] * v2[0])
 
+
 def invScale(v, s):
     """Returns a copy of the cartesian 3-vector v scaled by 1 / s.
     """
     return (v[0] / s, v[1] / s, v[2] / s)
+
 
 def normalize(v):
     """Returns a normalized copy of the cartesian 3-vector v.
@@ -94,6 +98,7 @@ def normalize(v):
     if n == 0.0:
         raise RuntimeError('Cannot normalize a 3-vector with 0 magnitude')
     return (v[0] / n, v[1] / n, v[2] / n)
+
 
 def sphericalCoords(*args):
     """Returns spherical coordinates in degrees for the input coordinates,
@@ -127,6 +132,7 @@ def sphericalCoords(*args):
     raise TypeError('Expecting 2 or 3 coordinates, or a tuple/list ' +
                     'containing 2 or 3 coordinates')
 
+
 def cartesianUnitVector(*args):
     """Returns a unit cartesian 3-vector corresponding to the input
     coordinates, which can be spherical or 3D cartesian. The 2 (spherical)
@@ -154,6 +160,7 @@ def cartesianUnitVector(*args):
     raise TypeError('Expecting 2 or 3 coordinates, or a tuple/list ' +
                     'containing 2 or 3 coordinates')
 
+
 def sphericalAngularSep(p1, p2):
     """Returns the angular separation in degrees between points p1 and p2,
     which must both be specified in spherical coordinates. The implementation
@@ -168,6 +175,7 @@ def sphericalAngularSep(p1, p2):
     else:
         return 2.0 * math.degrees(math.asin(s))
 
+
 def clampPhi(phi):
     """Clamps the input latitude angle phi to [-90.0, 90.0] deg.
     """
@@ -176,6 +184,7 @@ def clampPhi(phi):
     elif phi >= 90.0:
         return 90.0
     return phi
+
 
 def reduceTheta(theta):
     """Range reduces the given longitude angle to lie in the range
@@ -186,6 +195,7 @@ def reduceTheta(theta):
         return theta + 360.0
     else:
         return theta
+
 
 def northEast(v):
     """Returns unit N,E basis vectors for a point v, which must be a
@@ -203,6 +213,7 @@ def northEast(v):
         east = normalize(cross(north, v))
     return north, east
 
+
 def alpha(r, centerPhi, phi):
     """Returns the longitude angle alpha of the intersections (alpha, phi),
     (-alpha, phi) of the circle centered on (0, centerPhi) with radius r and
@@ -219,6 +230,7 @@ def alpha(r, centerPhi, phi):
     u = math.cos(cp) * math.cos(p)
     y = math.sqrt(abs(u * u - x * x))
     return math.degrees(abs(math.atan2(y, x)))
+
 
 def maxAlpha(r, centerPhi):
     """Computes alpha, the extent in longitude angle [-alpha, alpha] of the
@@ -239,6 +251,7 @@ def maxAlpha(r, centerPhi):
     x = math.sqrt(abs(math.cos(c - r) * math.cos(c + r)))
     return math.degrees(abs(math.atan(y / x)))
 
+
 def cartesianAngularSep(v1, v2):
     """Returns the angular separation in degrees between points v1 and v2,
     which must both be specified as cartesian 3-vectors.
@@ -249,6 +262,7 @@ def cartesianAngularSep(v1, v2):
     if cs == 0.0 and ss == 0.0:
         return 0.0
     return math.degrees(math.atan2(ss, cs))
+
 
 def minEdgeSep(p, n, v1, v2):
     """Returns the minimum angular separation in degrees between p
@@ -261,6 +275,7 @@ def minEdgeSep(p, n, v1, v2):
         return abs(90.0 - cartesianAngularSep(p, n))
     else:
         return min(cartesianAngularSep(p, v1), cartesianAngularSep(p, v2))
+
 
 def minPhiEdgeSep(p, phi, minTheta, maxTheta):
     """Returns the minimum angular separation in degrees between p
@@ -277,6 +292,7 @@ def minPhiEdgeSep(p, phi, minTheta, maxTheta):
     return min(sphericalAngularSep(p, (minTheta, phi)),
                sphericalAngularSep(p, (maxTheta, phi)))
 
+
 def minThetaEdgeSep(p, theta, minPhi, maxPhi):
     """Returns the minimum angular separation in degrees between p
     and points on the great circle edge with constant longitude angle
@@ -291,6 +307,7 @@ def minThetaEdgeSep(p, theta, minPhi, maxPhi):
         return min(cartesianAngularSep(p, v1), cartesianAngularSep(p, v2))
     return minEdgeSep(p, invScale(n, math.sqrt(d2)), v1, v2)
 
+
 def centroid(vertices):
     """Computes the centroid of a set of vertices (which must be passed in
     as a list of cartesian unit vectors) on the unit sphere.
@@ -303,6 +320,7 @@ def centroid(vertices):
         z += v[2]
     return normalize((x, y, z))
 
+
 def between(p, n, v1, v2):
     """Tests whether p lies on the shortest great circle arc from cartesian
     unit vectors v1 to v2, assuming that p is a unit vector on the plane
@@ -311,6 +329,7 @@ def between(p, n, v1, v2):
     p1 = cross(n, v1)
     p2 = cross(n, v2)
     return dot(p1, p) >= 0.0 and dot(p2, p) <= 0.0
+
 
 def segments(phiMin, phiMax, width):
     """Computes the number of segments to divide the given latitude angle
@@ -356,6 +375,7 @@ class SphericalBox(SphericalRegion):
     Note that points falling exactly on spherical box edges are
     considered to be inside (contained by) the box.
     """
+
     def __init__(self, *args):
         """
         Creates a new spherical box. If no arguments are supplied, then
@@ -397,7 +417,7 @@ class SphericalBox(SphericalRegion):
             raise RuntimeError(
                 'Latitude angle minimum is greater than maximum')
         if (self.max[0] < self.min[0] and
-            (self.max[0] < 0.0 or self.min[0] > 360.0)):
+                (self.max[0] < 0.0 or self.min[0] > 360.0)):
             raise RuntimeError(
                 'Longitude angle minimum is greater than maximum')
         # Range-reduce longitude angles
@@ -578,13 +598,13 @@ class SphericalBox(SphericalRegion):
                 else:
                     if b.min[0] > self.max[0]:
                         if (360.0 - b.min[0] + self.max[0] <
-                            b.max[0] - self.min[0]):
+                                b.max[0] - self.min[0]):
                             minTheta = b.min[0]
                         else:
                             maxTheta = b.max[0]
                     elif self.min[0] > b.max[0]:
                         if (360.0 - self.min[0] + b.max[0] <
-                            self.max[0] - b.min[0]):
+                                self.max[0] - b.min[0]):
                             maxTheta = b.max[0]
                         else:
                             minTheta = b.min[0]
@@ -767,6 +787,7 @@ class SphericalCircle(SphericalRegion):
     """A circle on the unit sphere. Points falling exactly on the
     circle are considered to be inside (contained by) the circle.
     """
+
     def __init__(self, center, radius):
         """Creates a new spherical circle with the given center and radius.
         """
@@ -845,17 +866,17 @@ class SphericalCircle(SphericalRegion):
             if (sphericalAngularSep(c, minp) > r or
                 sphericalAngularSep(c, maxp) > r or
                 sphericalAngularSep(c, (minp[0], maxp[1])) > r or
-                sphericalAngularSep(c, (maxp[0], minp[1])) > r):
+                    sphericalAngularSep(c, (maxp[0], minp[1])) > r):
                 return False
             a = alpha(r, c[1], minp[1])
             if a != None:
                 if (pr.containsPoint((c[0] + a, minp[1])) or
-                    pr.containsPoint((c[0] - a, minp[1]))):
+                        pr.containsPoint((c[0] - a, minp[1]))):
                     return False
             a = alpha(r, c[1], maxp[1])
             if a != None:
                 if (pr.containsPoint((c[0] + a, maxp[1])) or
-                    pr.containsPoint((c[0] - a, maxp[1]))):
+                        pr.containsPoint((c[0] - a, maxp[1]))):
                     return False
             return True
         elif isinstance(pr, SphericalCircle):
@@ -893,7 +914,7 @@ class SphericalCircle(SphericalRegion):
             minp = pr.getMin()
             maxp = pr.getMax()
             if (minPhiEdgeSep(c, minp[1], minp[0], maxp[0]) <= r or
-                minPhiEdgeSep(c, maxp[1], minp[0], maxp[0]) <= r):
+                    minPhiEdgeSep(c, maxp[1], minp[0], maxp[0]) <= r):
                 return True
             p = cartesianUnitVector(c)
             return (minThetaEdgeSep(p, minp[0], minp[1], maxp[1]) <= r or
@@ -913,7 +934,7 @@ class SphericalCircle(SphericalRegion):
     def __repr__(self):
         """Returns a string representation of this circle.
         """
-        return ''.join([self.__class__.__name__ , '(', repr(self.center),
+        return ''.join([self.__class__.__name__, '(', repr(self.center),
                         ', ', repr(self.radius), ')'])
 
     def __eq__(self, other):
@@ -934,6 +955,7 @@ class SphericalEllipse(SphericalRegion):
     center and then orthographically projected onto the surface of the
     unit sphere.
     """
+
     def __init__(self, center,
                  semiMajorAxisLength, semiMinorAxisLength, majorAxisAngle):
         self.center = sphericalCoords(center)
@@ -970,7 +992,7 @@ class SphericalEllipse(SphericalRegion):
         """
         if self.boundingCircle == None:
             r = math.degrees(math.asin(math.radians(
-                    DEG_PER_ARCSEC * self.semiMajorAxisLength)))
+                DEG_PER_ARCSEC * self.semiMajorAxisLength)))
             self.boundingCircle = SphericalCircle(self.center, r)
         return self.boundingCircle
 
@@ -980,7 +1002,7 @@ class SphericalEllipse(SphericalRegion):
         """
         if self.innerCircle == None:
             r = math.degrees(math.asin(math.radians(
-                    DEG_PER_ARCSEC * self.semiMinorAxisLength)))
+                DEG_PER_ARCSEC * self.semiMinorAxisLength)))
             self.innerCircle = SphericalCircle(self.center, r)
         return self.innerCircle
 
@@ -1058,7 +1080,7 @@ class SphericalEllipse(SphericalRegion):
         """Returns a string representation of this ellipse.
         """
         return ''.join([
-            self.__class__.__name__ , '(', repr(self.center), ', ',
+            self.__class__.__name__, '(', repr(self.center), ', ',
             repr(self.semiMajorAxisLength), ', ',
             repr(self.semiMinorAxisLength), ', ',
             repr(self.majorAxisAngle), ')'])
@@ -1077,6 +1099,7 @@ class SphericalConvexPolygon(SphericalRegion):
     falling exactly on polygon edges are considered to be inside (contained
     by) the polygon.
     """
+
     def __init__(self, *args):
         """Creates a new polygon. Arguments must be either:
 
@@ -1194,9 +1217,12 @@ class SphericalConvexPolygon(SphericalRegion):
         vin, vout = False, False
         for i in xrange(len(self.vertices)):
             d = dot(plane, self.vertices[i])
-            if d > SIN_MIN: vin = True
-            elif d < -SIN_MIN: vout = True
-            else: d = 0.0
+            if d > SIN_MIN:
+                vin = True
+            elif d < -SIN_MIN:
+                vout = True
+            else:
+                d = 0.0
             classification.append(d)
         if not vin and not vout:
             # polygon and clipping plane are coplanar
@@ -1347,7 +1373,7 @@ class SphericalConvexPolygon(SphericalRegion):
                     i1 = ((xr + e[1] * D) / d, (yr - e[0] * D) / d, bzMin)
                     i2 = ((xr - e[1] * D) / d, (yr + e[0] * D) / d, bzMin)
                     if (pr.containsPoint(sphericalCoords(i1)) or
-                        pr.containsPoint(sphericalCoords(i2))):
+                            pr.containsPoint(sphericalCoords(i2))):
                         return False
                 D = d - bzMax * bzMax
                 if D >= 0.0:
@@ -1358,7 +1384,7 @@ class SphericalConvexPolygon(SphericalRegion):
                     i1 = ((xr + e[1] * D) / d, (yr - e[0] * D) / d, bzMax)
                     i2 = ((xr - e[1] * D) / d, (yr + e[0] * D) / d, bzMax)
                     if (pr.containsPoint(sphericalCoords(i1)) or
-                        pr.containsPoint(sphericalCoords(i2))):
+                            pr.containsPoint(sphericalCoords(i2))):
                         return False
             return True
         else:
@@ -1411,7 +1437,7 @@ class SphericalConvexPolygon(SphericalRegion):
     def __repr__(self):
         """Returns a string representation of this polygon.
         """
-        return ''.join([self.__class__.__name__ , '(',
+        return ''.join([self.__class__.__name__, '(',
                         repr(map(sphericalCoords, self.vertices)), ')'])
 
     def __eq__(self, other):
@@ -1429,8 +1455,8 @@ class SphericalConvexPolygon(SphericalRegion):
             j = offset + i
             if j >= n:
                 j -= n
-            if (self.vertices[i] != self.vertices[j] or 
-                self.edges[i] != self.edges[j]):
+            if (self.vertices[i] != self.vertices[j] or
+                    self.edges[i] != self.edges[j]):
                 return False
         return True
 
@@ -1457,6 +1483,7 @@ def _partition(array, left, right, i):
     array[j] = pivot
     return j
 
+
 def _medianOfN(array, i, n):
     """Finds the median of n consecutive elements in an array starting
     at index i (efficient for small n). The index of the median element
@@ -1479,6 +1506,7 @@ def _medianOfN(array, i, n):
         array[minIndex] = tmp
     return i + k
 
+
 def _medianOfMedians(array, left, right):
     """Returns the "median of medians" for an array. This primitive is used
     for pivot selection in the median finding algorithm.
@@ -1496,6 +1524,7 @@ def _medianOfMedians(array, left, right):
             j += 1
             i += 5
         right = j
+
 
 def median(array):
     """Finds the median element of the given array in linear time.
@@ -1523,7 +1552,8 @@ def median(array):
 #
 # Megiddo, N. 1982. Linear-time algorithms for linear programming in R3 and related problems.
 # In Proceedings of the 23rd Annual Symposium on Foundations of Computer Science (November 03 - 05, 1982).
-# SFCS. IEEE Computer Society, Washington, DC, 329-338. DOI= http://dx.doi.org/10.1109/SFCS.1982.74
+# SFCS. IEEE Computer Society, Washington, DC, 329-338. DOI=
+# http://dx.doi.org/10.1109/SFCS.1982.74
 
 def _prune(constraints, xmin, xmax, op):
     """Removes redundant constraints and reports intersection points
@@ -1567,6 +1597,7 @@ def _prune(constraints, xmin, xmax, op):
                 i += 2
     return intersections
 
+
 def _vrange(x, xerr, a, b):
     p = a * (x - xerr)
     v = p + b
@@ -1579,6 +1610,7 @@ def _vrange(x, xerr, a, b):
     vmin = min(vmin, v - verr)
     vmax = max(vmax, v + verr)
     return vmin, vmax
+
 
 def _gh(constraints, x, xerr, op):
     a, b = constraints[0]
@@ -1597,6 +1629,7 @@ def _gh(constraints, x, xerr, op):
             amin = min(amin, a)
             amax = max(amax, a)
     return vmin, vmax, amin, amax
+
 
 def _feasible2D(points, z):
     I1 = []
@@ -1669,6 +1702,7 @@ def _feasible2D(points, z):
         else:
             return False
 
+
 def _feasible1D(points, y):
     xmin = NEG_INF
     xmax = INF
@@ -1687,6 +1721,7 @@ def _feasible1D(points, y):
                 return False
     return True
 
+
 def hemispherical(points):
     """Tests whether a set of points is hemispherical, i.e. whether a plane
     exists such that all points are strictly on one side of the plane. The
@@ -1700,9 +1735,9 @@ def hemispherical(points):
     # so is C*(x,y,z), C > 0. Therefore we can fix z to 1, -1 and
     # perform 2D feasibility tests.
     if _feasible2D(points, 1.0):
-      return True
+        return True
     if _feasible2D(points, -1.0):
-      return True
+        return True
     # At this point a feasible solution must have z = 0. Fix y to 1, -1 and
     # perform 1D feasibility tests.
     if _feasible1D(points, 1.0):
@@ -1799,6 +1834,7 @@ def convex(vertices):
     return (False, 'vertices do not completely wind around centroid, or ' +
             'wind around it multiple times')
 
+
 def convexHull(points):
     """Computes the convex hull (a spherical convex polygon) of an unordered
     list of points on the unit sphere, which must be passed in as cartesian
@@ -1845,7 +1881,7 @@ def convexHull(points):
             av.append((angle, v))
     if len(av) < 3:
         return None
-    av.sort(key=lambda t: t[0]) # stable, so av[0] still contains anchor
+    av.sort(key=lambda t: t[0])  # stable, so av[0] still contains anchor
     # Loop over vertices using a Graham scan adapted for spherical geometry.
     # Chan's algorithm would be an improvement, but seems likely to be slower
     # for small vertex counts (the expected case).
@@ -1920,6 +1956,7 @@ class _SubList(object):
     """Class that maintains a sub-list of a backing list in
     insertion order. Elements can be deleted in O(1) time.
     """
+
     def __init__(self, backingList):
         self.backingList = backingList
         self.active = []
@@ -1994,9 +2031,10 @@ class SphericalBoxPartitionMap(PartitionMap):
     fixed width sub-chunks. Again, the number of sub-chunks per sub-stripe is
     variable to account for polar distortion.
     """
+
     def __init__(self, numStripes, numSubStripesPerStripe):
         if (not isinstance(numStripes, (int, long)) or
-            not isinstance(numSubStripesPerStripe, (int, long))):
+                not isinstance(numSubStripesPerStripe, (int, long))):
             raise TypeError('Number of stripes and sub-stripes per stripe ' +
                             'must be integers')
         if numStripes < 1 or numSubStripesPerStripe < 1:
@@ -2160,9 +2198,11 @@ class SphericalBoxPartitionMap(PartitionMap):
             nsc = self.numSCPerChunk[stripe * self.numSSPerStripe + i]
             scId = i * self.maxSCPerChunk
             if withEmptySet:
-                for j in xrange(nsc): yield (scId + j, emptySet)
+                for j in xrange(nsc):
+                    yield (scId + j, emptySet)
             else:
-                for j in xrange(nsc): yield scId + j
+                for j in xrange(nsc):
+                    yield scId + j
 
     def _processChunk(self, minS, minC, c, cOverlap):
         ss = minS * self.numSSPerStripe
@@ -2192,12 +2232,12 @@ class SphericalBoxPartitionMap(PartitionMap):
             sRegions = list(sOverlap)
             sRegions.sort(key=lambda x: x[0].getMin()[0])
             minC = self.getChunk(minS, max(0.0,
-                                 sRegions[0][0].getMin()[0] - ANGLE_EPSILON))
+                                           sRegions[0][0].getMin()[0] - ANGLE_EPSILON))
             cOverlap = _SubList(sRegions)
             cOverlap.append(0)
             for j in xrange(1, len(sRegions)):
                 c = self.getChunk(minS, max(0.0,
-                                  sRegions[j][0].getMin()[0] - ANGLE_EPSILON))
+                                            sRegions[j][0].getMin()[0] - ANGLE_EPSILON))
                 if c == minC:
                     cOverlap.append(j)
                     continue
@@ -2308,12 +2348,12 @@ class SphericalBoxPartitionMap(PartitionMap):
             # Sort sub-stripe regions by minimum bounding box longitude
             ssRegions.sort(key=lambda x: x[0].getMin()[0])
             minSC = max(firstSC, self.getSubChunk(minSS, max(0.0,
-                        ssRegions[0][0].getMin()[0] - ANGLE_EPSILON)))
+                                                             ssRegions[0][0].getMin()[0] - ANGLE_EPSILON)))
             scOverlap = _SubList(ssRegions)
             scOverlap.append(0)
             for j in xrange(1, len(ssRegions)):
                 sc = max(firstSC, self.getSubChunk(minSS, max(0.0,
-                         ssRegions[j][0].getMin()[0] - ANGLE_EPSILON)))
+                                                              ssRegions[j][0].getMin()[0] - ANGLE_EPSILON)))
                 if sc == minSC:
                     scOverlap.append(j)
                     continue
@@ -2344,13 +2384,13 @@ class SphericalBoxPartitionMap(PartitionMap):
         regions.sort(key=lambda x: x[0].getMin()[1])
         firstSS = stripe * self.numSSPerStripe
         minSS = max(firstSS, self.getSubStripe(max(-90.0,
-                    regions[0][0].getMin()[1] - ANGLE_EPSILON)))
+                                                   regions[0][0].getMin()[1] - ANGLE_EPSILON)))
         ssOverlap = _SubList(regions)
         ssOverlap.append(0)
         # Loop over regions
         for i in xrange(1, len(regions)):
             ss = max(firstSS, self.getSubStripe(max(-90.0,
-                     regions[i][0].getMin()[1] - ANGLE_EPSILON)))
+                                                    regions[i][0].getMin()[1] - ANGLE_EPSILON)))
             if ss == minSS:
                 ssOverlap.append(i)
                 continue
@@ -2378,6 +2418,5 @@ class SphericalBoxPartitionMap(PartitionMap):
         return False
 
     def __repr__(self):
-        return ''.join([self.__class__.__name__ , '(', repr(self.numStripes),
+        return ''.join([self.__class__.__name__, '(', repr(self.numStripes),
                         ', ', repr(self.numSSPerStripe), ')'])
-

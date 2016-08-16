@@ -1,7 +1,7 @@
-# 
+#
 # LSST Data Management System
 # Copyright 2008, 2009, 2010 LSST Corporation.
-# 
+#
 # This product includes software developed by the
 # LSST Project (http://www.lsst.org/).
 #
@@ -9,14 +9,14 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
-# You should have received a copy of the LSST License Statement and 
-# the GNU General Public License along with this program.  If not, 
+#
+# You should have received a copy of the LSST License Statement and
+# the GNU General Public License along with this program.  If not,
 # see <http://www.lsstcorp.org/LegalNotices/>.
 #
 
@@ -26,6 +26,7 @@ import random
 import unittest
 
 import lsst.geom.geometry as g
+
 
 def _pointsOnCircle(c, r, n, clockwise=False):
     """Generates an n-gon lying on the circle with center c and
@@ -50,6 +51,7 @@ def _pointsOnCircle(c, r, n, clockwise=False):
                                    cr * c[1] + sr * p[1],
                                    cr * c[2] + sr * p[2])))
     return points
+
 
 def _pointsOnEllipse(c, smaa, smia, ang, n):
     """Generates points lying on the ellipse with center c,
@@ -81,6 +83,7 @@ def _pointsOnEllipse(c, smaa, smia, ang, n):
 class UtilsTestCase(unittest.TestCase):
     """Tests for geometry related utility methods.
     """
+
     def testCross(self):
         v = g.cross((1.0, 0.0, 0.0), (0.0, 1.0, 0.0))
         self.assertEqual(v, (0.0, 0.0, 1.0))
@@ -156,7 +159,7 @@ class UtilsTestCase(unittest.TestCase):
               ((0.0, 1.0, 1.0), (0.0, 0.0, 1.0), 45.0),
               ((1.0, 1.0, 0.0), (1.0, -1.0, 0.0), 90.0),
               ((1.0, 0.0, 1.0), (1.0, 0.0, -1.0), 90.0)
-             ]
+              ]
         for v1, v2, a in tv:
             d = [g.cartesianAngularSep(v1, v2)]
             d.append(g.cartesianAngularSep(v2, v1))
@@ -204,6 +207,7 @@ class UtilsTestCase(unittest.TestCase):
 class SphericalBoxTestCase(unittest.TestCase):
     """Tests for the SphericalBox class.
     """
+
     def testInit(self):
         b = g.SphericalBox()
         self.assertTrue(b.isEmpty())
@@ -367,7 +371,8 @@ class SphericalBoxTestCase(unittest.TestCase):
         b.extend((350.0, 15.0))
         self.assertEqual(b, g.SphericalBox((350.0, 0.0), (380.0, 20.0)))
         self.assertRaises(RuntimeError, g.SphericalBox.extend, b, (0.0, 100.0))
-        self.assertRaises(RuntimeError, g.SphericalBox.extend, b, (0.0, -100.0))
+        self.assertRaises(
+            RuntimeError, g.SphericalBox.extend, b, (0.0, -100.0))
 
     def testEdge(self):
         v1 = g.cartesianUnitVector(0.0, 45.0)
@@ -386,7 +391,7 @@ class SphericalBoxTestCase(unittest.TestCase):
         self.assertAlmostEqual(b.getMin()[1], 45.0)
         self.assertAlmostEqual(b.getMax()[1], 75.0)
         v1 = g.cartesianUnitVector(-0.1 * g.ANGLE_EPSILON, 45.0)
-        v2 = g.cartesianUnitVector(180 + 0.1 *g.ANGLE_EPSILON, 45.0)
+        v2 = g.cartesianUnitVector(180 + 0.1 * g.ANGLE_EPSILON, 45.0)
         n = g.normalize(g.cross(v1, v2))
         b = g.SphericalBox.edge(v1, v2, n)
         self.assertEqual(b.getMin()[0], 0.0)
@@ -422,6 +427,7 @@ class SphericalBoxTestCase(unittest.TestCase):
 class SphericalCircleTestCase(unittest.TestCase):
     """Tests for the SphericalCircle class.
     """
+
     def testInit(self):
         self.assertRaises(RuntimeError, g.SphericalCircle, (0.0, 0.0), 181.0)
         self.assertRaises(RuntimeError, g.SphericalCircle, (0.0, 91.0), 1.0)
@@ -490,6 +496,7 @@ class SphericalCircleTestCase(unittest.TestCase):
 class SphericalEllipseTestCase(unittest.TestCase):
     """Tests for the SphericalEllipse class.
     """
+
     def testInit(self):
         self.assertRaises(RuntimeError, g.SphericalEllipse,
                           (0.0, 0.0), 11.0 * g.ARCSEC_PER_DEG, 1.0, 0.0)
@@ -556,6 +563,7 @@ class SphericalEllipseTestCase(unittest.TestCase):
 class SphericalConvexPolygonTestCase(unittest.TestCase):
     """Tests for the SphericalConvexPolygon class.
     """
+
     def testInit(self):
         self.assertRaises(RuntimeError, g.SphericalConvexPolygon,
                           [(1.0, 0.0, 0.0)])
@@ -615,7 +623,8 @@ class SphericalConvexPolygonTestCase(unittest.TestCase):
         self.assertTrue(p.contains(p3))
 
     def testArea(self):
-        verts = [(1.0, 0.0, 0.0), (0.0, 1.0, 0.0), g.normalize((1.0, 1.0, 1.0))]
+        verts = [(1.0, 0.0, 0.0), (0.0, 1.0, 0.0),
+                 g.normalize((1.0, 1.0, 1.0))]
         p = g.SphericalConvexPolygon(verts)
         self.assertAlmostEqual(p.area(), math.pi / 6)
 
@@ -623,6 +632,7 @@ class SphericalConvexPolygonTestCase(unittest.TestCase):
 class MedianTestCase(unittest.TestCase):
     """Tests the "median-of-medians" median finding algorithm.
     """
+
     def testEdgeCases(self):
         a = []
         self.assertEqual(g.median(a), None)
@@ -672,6 +682,7 @@ def _hemPoints(v, n):
         points.append(g.normalize(p))
     return points
 
+
 def _opposing(points):
     """Returns a point p such that adding p to points
     results in a non-hemispherical point list.
@@ -688,6 +699,7 @@ def _opposing(points):
 class HemisphericalTestCase(unittest.TestCase):
     """Tests the hemispherical() function.
     """
+
     def testHemispherical(self):
         x = (1.0, 0.0, 0.0)
         y = (0.0, 1.0, 0.0)
@@ -769,6 +781,7 @@ def _pointsOnPeriodicHypotrochoid(c, R, r, d, n):
                                    z * c[2] + x * north[2] + y * east[2])))
     return points
 
+
 def _checkHull(hull, points):
     vertices = set(hull.getVertices())
     for p in points:
@@ -778,9 +791,11 @@ def _checkHull(hull, points):
                     return False
     return True
 
+
 class ConvexTestCase(unittest.TestCase):
     """Tests the convex hull algorithm and convexity test.
     """
+
     def testConvex(self):
         for c in ((0.0, 0.0), (0.0, 90.0), (0.0, -90.0), (45.0, 45.0)):
             points = _pointsOnCircle(c, 10.0, 100)
@@ -870,6 +885,7 @@ class ConvexTestCase(unittest.TestCase):
 class SphericalBoxPartitionMapTestCase(unittest.TestCase):
     """Tests for the spherical box unit sphere partitioning scheme.
     """
+
     def testSubList(self):
         a = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
         s = g._SubList(a)
@@ -944,7 +960,7 @@ class SphericalBoxPartitionMapTestCase(unittest.TestCase):
                    g.SphericalCircle((45.0, 45.0), 1.0),
                    g.SphericalConvexPolygon((-1.0, 0.0, 0.0), (0.0, 1.0, 0.0),
                                             g.normalize((-1.0, 1.0, -1.0))),
-                  ]
+                   ]
         # compute expected results by brute force
         results = {}
         for chunkId, subIter in pmap:
@@ -965,20 +981,22 @@ class SphericalBoxPartitionMapTestCase(unittest.TestCase):
                 self.assertEqual(xr, exr)
         self.assertEqual(len(results), 0)
 
+
 def suite():
     """Returns a suite containing all the test cases in this module."""
     suites = map(unittest.makeSuite,
-        [UtilsTestCase,
-         SphericalBoxTestCase,
-         SphericalCircleTestCase,
-         SphericalEllipseTestCase,
-         SphericalConvexPolygonTestCase,
-         MedianTestCase,
-         HemisphericalTestCase,
-         ConvexTestCase,
-         SphericalBoxPartitionMapTestCase
-        ])
+                 [UtilsTestCase,
+                  SphericalBoxTestCase,
+                  SphericalCircleTestCase,
+                  SphericalEllipseTestCase,
+                  SphericalConvexPolygonTestCase,
+                  MedianTestCase,
+                  HemisphericalTestCase,
+                  ConvexTestCase,
+                  SphericalBoxPartitionMapTestCase
+                  ])
     return unittest.TestSuite(suites)
+
 
 def run(shouldExit=False):
     """Run the tests"""
