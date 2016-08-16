@@ -1,2 +1,4 @@
 setupRequired(sconsUtils)
+setupRequired(python_future)
+setupRequired(utils)
 envPrepend(PYTHONPATH, ${PRODUCT_DIR}/python)
