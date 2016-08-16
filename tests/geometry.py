@@ -1,3 +1,4 @@
+from builtins import range
 #
 # LSST Data Management System
 # Copyright 2008, 2009, 2010 LSST Corporation.
@@ -38,7 +39,7 @@ def _pointsOnCircle(c, r, n, clockwise=False):
     sr = math.sin(math.radians(r))
     cr = math.cos(math.radians(r))
     aoff = random.uniform(0.0, 2.0 * math.pi)
-    for i in xrange(n):
+    for i in range(n):
         a = 2.0 * i * math.pi / n
         if not clockwise:
             a = -a
@@ -66,7 +67,7 @@ def _pointsOnEllipse(c, smaa, smia, ang, n):
     smaa = math.radians(smaa * geom.DEG_PER_ARCSEC)
     smia = math.radians(smia * geom.DEG_PER_ARCSEC)
     aoff = random.uniform(0.0, 2.0 * math.pi)
-    for i in xrange(n):
+    for i in range(n):
         a = aoff + 2.0 * i * math.pi / n
         x = smaa * math.cos(a)
         y = smia * math.sin(a)
@@ -651,23 +652,23 @@ class MedianTestCase(unittest.TestCase):
     def testEdgeCases(self):
         a = []
         self.assertEqual(geom.median(a), None)
-        for i in xrange(1, 50):
+        for i in range(1, 50):
             a = [1] * i
             self.assertEqual(geom.median(a), 1)
 
     def testMedian(self):
-        for i in xrange(2, 100):
-            a = [j for j in xrange(1, i)]
+        for i in range(2, 100):
+            a = [j for j in range(1, i)]
             m = a[len(a) / 2]
             self.assertEqual(geom.median(a), m)
             a.reverse()
             self.assertEqual(geom.median(a), m)
             random.shuffle(a)
             self.assertEqual(geom.median(a), m)
-        for i in xrange(2, 50):
+        for i in range(2, 50):
             a = []
-            for j in xrange(1, i):
-                for k in xrange(random.randint(1, 10)):
+            for j in range(1, i):
+                for k in range(random.randint(1, 10)):
                     a.append(j)
             m = a[len(a) / 2]
             self.assertEqual(geom.median(a), m)
@@ -684,7 +685,7 @@ def _hemPoints(v, n):
     v = geom.normalize(v)
     north, east = geom.northEast(v)
     points = []
-    for i in xrange(n):
+    for i in range(n):
         z = -1.0
         while z < 0.0:
             x = random.uniform(-1.0 + 1.0e-7, 1.0 - 1.0e-7)
@@ -787,7 +788,7 @@ def _pointsOnPeriodicHypotrochoid(c, R, r, d, n):
     period = (2 * r) / (R - r)
     if period % 2 != 0:
         period *= 2
-    for i in xrange(n):
+    for i in range(n):
         theta = i * period * math.pi / n
         x = (R - r) * math.cos(theta) + d * math.cos((R - r) * theta / r)
         y = (R - r) * math.sin(theta) - d * math.sin((R - r) * theta / r)
@@ -987,7 +988,7 @@ class SphericalBoxPartitionMapTestCase(unittest.TestCase):
         for chunkId, subIter in pmap:
             for subChunkId in subIter:
                 bbox = pmap.getSubChunkBoundingBox(chunkId, subChunkId)
-                for i in xrange(len(regions)):
+                for i in range(len(regions)):
                     if regions[i].contains(bbox):
                         results[(chunkId, subChunkId)] = set()
                         break

@@ -1,3 +1,7 @@
+from builtins import map
+from builtins import range
+from builtins import object
+from past.builtins import long
 #
 # LSST Data Management System
 # Copyright 2008, 2009, 2010 LSST Corporation.
@@ -1159,7 +1163,7 @@ class SphericalConvexPolygon(SphericalRegion):
         v = self.vertices
         n = len(v)
         edges = []
-        for i in xrange(n):
+        for i in range(n):
             edges.append(normalize(cross(v[i - 1], v[i])))
         self.edges = edges
 
@@ -1191,7 +1195,7 @@ class SphericalConvexPolygon(SphericalRegion):
         """
         if self.boundingBox == None:
             self.boundingBox = SphericalBox()
-            for i in xrange(0, len(self.vertices)):
+            for i in range(0, len(self.vertices)):
                 self.boundingBox.extend(SphericalBox.edge(
                     self.vertices[i - 1], self.vertices[i], self.edges[i]))
         return self.boundingBox
@@ -1215,7 +1219,7 @@ class SphericalConvexPolygon(SphericalRegion):
         """
         vertices, edges, classification = [], [], []
         vin, vout = False, False
-        for i in xrange(len(self.vertices)):
+        for i in range(len(self.vertices)):
             d = dot(plane, self.vertices[i])
             if d > SIN_MIN:
                 vin = True
@@ -1233,7 +1237,7 @@ class SphericalConvexPolygon(SphericalRegion):
             return None
         v0 = self.vertices[-1]
         d0 = classification[-1]
-        for i in xrange(len(self.vertices)):
+        for i in range(len(self.vertices)):
             v1 = self.vertices[i]
             d1 = classification[i]
             if d0 > 0.0:
@@ -1303,7 +1307,7 @@ class SphericalConvexPolygon(SphericalRegion):
         """
         numVerts = len(self.vertices)
         angleSum = 0.0
-        for i in xrange(numVerts):
+        for i in range(numVerts):
             tmp = cross(self.edges[i - 1], self.edges[i])
             sina = math.sqrt(dot(tmp, tmp))
             cosa = -dot(self.edges[i - 1], self.edges[i])
@@ -1337,7 +1341,7 @@ class SphericalConvexPolygon(SphericalRegion):
                 return False
             else:
                 minSep = INF
-                for i in xrange(len(self.vertices)):
+                for i in range(len(self.vertices)):
                     s = minEdgeSep(cv, self.edges[i],
                                    self.vertices[i - 1], self.vertices[i])
                     minSep = min(minSep, s)
@@ -1354,7 +1358,7 @@ class SphericalConvexPolygon(SphericalRegion):
                     return False
             # check that intersections of box small circles with polygon
             # edges either don't exist or fall outside the box.
-            for i in xrange(len(self.vertices)):
+            for i in range(len(self.vertices)):
                 v0 = self.vertices[i - 1]
                 v1 = self.vertices[i]
                 e = self.edges[i]
@@ -1407,7 +1411,7 @@ class SphericalConvexPolygon(SphericalRegion):
                 return True
             else:
                 minSep = INF
-                for i in xrange(len(self.vertices)):
+                for i in range(len(self.vertices)):
                     s = minEdgeSep(cv, self.edges[i],
                                    self.vertices[i - 1], self.vertices[i])
                     minSep = min(minSep, s)
@@ -1451,7 +1455,7 @@ class SphericalConvexPolygon(SphericalRegion):
             offset = other.vertices.index(self.vertices[0])
         except ValueError:
             return False
-        for i in xrange(0, n):
+        for i in range(0, n):
             j = offset + i
             if j >= n:
                 j -= n
@@ -1473,7 +1477,7 @@ def _partition(array, left, right, i):
     pivot = array[i]
     array[i] = array[right - 1]
     j = left
-    for k in xrange(left, right - 1):
+    for k in range(left, right - 1):
         if array[k] < pivot:
             tmp = array[j]
             array[j] = array[k]
@@ -1494,10 +1498,10 @@ def _medianOfN(array, i, n):
     k = n >> 1
     e1 = i + k + 1
     e2 = i + n
-    for j in xrange(i, e1):
+    for j in range(i, e1):
         minIndex = j
         minValue = array[j]
-        for s in xrange(j + 1, e2):
+        for s in range(j + 1, e2):
             if array[s] < minValue:
                 minIndex = s
                 minValue = array[s]
@@ -1616,7 +1620,7 @@ def _gh(constraints, x, xerr, op):
     a, b = constraints[0]
     amin, amax = a, a
     vmin, vmax = _vrange(x, xerr, a, b)
-    for i in xrange(1, len(constraints)):
+    for i in range(1, len(constraints)):
         a, b = constraints[i]
         vimin, vimax = _vrange(x, xerr, a, b)
         if vimax < vmin or vimin > vmax:
@@ -1792,7 +1796,7 @@ def convex(vertices):
     n2 = dot(p1, p1)
     if abs(n2) < CROSS_N2MIN:
         return (False, 'centroid of vertices is too close to a vertex')
-    for i in xrange(len(vertices)):
+    for i in range(len(vertices)):
         beg = vertices[i - 2]
         mid = vertices[i - 1]
         end = vertices[i]
@@ -1849,7 +1853,7 @@ def convexHull(points):
     maxSep = 0.0
     extremum = 0
     # Vertex furthest from the center is on the hull
-    for i in xrange(len(points)):
+    for i in range(len(points)):
         sep = cartesianAngularSep(points[i], center)
         if sep > maxSep:
             extremum = i
@@ -1863,7 +1867,7 @@ def convexHull(points):
     refPlane = invScale(refPlane, math.sqrt(n2))
     # Order points by winding angle from the first (extreme) vertex
     av = [(0.0, anchor)]
-    for i in xrange(0, len(points)):
+    for i in range(0, len(points)):
         if i == extremum:
             continue
         v = points[i]
@@ -2048,10 +2052,10 @@ class SphericalBoxPartitionMap(PartitionMap):
         self.stripeHeight = h
         self.subStripeHeight = hs
         self.numChunks = [segments(i * h - 90.0, (i + 1) * h - 90.0, h)
-                          for i in xrange(numStripes)]
+                          for i in range(numStripes)]
         self.numSCPerChunk = []
         self.subChunkWidth = []
-        for i in xrange(self.numSubStripes):
+        for i in range(self.numSubStripes):
             nc = self.numChunks[i / numSubStripesPerStripe]
             n = segments(i * hs - 90.0, (i + 1) * hs - 90.0, hs) / nc
             self.numSCPerChunk.append(n)
@@ -2194,14 +2198,14 @@ class SphericalBoxPartitionMap(PartitionMap):
     def _allSubChunks(self, stripe, withEmptySet):
         assert stripe >= 0 and stripe < self.numStripes
         emptySet = set()
-        for i in xrange(self.numSSPerStripe):
+        for i in range(self.numSSPerStripe):
             nsc = self.numSCPerChunk[stripe * self.numSSPerStripe + i]
             scId = i * self.maxSCPerChunk
             if withEmptySet:
-                for j in xrange(nsc):
+                for j in range(nsc):
                     yield (scId + j, emptySet)
             else:
-                for j in xrange(nsc):
+                for j in range(nsc):
                     yield scId + j
 
     def _processChunk(self, minS, minC, c, cOverlap):
@@ -2235,7 +2239,7 @@ class SphericalBoxPartitionMap(PartitionMap):
                                            sRegions[0][0].getMin()[0] - ANGLE_EPSILON))
             cOverlap = _SubList(sRegions)
             cOverlap.append(0)
-            for j in xrange(1, len(sRegions)):
+            for j in range(1, len(sRegions)):
                 c = self.getChunk(minS, max(0.0,
                                             sRegions[j][0].getMin()[0] - ANGLE_EPSILON))
                 if c == minC:
@@ -2303,7 +2307,7 @@ class SphericalBoxPartitionMap(PartitionMap):
         sOverlap = _SubList(regions)
         sOverlap.append(0)
         # Loop over regions
-        for i in xrange(1, len(regions)):
+        for i in range(1, len(regions)):
             s = self.getStripe(
                 max(-90.0, regions[i][0].getMin()[1] - ANGLE_EPSILON))
             if s == minS:
@@ -2351,7 +2355,7 @@ class SphericalBoxPartitionMap(PartitionMap):
                                                              ssRegions[0][0].getMin()[0] - ANGLE_EPSILON)))
             scOverlap = _SubList(ssRegions)
             scOverlap.append(0)
-            for j in xrange(1, len(ssRegions)):
+            for j in range(1, len(ssRegions)):
                 sc = max(firstSC, self.getSubChunk(minSS, max(0.0,
                                                               ssRegions[j][0].getMin()[0] - ANGLE_EPSILON)))
                 if sc == minSC:
@@ -2388,7 +2392,7 @@ class SphericalBoxPartitionMap(PartitionMap):
         ssOverlap = _SubList(regions)
         ssOverlap.append(0)
         # Loop over regions
-        for i in xrange(1, len(regions)):
+        for i in range(1, len(regions)):
             ss = max(firstSS, self.getSubStripe(max(-90.0,
                                                     regions[i][0].getMin()[1] - ANGLE_EPSILON)))
             if ss == minSS:
@@ -2407,8 +2411,8 @@ class SphericalBoxPartitionMap(PartitionMap):
         each chunk in the partition map. Each SubIterator is an iterator over
         subChunkIds for the corresponding chunk.
         """
-        for s in xrange(self.numStripes):
-            for c in xrange(self.numChunks[s]):
+        for s in range(self.numStripes):
+            for c in range(self.numChunks[s]):
                 yield (self.getChunkId(s, c), self._allSubChunks(s, False))
 
     def __eq__(self, other):
