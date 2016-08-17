@@ -2,7 +2,6 @@ from __future__ import division
 from builtins import map
 from builtins import range
 from builtins import object
-from past.builtins import long
 #
 # LSST Data Management System
 # Copyright 2008, 2009, 2010 LSST Corporation.
@@ -26,6 +25,7 @@ from past.builtins import long
 #
 
 import math
+import numbers
 import operator
 
 
@@ -2048,8 +2048,8 @@ class SphericalBoxPartitionMap(PartitionMap):
     """
 
     def __init__(self, numStripes, numSubStripesPerStripe):
-        if (not isinstance(numStripes, (int, long)) or
-                not isinstance(numSubStripesPerStripe, (int, long))):
+        if (not isinstance(numStripes, numbers.Integral) or
+                not isinstance(numSubStripesPerStripe, numbers.Integral)):
             raise TypeError('Number of stripes and sub-stripes per stripe ' +
                             'must be integers')
         if numStripes < 1 or numSubStripesPerStripe < 1:
