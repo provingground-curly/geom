@@ -472,7 +472,7 @@ Extent<double, N> operator-(Extent<int, N> const &lhs, Extent<double, N> const &
     return Extent<double, N>(lhs) - rhs;
 }
 
-}
-}
+}  // namespace geom
+}  // namespace lsst
 
 #endif

@@ -143,5 +143,5 @@ template Extent<int, 3> ceil(Extent<double, 3> const &);
 
 #endif  // !DOXYGEN
 
-}
-}  // end lsst::geom
+}  // namespace geom
+}  // namespace lsst

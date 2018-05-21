@@ -277,7 +277,7 @@ std::ostream &operator<<(std::ostream &os, lsst::geom::AffineTransform const &tr
 //
 AffineTransform makeAffineTransformFromTriple(Point2D const &p1, Point2D const &p2, Point2D const &p3,
                                               Point2D const &q1, Point2D const &q2, Point2D const &q3);
-}
-}
+}  // namespace geom
+}  // namespace lsst
 
 #endif  // !LSST_GEOM_AFFINE_TRANSFORM_H

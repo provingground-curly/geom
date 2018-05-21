@@ -47,7 +47,7 @@ struct PointSpecialized<double> {
         return static_cast<double>(scalar);
     }
 };
-}
+}  // namespace detail
 
 template <typename T, int N>
 template <typename U>
@@ -116,21 +116,20 @@ CoordinateExpr<N> PointBase<T, N>::ge(Point<T, N> const &other) const {
 }
 
 template <typename T, int N>
-std::size_t hash_value(Point<T, N> const& point) {
+std::size_t hash_value(Point<T, N> const &point) {
     std::size_t result = 0;
     for (int n = 0; n < N; ++n) result = utils::hashCombine(result, point[n]);
     return result;
 }
 
-
 #ifndef DOXYGEN
-#define INSTANTIATE_TYPE_DIM(TYPE, DIM) \
+#define INSTANTIATE_TYPE_DIM(TYPE, DIM)  \
     template class PointBase<TYPE, DIM>; \
-    template class Point<TYPE, DIM>; \
-    template std::size_t hash_value(Point<TYPE, DIM> const&);
-#define INSTANTIATE_DIM(DIM) \
-    INSTANTIATE_TYPE_DIM(int, DIM); \
-    INSTANTIATE_TYPE_DIM(double, DIM); \
+    template class Point<TYPE, DIM>;     \
+    template std::size_t hash_value(Point<TYPE, DIM> const &);
+#define INSTANTIATE_DIM(DIM)                                     \
+    INSTANTIATE_TYPE_DIM(int, DIM);                              \
+    INSTANTIATE_TYPE_DIM(double, DIM);                           \
     template Point<int, DIM>::Point(Point<double, DIM> const &); \
     template Point<double, DIM>::Point(Point<int, DIM> const &);
 
@@ -138,5 +137,5 @@ INSTANTIATE_DIM(2);
 INSTANTIATE_DIM(3);
 #endif
 
-}
-}  // end lsst::geom
+}  // namespace geom
+}  // namespace lsst

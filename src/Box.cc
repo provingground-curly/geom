@@ -400,5 +400,5 @@ std::ostream& operator<<(std::ostream& os, Box2D const& box) {
     return os << "Box2D(Point2D" << box.getMin() << ", Extent2D" << box.getDimensions() << ")";
 }
 
-}
-}
+}  // namespace geom
+}  // namespace lsst

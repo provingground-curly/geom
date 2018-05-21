@@ -476,7 +476,7 @@ std::ostream& operator<<(std::ostream& os, Box2I const& box);
 
 std::ostream& operator<<(std::ostream& os, Box2D const& box);
 
-}
-}
+}  // namespace geom
+}  // namespace lsst
 
 #endif

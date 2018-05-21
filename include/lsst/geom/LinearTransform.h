@@ -192,7 +192,7 @@ private:
 
 std::ostream& operator<<(std::ostream& os, lsst::geom::LinearTransform const& t);
 
-}
-}  // namespace lsst::geom
+}  // namespace geom
+}  // namespace lsst
 
 #endif  // !LSST_GEOM_LINEAR_TRANSFORM_H

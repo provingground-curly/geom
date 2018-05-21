@@ -8,5 +8,5 @@ namespace geom {
 
 std::ostream& operator<<(std::ostream& s, Angle a) { return s << static_cast<double>(a) << " rad"; }
 
-}
-}
+}  // namespace geom
+}  // namespace lsst

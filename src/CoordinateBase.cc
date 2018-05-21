@@ -46,5 +46,5 @@ template bool allclose<Extent2D, double, 2>(CoordinateBase<Extent2D, double, 2> 
 template bool allclose<Extent3D, double, 3>(CoordinateBase<Extent3D, double, 3> const &,
                                             CoordinateBase<Extent3D, double, 3> const &, double, double);
 
-}
-}
+}  // namespace geom
+}  // namespace lsst

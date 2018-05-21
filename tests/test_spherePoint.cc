@@ -129,5 +129,5 @@ BOOST_AUTO_TEST_CASE(getItemError) {
 
 // TODO: add a test for propagation of ostream errors
 
-}
-} /* namespace lsst::geom */
+}  // namespace geom
+}  // namespace lsst

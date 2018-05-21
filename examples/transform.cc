@@ -90,7 +90,8 @@ void affineTransformExample() {
     cout << "rotation AffineTransform parameters: " << r.getParameterVector() << endl;
 
     // copy construct a translation transform
-    lsst::geom::AffineTransform t = lsst::geom::AffineTransform::makeTranslation(lsst::geom::Extent2D(15.0, 10.3));
+    lsst::geom::AffineTransform t =
+            lsst::geom::AffineTransform::makeTranslation(lsst::geom::Extent2D(15.0, 10.3));
     cout << "translation AffineTransform matrix: " << t.getMatrix() << endl;
     cout << "translation AffineTransform parameters: " << t.getParameterVector() << endl;
 

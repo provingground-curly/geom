@@ -107,7 +107,7 @@ public:
      * @param val the size of the angle
      * @param units the units in which `val` is measured
      */
-    explicit constexpr Angle(double val, AngleUnit units = radians) noexcept : _val(val* units._val) {}
+    explicit constexpr Angle(double val, AngleUnit units = radians) noexcept : _val(val * units._val) {}
 
     /// Construct the zero angle.
     constexpr Angle() noexcept : _val(0) {}
@@ -223,7 +223,7 @@ public:
     /// Decrease this angle by the given number of radians.
     ANGLE_OPUP_TYPE(-=, double)
     ANGLE_OPUP_TYPE(-=, int)
-//@}
+    //@}
 
 #undef ANGLE_OPUP_TYPE
 
@@ -241,7 +241,7 @@ public:
     ANGLE_COMP(>=)
     ANGLE_COMP(<)
     ANGLE_COMP(>)
-//@}
+    //@}
 
 #undef ANGLE_COMP
 
@@ -416,7 +416,7 @@ inline Angle Angle::wrapNear(Angle const& refAng) const noexcept {
 
 inline Angle Angle::separation(Angle const& other) const noexcept { return (*this - other).wrapCtr(); }
 
-}
-}
+}  // namespace geom
+}  // namespace lsst
 
 #endif  // if !defined(LSST_GEOM_ANGLE_H)

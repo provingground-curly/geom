@@ -114,7 +114,7 @@ public:
      *
      * @exceptsafe Provides strong exception guarantee.
      */
-    SpherePoint(sphgeom::LonLat const &lonLat);
+    SpherePoint(sphgeom::LonLat const& lonLat);
 
     /// Construct a SpherePoint with "nan" for longitude and latitude
     SpherePoint();
@@ -262,7 +262,7 @@ public:
      * as `other`, false otherwise
      *
      * @exceptsafe Shall not throw exceptions.
-     * 
+     *
      * @note Two points at the same pole will compare unequal if they have different longitudes,
      *      despite representing the same point on the unit sphere.
      *      This is important because the behavior of @ref offset and @ref bearingTo
@@ -404,7 +404,7 @@ SpherePoint averageSpherePoint(std::vector<SpherePoint> const& coords);
  */
 std::ostream& operator<<(std::ostream& os, SpherePoint const& point);
 
-}
-} /* namespace lsst::geom */
+}  // namespace geom
+}  // namespace lsst
 
 #endif /* LSST_GEOM_SPHEREPOINT_H_ */

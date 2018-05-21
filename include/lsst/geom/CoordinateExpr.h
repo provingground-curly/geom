@@ -98,7 +98,7 @@ inline bool any(CoordinateExpr<N> const& expr) {
 typedef CoordinateExpr<2> CoordinateExpr2;
 typedef CoordinateExpr<3> CoordinateExpr3;
 
-}
-}
+}  // namespace geom
+}  // namespace lsst
 
 #endif

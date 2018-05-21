@@ -213,7 +213,7 @@ std::ostream& operator<<(std::ostream& os, CoordinateBase<Derived, T, N> const& 
     return os << ")";
 }
 
-}
-}
+}  // namespace geom
+}  // namespace lsst
 
 #endif

@@ -79,5 +79,5 @@ std::ostream& operator<<(std::ostream& os, LinearTransform const& t) {
     return os;
 }
 
-}
-}  // end lsst::geom
+}  // namespace geom
+}  // namespace lsst
