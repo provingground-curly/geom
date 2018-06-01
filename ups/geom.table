@@ -1,4 +1,12 @@
+setupRequired(boost)
+setupRequired(ndarray)
 setupRequired(sconsUtils)
-setupRequired(python_future)
+setupRequired(sphgeom)
+setupRequired(pex_exceptions)
 setupRequired(utils)
+
+envPrepend(LD_LIBRARY_PATH, ${PRODUCT_DIR}/lib)
+envPrepend(DYLD_LIBRARY_PATH, ${PRODUCT_DIR}/lib)
+envPrepend(LSST_LIBRARY_PATH, ${PRODUCT_DIR}/lib)
+
 envPrepend(PYTHONPATH, ${PRODUCT_DIR}/python)

@@ -1,6 +1,6 @@
 #
 # LSST Data Management System
-# Copyright 2018 LSST Corporation.
+# Copyright 2008-2017 LSST/AURA.
 #
 # This product includes software developed by the
 # LSST Project (http://www.lsst.org/).
@@ -19,12 +19,25 @@
 # the GNU General Public License along with this program.  If not,
 # see <http://www.lsstcorp.org/LegalNotices/>.
 #
-from .angle import *
-from .coordinates import *
-from .box import *
-from .spherePoint import *
-from .linearTransform import *
-from .affineTransform import *
-from . import testUtils
 
-from .version import *
+__all__ = []
+
+from lsst.utils import continueClass
+from .angle import Angle, AngleUnit
+
+
+@continueClass  # noqa F811
+class AngleUnit:
+
+    def __mul__(self, other):
+        if isinstance(other, (Angle, AngleUnit)):
+            raise NotImplementedError
+        return AngleUnit._mul(self, other)
+
+    def __rmul__(self, other):
+        if isinstance(other, (Angle, AngleUnit)):
+            raise NotImplementedError
+        return AngleUnit._rmul(self, other)
+
+    def __reduce__(self):
+        return (AngleUnit, (1.0*self,))

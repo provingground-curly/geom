@@ -1,6 +1,6 @@
 #
 # LSST Data Management System
-# Copyright 2018 LSST Corporation.
+# Copyright 2017 LSST/AURA.
 #
 # This product includes software developed by the
 # LSST Project (http://www.lsst.org/).
@@ -19,12 +19,21 @@
 # the GNU General Public License along with this program.  If not,
 # see <http://www.lsstcorp.org/LegalNotices/>.
 #
-from .angle import *
-from .coordinates import *
-from .box import *
-from .spherePoint import *
-from .linearTransform import *
-from .affineTransform import *
-from . import testUtils
 
-from .version import *
+__all__ = []
+
+from lsst.utils import continueClass
+
+from .spherePoint import SpherePoint
+
+
+@continueClass  # noqa F811
+class SpherePoint:
+
+    def __iter__(self):
+        for i in (0, 1):
+            yield self[i]
+
+    def __repr__(self):
+        argList = ["%r*afwGeom.degrees" % (pos.asDegrees(),) for pos in self]
+        return "SpherePoint(%s)" % (", ".join(argList))

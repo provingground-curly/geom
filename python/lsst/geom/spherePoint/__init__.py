@@ -1,6 +1,6 @@
 #
 # LSST Data Management System
-# Copyright 2018 LSST Corporation.
+# Copyright 2008-2017 LSST Corporation.
 #
 # This product includes software developed by the
 # LSST Project (http://www.lsst.org/).
@@ -19,12 +19,6 @@
 # the GNU General Public License along with this program.  If not,
 # see <http://www.lsstcorp.org/LegalNotices/>.
 #
-from .angle import *
-from .coordinates import *
-from .box import *
-from .spherePoint import *
-from .linearTransform import *
-from .affineTransform import *
-from . import testUtils
 
-from .version import *
+from .spherePoint import *
+from .spherePointContinued import *
