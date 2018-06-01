@@ -19,12 +19,5 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-from .angle import *
-from .coordinates import *
-from .box import *
 from .spherePoint import *
-from .linearTransform import *
-from .affineTransform import *
-from . import testUtils
-
-from .version import *
+from .spherePointContinued import *

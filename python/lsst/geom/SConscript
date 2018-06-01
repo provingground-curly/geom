@@ -1,0 +1,13 @@
+# -*- python -*-
+from lsst.sconsUtils import scripts
+scripts.BasicSConscript.pybind11(
+    [
+        'affineTransform',
+        'angle/angle',
+        'box',
+        'coordinates/coordinates',
+        'linearTransform',
+        'spherePoint/spherePoint',
+    ],
+    addUnderscore=False
+)

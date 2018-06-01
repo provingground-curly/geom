@@ -19,12 +19,24 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-from .angle import *
-from .coordinates import *
-from .box import *
-from .spherePoint import *
-from .linearTransform import *
-from .affineTransform import *
-from . import testUtils
+__all__ = []
 
-from .version import *
+from lsst.utils import continueClass
+from .angle import Angle, AngleUnit
+
+
+@continueClass  # noqa F811
+class AngleUnit:
+
+    def __mul__(self, other):
+        if isinstance(other, (Angle, AngleUnit)):
+            raise NotImplementedError
+        return AngleUnit._mul(self, other)
+
+    def __rmul__(self, other):
+        if isinstance(other, (Angle, AngleUnit)):
+            raise NotImplementedError
+        return AngleUnit._rmul(self, other)
+
+    def __reduce__(self):
+        return (AngleUnit, (1.0*self,))

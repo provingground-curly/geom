@@ -20,11 +20,4 @@
 #
 
 from .angle import *
-from .coordinates import *
-from .box import *
-from .spherePoint import *
-from .linearTransform import *
-from .affineTransform import *
-from . import testUtils
-
-from .version import *
+from .angleContinued import *

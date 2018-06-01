@@ -19,12 +19,20 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-from .angle import *
-from .coordinates import *
-from .box import *
-from .spherePoint import *
-from .linearTransform import *
-from .affineTransform import *
-from . import testUtils
+__all__ = []
 
-from .version import *
+from lsst.utils import continueClass
+
+from .spherePoint import SpherePoint
+
+
+@continueClass  # noqa F811
+class SpherePoint:
+
+    def __iter__(self):
+        for i in (0, 1):
+            yield self[i]
+
+    def __repr__(self):
+        argList = ["%r*afwGeom.degrees" % (pos.asDegrees(),) for pos in self]
+        return "SpherePoint(%s)" % (", ".join(argList))
