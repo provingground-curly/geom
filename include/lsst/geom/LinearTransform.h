@@ -24,8 +24,8 @@
 
 #include "Eigen/Core"
 #include "Eigen/Geometry"
-#include "lsst/pex/exceptions/Runtime.h"
 
+#include "lsst/pex/exceptions/Runtime.h"
 #include "lsst/geom/Point.h"
 #include "lsst/geom/Angle.h"
 

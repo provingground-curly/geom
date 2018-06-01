@@ -23,10 +23,12 @@
 #define LSST_GEOM_BOX_H
 
 #include <vector>
+
 #include "boost/format.hpp"
+#include "ndarray.h"
+
 #include "lsst/geom/Point.h"
 #include "lsst/geom/Extent.h"
-#include "ndarray.h"
 
 namespace lsst {
 namespace geom {

@@ -23,8 +23,10 @@
 #define LSST_GEOM_AFFINE_TRANSFORM_H
 
 #include <memory>
-#include "Eigen/Core"
 #include <iostream>
+
+#include "Eigen/Core"
+
 #include "lsst/geom/Point.h"
 #include "lsst/geom/Extent.h"
 #include "lsst/geom/LinearTransform.h"

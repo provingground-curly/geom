@@ -19,12 +19,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "lsst/geom/LinearTransform.h"
+#include <iostream>
+#include <iomanip>
 
 #include "Eigen/LU"
 
-#include <iostream>
-#include <iomanip>
+#include "lsst/geom/LinearTransform.h"
 
 namespace lsst {
 namespace geom {

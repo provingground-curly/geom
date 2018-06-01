@@ -18,13 +18,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#if !defined(LSST_GEOM_ANGLE_H)
+#ifndef LSST_GEOM_ANGLE_H
 #define LSST_GEOM_ANGLE_H
 
+#include <cmath>
 #include <iostream>
 #include <type_traits>
-
-#include <cmath>
 
 #include "boost/math/constants/constants.hpp"
 

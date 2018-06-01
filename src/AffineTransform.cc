@@ -19,9 +19,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "Eigen/LU"
-
 #include <iomanip>
+
+#include "Eigen/LU"
 
 #include "lsst/geom/AffineTransform.h"
 #include "lsst/pex/exceptions/Runtime.h"
