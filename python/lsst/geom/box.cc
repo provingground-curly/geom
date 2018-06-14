@@ -65,6 +65,7 @@ PYBIND11_PLUGIN(box) {
     clsBox2I.def("__ne__", [](Box2I const &self, Box2I const &other) { return self != other; },
                  py::is_operator());
 
+    clsBox2I.def_static("makeCenteredBox", &Box2I::makeCenteredBox, "center"_a, "size"_a);
     clsBox2I.def("swap", &Box2I::swap);
     clsBox2I.def("getMin", &Box2I::getMin);
     clsBox2I.def("getMinX", &Box2I::getMinX);
@@ -137,6 +138,7 @@ PYBIND11_PLUGIN(box) {
     clsBox2D.def("__ne__", [](Box2D const &self, Box2D const &other) { return self != other; },
                  py::is_operator());
 
+    clsBox2D.def_static("makeCenteredBox", &Box2D::makeCenteredBox, "center"_a, "size"_a);
     clsBox2D.def("swap", &Box2D::swap);
     clsBox2D.def("getMin", &Box2D::getMin);
     clsBox2D.def("getMinX", &Box2D::getMinX);

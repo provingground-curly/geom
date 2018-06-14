@@ -106,6 +106,18 @@ public:
     Box2I(Box2I&&) = default;
     ~Box2I() = default;
 
+    /**
+     * Create a box centered as closely as possible on a particular point.
+     *
+     * @param center The desired center of the box.
+     * @param size The desired width and height (in that order) of the box.
+     *
+     * @returns if `size` is positive, a box with size `size`; otherwise,
+     *          an empty box. If the returned box is not empty, its center
+     *          shall be within half a pixel of `center` in either dimension.
+     */
+    static Box2I makeCenteredBox(Point2D const& center, Extent const& size);
+
     void swap(Box2I& other) {
         _minimum.swap(other._minimum);
         _dimensions.swap(other._dimensions);
@@ -322,6 +334,18 @@ public:
     Box2D(Box2D&&) = default;
 
     ~Box2D() = default;
+
+    /**
+     * Create a box centered on a particular point.
+     *
+     * @param center The desired center of the box.
+     * @param size The desired width and height (in that order) of the box.
+     *
+     * @returns if `size` is positive, a box with size `size`; otherwise,
+     *          an empty box. If the returned box is not empty, it shall be
+     *          centered on `center`.
+     */
+    static Box2D makeCenteredBox(Point2D const& center, Extent const& size);
 
     void swap(Box2D& other) {
         _minimum.swap(other._minimum);

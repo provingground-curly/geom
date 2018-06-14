@@ -92,6 +92,14 @@ Box2I::Box2I(Box2D const& other, EdgeHandlingEnum edgeHandling) : _minimum(), _d
     }
 }
 
+Box2I Box2I::makeCenteredBox(Point2D const& center, Box2I::Extent const& size) {
+    lsst::geom::Point2D corner(center);
+    corner.shift(-0.5 * lsst::geom::Extent2D(size));
+    // compensate for Box2I's coordinate conventions (where max = min + size - 1)
+    corner.shift(lsst::geom::Extent2D(0.5, 0.5));
+    return lsst::geom::Box2I(lsst::geom::Point2I(corner), size, false);
+}
+
 ndarray::View<boost::fusion::vector2<ndarray::index::Range, ndarray::index::Range> > Box2I::getSlices()
         const {
     return ndarray::view(getBeginY(), getEndY())(getBeginX(), getEndX());
@@ -259,6 +267,12 @@ Box2D::Box2D(Box2I const& other)
         : _minimum(Point2D(other.getMin()) - Extent2D(0.5)),
           _maximum(Point2D(other.getMax()) + Extent2D(0.5)) {
     if (other.isEmpty()) *this = Box2D();
+}
+
+Box2D Box2D::makeCenteredBox(Point2D const& center, Box2D::Extent const& size) {
+    lsst::geom::Point2D corner(center);
+    corner.shift(-0.5 * size);
+    return lsst::geom::Box2D(corner, size, false);
 }
 
 bool Box2D::contains(Point2D const& point) const {
