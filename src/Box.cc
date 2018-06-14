@@ -43,8 +43,8 @@ Box2I::Box2I(Point2I const& minimum, Point2I const& maximum, bool invert)
     _dimensions += Extent2I(1);
 }
 
-Box2I::Box2I(Point2I const& minimum, Extent2I const& dimensions, bool invert)
-        : _minimum(minimum), _dimensions(dimensions) {
+Box2I::Box2I(Point2I const& corner, Extent2I const& dimensions, bool invert)
+        : _minimum(corner), _dimensions(dimensions) {
     for (int n = 0; n < 2; ++n) {
         if (_dimensions[n] == 0) {
             *this = Box2I();
@@ -238,8 +238,8 @@ Box2D::Box2D(Point2D const& minimum, Point2D const& maximum, bool invert)
     }
 }
 
-Box2D::Box2D(Point2D const& minimum, Extent2D const& dimensions, bool invert)
-        : _minimum(minimum), _maximum(minimum + dimensions) {
+Box2D::Box2D(Point2D const& corner, Extent2D const& dimensions, bool invert)
+        : _minimum(corner), _maximum(corner + dimensions) {
     for (int n = 0; n < 2; ++n) {
         if (_minimum[n] == _maximum[n]) {
             *this = Box2D();

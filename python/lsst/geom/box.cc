@@ -54,7 +54,7 @@ PYBIND11_PLUGIN(box) {
     clsBox2I.def(py::init<>());
     clsBox2I.def(py::init<Point2I const &, Point2I const &, bool>(), "minimum"_a, "maximum"_a,
                  "invert"_a = true);
-    clsBox2I.def(py::init<Point2I const &, Extent2I const &, bool>(), "minimum"_a, "dimensions"_a,
+    clsBox2I.def(py::init<Point2I const &, Extent2I const &, bool>(), "corner"_a, "dimensions"_a,
                  "invert"_a = true);
     clsBox2I.def(py::init<Box2D const &, Box2I::EdgeHandlingEnum>(), "other"_a,
                  "edgeHandling"_a = Box2I::EXPAND);
@@ -127,7 +127,7 @@ PYBIND11_PLUGIN(box) {
     clsBox2D.def(py::init<>());
     clsBox2D.def(py::init<Point2D const &, Point2D const &, bool>(), "minimum"_a, "maximum"_a,
                  "invert"_a = true);
-    clsBox2D.def(py::init<Point2D const &, Extent2D const &, bool>(), "minimum"_a, "dimensions"_a,
+    clsBox2D.def(py::init<Point2D const &, Extent2D const &, bool>(), "corner"_a, "dimensions"_a,
                  "invert"_a = true);
     clsBox2D.def(py::init<Box2I const &>());
     clsBox2D.def(py::init<Box2D const &>());
