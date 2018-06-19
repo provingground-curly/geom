@@ -244,23 +244,6 @@ class ExtentTestCase(CoordinateTestCase, lsst.utils.tests.TestCase):
         e2 = geom.Extent3D(e1)
         self.assertAlmostEqual(tuple(e1), tuple(e2))
 
-        # test invalid constructors
-        e1 = geom.Extent2D(1.2, 3.4)
-        with self.assertRaises(TypeError):
-            e2 = geom.Extent2I(e1)
-
-        e1 = geom.Extent3D(1.2, 3.4, 5.6)
-        with self.assertRaises(TypeError):
-            e2 = geom.Extent3I(e1)
-
-        e1 = geom.Point2D(1.2, 3.4)
-        with self.assertRaises(TypeError):
-            e2 = geom.Extent2I(e1)
-
-        e1 = geom.Point3D(1.2, 3.4, 5.6)
-        with self.assertRaises(TypeError):
-            e2 = geom.Extent3I(e1)
-
 
 class OperatorTestCase(lsst.utils.tests.TestCase):
 
