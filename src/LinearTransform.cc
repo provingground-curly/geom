@@ -29,13 +29,13 @@
 namespace lsst {
 namespace geom {
 
-LinearTransform::ParameterVector const LinearTransform::getParameterVector() const {
+LinearTransform::ParameterVector const LinearTransform::getParameterVector() const noexcept {
     ParameterVector r;
     r << (*this)[XX], (*this)[YX], (*this)[XY], (*this)[YY];
     return r;
 }
 
-void LinearTransform::setParameterVector(LinearTransform::ParameterVector const& vector) {
+void LinearTransform::setParameterVector(LinearTransform::ParameterVector const& vector) noexcept {
     (*this)[XX] = vector[XX];
     (*this)[XY] = vector[XY];
     (*this)[YX] = vector[YX];
@@ -56,7 +56,7 @@ double LinearTransform::computeDeterminant() const {
     return m(0, 0) * m(1, 1) - m(0, 1) * m(1, 0);
 }
 
-LinearTransform::TransformDerivativeMatrix LinearTransform::dTransform(Point2D const& input) const {
+LinearTransform::TransformDerivativeMatrix LinearTransform::dTransform(Point2D const& input) const noexcept {
     TransformDerivativeMatrix r = TransformDerivativeMatrix::Zero();
     r(0, XX) = input.getX();
     r(0, XY) = input.getY();

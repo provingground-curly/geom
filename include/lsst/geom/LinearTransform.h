@@ -77,51 +77,59 @@ public:
     typedef Eigen::Matrix<double, 2, 2, Eigen::DontAlign> Matrix;
 
     /** Construct an empty (identity) LinearTransform. */
-    LinearTransform() : _matrix(Matrix::Identity()) {}
+    LinearTransform() noexcept : _matrix(Matrix::Identity()) {}
 
     /** Construct an LinearTransform from an Eigen::Matrix. */
-    explicit LinearTransform(Matrix const& matrix) : _matrix(matrix) {}
+    explicit LinearTransform(Matrix const& matrix) noexcept : _matrix(matrix) {}
 
-    LinearTransform(LinearTransform const&) = default;
-    LinearTransform(LinearTransform&&) = default;
-    ~LinearTransform() = default;
+    // Can't use both =default and noexcept until Eigen supports noexcept
+    LinearTransform(LinearTransform const& other) noexcept : _matrix(other._matrix){};
+    LinearTransform(LinearTransform&& other) noexcept : _matrix(std::move(other._matrix)){};
+    ~LinearTransform() noexcept = default;
 
-    LinearTransform operator*(LinearTransform const& other) const {
+    LinearTransform operator*(LinearTransform const& other) const noexcept {
         return LinearTransform(getMatrix() * other.getMatrix());
     }
 
-    static LinearTransform makeScaling(double s) {
+    static LinearTransform makeScaling(double s) noexcept {
         return LinearTransform((Matrix() << s, 0.0, 0.0, s).finished());
     }
 
-    static LinearTransform makeScaling(double s, double t) {
+    static LinearTransform makeScaling(double s, double t) noexcept {
         return LinearTransform((Matrix() << s, 0.0, 0.0, t).finished());
     }
 
-    static LinearTransform makeRotation(Angle t) {
+    static LinearTransform makeRotation(Angle t) noexcept {
         return LinearTransform(Matrix(Eigen::Rotation2D<double>(t.asRadians())));
     }
 
-    LinearTransform& operator=(LinearTransform const&) = default;
-    LinearTransform& operator=(LinearTransform&&) = default;
+    // Can't use both =default and noexcept until Eigen supports noexcept
+    LinearTransform& operator=(LinearTransform const& other) noexcept {
+        _matrix = other._matrix;
+        return *this;
+    }
+    LinearTransform& operator=(LinearTransform&& other) noexcept {
+        _matrix = std::move(other._matrix);
+        return *this;
+    }
 
-    LinearTransform& operator+=(LinearTransform const& other) {
+    LinearTransform& operator+=(LinearTransform const& other) noexcept {
         _matrix += other._matrix;
         return *this;
     }
 
-    LinearTransform operator+(LinearTransform const& other) {
+    LinearTransform operator+(LinearTransform const& other) noexcept {
         LinearTransform tmp(*this);
         tmp += other;
         return tmp;
     }
 
-    LinearTransform& operator-=(LinearTransform const& other) {
+    LinearTransform& operator-=(LinearTransform const& other) noexcept {
         _matrix -= other._matrix;
         return *this;
     }
 
-    LinearTransform operator-(LinearTransform const& other) {
+    LinearTransform operator-(LinearTransform const& other) noexcept {
         LinearTransform tmp(*this);
         tmp -= other;
         return tmp;
@@ -132,16 +140,16 @@ public:
      *
      * The elements will be ordered XX, YX, XY, YY
      */
-    ParameterVector const getParameterVector() const;
+    ParameterVector const getParameterVector() const noexcept;
     /**
      * Set the transform matrix elements from a parameter vector
      *
      * The parameter vector is ordered XX, YX, XY, YY
      */
-    void setParameterVector(ParameterVector const& vector);
+    void setParameterVector(ParameterVector const& vector) noexcept;
 
-    Matrix const& getMatrix() const { return _matrix; }
-    Matrix& getMatrix() { return _matrix; }
+    Matrix const& getMatrix() const noexcept { return _matrix; }
+    Matrix& getMatrix() noexcept { return _matrix; }
 
     double& operator[](int i) { return _matrix(i % 2, i / 2); }
     double const& operator[](int i) const { return const_cast<Matrix&>(_matrix)(i % 2, i / 2); }
@@ -159,7 +167,7 @@ public:
     double computeDeterminant() const;
 
     /** Whether the transform is a no-op. */
-    bool isIdentity() const { return getMatrix().isIdentity(); }
+    bool isIdentity() const noexcept { return getMatrix().isIdentity(); }
 
     /**
      *  Transform a Point2D object.
@@ -167,7 +175,7 @@ public:
      *  This operation is equivalent to applying the LinearTransform to an
      *  lsst::geom::Extent
      */
-    Point2D operator()(Point2D const& p) const { return Point2D(getMatrix() * p.asEigen()); }
+    Point2D operator()(Point2D const& p) const noexcept { return Point2D(getMatrix() * p.asEigen()); }
 
     /**
      *  Transform a Extent2D object.
@@ -175,15 +183,17 @@ public:
      *  This operation is equivalent to applying the LinearTransform to an
      *  lsst::geom::Point
      */
-    Extent2D operator()(Extent2D const& p) const { return Extent2D(getMatrix() * p.asEigen()); }
+    Extent2D operator()(Extent2D const& p) const noexcept { return Extent2D(getMatrix() * p.asEigen()); }
 
     /**
      * Derivative of (*this)(input) with respect to the transform elements (for Point).
      */
-    TransformDerivativeMatrix dTransform(Point2D const& input) const;
+    TransformDerivativeMatrix dTransform(Point2D const& input) const noexcept;
 
     /// Derivative of (*this)(input) with respect to the transform elements (for Extent);
-    TransformDerivativeMatrix dTransform(Extent2D const& input) const { return dTransform(Point2D(input)); }
+    TransformDerivativeMatrix dTransform(Extent2D const& input) const noexcept {
+        return dTransform(Point2D(input));
+    }
 
 private:
     Matrix _matrix;
