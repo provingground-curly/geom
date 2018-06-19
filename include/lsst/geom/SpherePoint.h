@@ -65,7 +65,7 @@ public:
      *                 interval [-&pi;/2, &pi;/2] radians.
      *
      * @throws pex::exceptions::InvalidParameterError
-     *         Thrown if `latitude` isout of range.
+     *         Thrown if `latitude` is out of range.
      *
      * @exceptsafe Provides strong exception guarantee.
      */
@@ -81,7 +81,7 @@ public:
      * @param units The units of longitude and latitude
      *
      * @throws pex::exceptions::InvalidParameterError
-     *         Thrown if `latitude` isout of range.
+     *         Thrown if `latitude` is out of range.
      *
      * @exceptsafe Provides strong exception guarantee.
      */
@@ -109,12 +109,12 @@ public:
      *
      * @param lonLat The lonLat
      *
-     * @exceptsafe Provides strong exception guarantee.
+     * @exceptsafe Shall not throw exceptions.
      */
-    SpherePoint(sphgeom::LonLat const& lonLat);
+    SpherePoint(sphgeom::LonLat const& lonLat) noexcept;
 
     /// Construct a SpherePoint with "nan" for longitude and latitude
-    SpherePoint();
+    SpherePoint() noexcept;
 
     /**
      * Create a copy of a SpherePoint.
@@ -133,7 +133,7 @@ public:
      */
     SpherePoint(SpherePoint&& other) noexcept;
 
-    ~SpherePoint();
+    ~SpherePoint() noexcept;
 
     /**
      * Overwrite this object with the value of another SpherePoint.
@@ -159,8 +159,10 @@ public:
 
     /**
      * Make SpherePoint implicitly convertible to LonLat
+     *
+     * @exceptsafe Shall not throw exceptions.
      */
-    operator sphgeom::LonLat() const;
+    operator sphgeom::LonLat() const noexcept;
 
     /*
      * Accessors
@@ -194,8 +196,10 @@ public:
      * Return longitude, latitude as a Point2D object
      *
      * @param[in] unit  Units of returned data.
+     *
+     * @exceptsafe Shall not throw exceptions.
      */
-    Point2D getPosition(AngleUnit unit) const;
+    Point2D getPosition(AngleUnit unit) const noexcept;
 
     /**
      * A unit vector representation of this point.
