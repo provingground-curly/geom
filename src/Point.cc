@@ -50,7 +50,7 @@ struct PointSpecialized<double> {
 
 template <typename T, int N>
 template <typename U>
-Point<T, N>::Point(Point<U, N> const &other) : Super() {
+Point<T, N>::Point(Point<U, N> const &other) noexcept(IS_NOTHROW_CONVERTIBLE<T, U>) : Super() {
     for (int n = 0; n < N; ++n) {
         this->_vector[n] = detail::PointSpecialized<T>::template convert<U>(other[n]);
     }
@@ -58,7 +58,7 @@ Point<T, N>::Point(Point<U, N> const &other) : Super() {
 
 template <typename T>
 template <typename U>
-Point<T, 2>::Point(Point<U, 2> const &other) : Super() {
+Point<T, 2>::Point(Point<U, 2> const &other) noexcept(IS_NOTHROW_CONVERTIBLE<T, U>) : Super() {
     for (int n = 0; n < 2; ++n) {
         this->_vector[n] = detail::PointSpecialized<T>::template convert<U>(other[n]);
     }
@@ -66,49 +66,49 @@ Point<T, 2>::Point(Point<U, 2> const &other) : Super() {
 
 template <typename T>
 template <typename U>
-Point<T, 3>::Point(Point<U, 3> const &other) : Super() {
+Point<T, 3>::Point(Point<U, 3> const &other) noexcept(IS_NOTHROW_CONVERTIBLE<T, U>) : Super() {
     for (int n = 0; n < 3; ++n) {
         this->_vector[n] = detail::PointSpecialized<T>::template convert<U>(other[n]);
     }
 }
 
 template <typename T, int N>
-CoordinateExpr<N> PointBase<T, N>::eq(Point<T, N> const &other) const {
+CoordinateExpr<N> PointBase<T, N>::eq(Point<T, N> const &other) const noexcept {
     CoordinateExpr<N> r;
     for (int n = 0; n < N; ++n) r[n] = this->_vector[n] == other[n];
     return r;
 }
 
 template <typename T, int N>
-CoordinateExpr<N> PointBase<T, N>::ne(Point<T, N> const &other) const {
+CoordinateExpr<N> PointBase<T, N>::ne(Point<T, N> const &other) const noexcept {
     CoordinateExpr<N> r;
     for (int n = 0; n < N; ++n) r[n] = this->_vector[n] != other[n];
     return r;
 }
 
 template <typename T, int N>
-CoordinateExpr<N> PointBase<T, N>::lt(Point<T, N> const &other) const {
+CoordinateExpr<N> PointBase<T, N>::lt(Point<T, N> const &other) const noexcept {
     CoordinateExpr<N> r;
     for (int n = 0; n < N; ++n) r[n] = this->_vector[n] < other[n];
     return r;
 }
 
 template <typename T, int N>
-CoordinateExpr<N> PointBase<T, N>::le(Point<T, N> const &other) const {
+CoordinateExpr<N> PointBase<T, N>::le(Point<T, N> const &other) const noexcept {
     CoordinateExpr<N> r;
     for (int n = 0; n < N; ++n) r[n] = this->_vector[n] <= other[n];
     return r;
 }
 
 template <typename T, int N>
-CoordinateExpr<N> PointBase<T, N>::gt(Point<T, N> const &other) const {
+CoordinateExpr<N> PointBase<T, N>::gt(Point<T, N> const &other) const noexcept {
     CoordinateExpr<N> r;
     for (int n = 0; n < N; ++n) r[n] = this->_vector[n] > other[n];
     return r;
 }
 
 template <typename T, int N>
-CoordinateExpr<N> PointBase<T, N>::ge(Point<T, N> const &other) const {
+CoordinateExpr<N> PointBase<T, N>::ge(Point<T, N> const &other) const noexcept {
     CoordinateExpr<N> r;
     for (int n = 0; n < N; ++n) r[n] = this->_vector[n] >= other[n];
     return r;
