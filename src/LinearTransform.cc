@@ -51,10 +51,7 @@ LinearTransform const LinearTransform::invert() const {
     return LinearTransform(inv);
 }
 
-double LinearTransform::computeDeterminant() const {
-    Eigen::MatrixXd const& m = getMatrix();
-    return m(0, 0) * m(1, 1) - m(0, 1) * m(1, 0);
-}
+double LinearTransform::computeDeterminant() const noexcept { return getMatrix().determinant(); }
 
 LinearTransform::TransformDerivativeMatrix LinearTransform::dTransform(Point2D const& input) const noexcept {
     TransformDerivativeMatrix r = TransformDerivativeMatrix::Zero();

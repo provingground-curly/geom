@@ -164,7 +164,7 @@ public:
     /**
      * Return the determinant of the 2x2 matrix
      */
-    double computeDeterminant() const;
+    double computeDeterminant() const noexcept;
 
     /** Whether the transform is a no-op. */
     bool isIdentity() const noexcept { return getMatrix().isIdentity(); }
