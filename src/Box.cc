@@ -105,16 +105,16 @@ ndarray::View<boost::fusion::vector2<ndarray::index::Range, ndarray::index::Rang
     return ndarray::view(getBeginY(), getEndY())(getBeginX(), getEndX());
 }
 
-bool Box2I::contains(Point2I const& point) const {
+bool Box2I::contains(Point2I const& point) const noexcept {
     return all(point.ge(this->getMin())) && all(point.le(this->getMax()));
 }
 
-bool Box2I::contains(Box2I const& other) const {
+bool Box2I::contains(Box2I const& other) const noexcept {
     return other.isEmpty() ||
            (all(other.getMin().ge(this->getMin())) && all(other.getMax().le(this->getMax())));
 }
 
-bool Box2I::overlaps(Box2I const& other) const {
+bool Box2I::overlaps(Box2I const& other) const noexcept {
     return !(other.isEmpty() || this->isEmpty() || any(other.getMax().lt(this->getMin())) ||
              any(other.getMin().gt(this->getMax())));
 }
@@ -182,7 +182,7 @@ void Box2I::include(Box2I const& other) {
     _dimensions = Extent2I(1) + maximum - _minimum;
 }
 
-void Box2I::clip(Box2I const& other) {
+void Box2I::clip(Box2I const& other) noexcept {
     if (isEmpty()) return;
     if (other.isEmpty()) {
         *this = Box2I();
@@ -206,11 +206,11 @@ void Box2I::clip(Box2I const& other) {
     _dimensions = Extent2I(1) + maximum - _minimum;
 }
 
-bool Box2I::operator==(Box2I const& other) const {
+bool Box2I::operator==(Box2I const& other) const noexcept {
     return other._minimum == this->_minimum && other._dimensions == this->_dimensions;
 }
 
-bool Box2I::operator!=(Box2I const& other) const {
+bool Box2I::operator!=(Box2I const& other) const noexcept {
     return other._minimum != this->_minimum || other._dimensions != this->_dimensions;
 }
 
@@ -227,9 +227,9 @@ double const Box2D::EPSILON = std::numeric_limits<double>::epsilon() * 2;
 
 double const Box2D::INVALID = std::numeric_limits<double>::quiet_NaN();
 
-Box2D::Box2D() : _minimum(INVALID), _maximum(INVALID) {}
+Box2D::Box2D() noexcept : _minimum(INVALID), _maximum(INVALID) {}
 
-Box2D::Box2D(Point2D const& minimum, Point2D const& maximum, bool invert)
+Box2D::Box2D(Point2D const& minimum, Point2D const& maximum, bool invert) noexcept
         : _minimum(minimum), _maximum(maximum) {
     for (int n = 0; n < 2; ++n) {
         if (_minimum[n] == _maximum[n]) {
@@ -246,7 +246,7 @@ Box2D::Box2D(Point2D const& minimum, Point2D const& maximum, bool invert)
     }
 }
 
-Box2D::Box2D(Point2D const& corner, Extent2D const& dimensions, bool invert)
+Box2D::Box2D(Point2D const& corner, Extent2D const& dimensions, bool invert) noexcept
         : _minimum(corner), _maximum(corner + dimensions) {
     for (int n = 0; n < 2; ++n) {
         if (_minimum[n] == _maximum[n]) {
@@ -263,28 +263,28 @@ Box2D::Box2D(Point2D const& corner, Extent2D const& dimensions, bool invert)
     }
 }
 
-Box2D::Box2D(Box2I const& other)
+Box2D::Box2D(Box2I const& other) noexcept
         : _minimum(Point2D(other.getMin()) - Extent2D(0.5)),
           _maximum(Point2D(other.getMax()) + Extent2D(0.5)) {
     if (other.isEmpty()) *this = Box2D();
 }
 
-Box2D Box2D::makeCenteredBox(Point2D const& center, Box2D::Extent const& size) {
+Box2D Box2D::makeCenteredBox(Point2D const& center, Box2D::Extent const& size) noexcept {
     lsst::geom::Point2D corner(center);
     corner.shift(-0.5 * size);
     return lsst::geom::Box2D(corner, size, false);
 }
 
-bool Box2D::contains(Point2D const& point) const {
+bool Box2D::contains(Point2D const& point) const noexcept {
     return all(point.ge(this->getMin())) && all(point.lt(this->getMax()));
 }
 
-bool Box2D::contains(Box2D const& other) const {
+bool Box2D::contains(Box2D const& other) const noexcept {
     return other.isEmpty() ||
            (all(other.getMin().ge(this->getMin())) && all(other.getMax().le(this->getMax())));
 }
 
-bool Box2D::overlaps(Box2D const& other) const {
+bool Box2D::overlaps(Box2D const& other) const noexcept {
     return !(other.isEmpty() || this->isEmpty() || any(other.getMax().le(this->getMin())) ||
              any(other.getMin().ge(this->getMax())));
 }
@@ -326,7 +326,7 @@ void Box2D::flipTB(float yextent) {
     // _dimensions should remain unchanged
 }
 
-void Box2D::include(Point2D const& point) {
+void Box2D::include(Point2D const& point) noexcept {
     if (isEmpty()) {
         _minimum = point;
         _maximum = point;
@@ -344,7 +344,7 @@ void Box2D::include(Point2D const& point) {
     }
 }
 
-void Box2D::include(Box2D const& other) {
+void Box2D::include(Box2D const& other) noexcept {
     if (other.isEmpty()) return;
     if (this->isEmpty()) {
         *this = other;
@@ -362,7 +362,7 @@ void Box2D::include(Box2D const& other) {
     }
 }
 
-void Box2D::clip(Box2D const& other) {
+void Box2D::clip(Box2D const& other) noexcept {
     if (isEmpty()) return;
     if (other.isEmpty()) {
         *this = Box2D();
@@ -384,12 +384,12 @@ void Box2D::clip(Box2D const& other) {
     }
 }
 
-bool Box2D::operator==(Box2D const& other) const {
+bool Box2D::operator==(Box2D const& other) const noexcept {
     return (other.isEmpty() && this->isEmpty()) ||
            (other._minimum == this->_minimum && other._maximum == this->_maximum);
 }
 
-bool Box2D::operator!=(Box2D const& other) const {
+bool Box2D::operator!=(Box2D const& other) const noexcept {
     return !(other.isEmpty() && other.isEmpty()) &&
            (other._minimum != this->_minimum || other._maximum != this->_maximum);
 }

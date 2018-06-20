@@ -60,7 +60,7 @@ public:
     enum EdgeHandlingEnum { EXPAND, SHRINK };
 
     /// Construct an empty box.
-    Box2I() : _minimum(0), _dimensions(0) {}
+    Box2I() noexcept : _minimum(0), _dimensions(0) {}
 
     /**
      *  Construct a box from its minimum and maximum points.
@@ -81,6 +81,8 @@ public:
      *  @param[in] dimensions Box dimensions.  If either dimension coordinate is 0, the box will be empty.
      *  @param[in] invert     If true (default), invert any negative dimensions instead of creating
      *                        an empty box.
+     *
+     * @throws lsst::pex::exceptions::OverflowError Thrown if the maximum Point2I would overflow.
      */
     Box2I(Point2I const& corner, Extent2I const& dimensions, bool invert = true);
 
@@ -98,13 +100,15 @@ public:
      *                            overlap the floating-point box.  If SHRINK, the integer
      *                            box will contain only pixels completely contained by
      *                            the floating-point box.
+     *
+     * @throws lsst::pex::exceptions::InvalidParameterError Thrown if `other` is not finite.
      */
     explicit Box2I(Box2D const& other, EdgeHandlingEnum edgeHandling = EXPAND);
 
     /// Standard copy constructor.
-    Box2I(Box2I const&) = default;
-    Box2I(Box2I&&) = default;
-    ~Box2I() = default;
+    Box2I(Box2I const&) noexcept = default;
+    Box2I(Box2I&&) noexcept = default;
+    ~Box2I() noexcept = default;
 
     /**
      * Create a box centered as closely as possible on a particular point.
@@ -115,17 +119,19 @@ public:
      * @returns if `size` is positive, a box with size `size`; otherwise,
      *          an empty box. If the returned box is not empty, its center
      *          shall be within half a pixel of `center` in either dimension.
+     *
+     * @throws lsst::pex::exceptions::OverflowError Thrown if the resulting box would overflow.
      */
     static Box2I makeCenteredBox(Point2D const& center, Extent const& size);
 
-    void swap(Box2I& other) {
+    void swap(Box2I& other) noexcept {
         _minimum.swap(other._minimum);
         _dimensions.swap(other._dimensions);
     }
 
     /// Standard assignment operator.
-    Box2I& operator=(Box2I const&) = default;
-    Box2I& operator=(Box2I&&) = default;
+    Box2I& operator=(Box2I const&) noexcept = default;
+    Box2I& operator=(Box2I&&) noexcept = default;
 
     /**
      *  @name Min/Max Accessors
@@ -133,13 +139,13 @@ public:
      *  Return the minimum and maximum coordinates of the box (inclusive).
      */
     //@{
-    Point2I const getMin() const { return _minimum; }
-    int getMinX() const { return _minimum.getX(); }
-    int getMinY() const { return _minimum.getY(); }
+    Point2I const getMin() const noexcept { return _minimum; }
+    int getMinX() const noexcept { return _minimum.getX(); }
+    int getMinY() const noexcept { return _minimum.getY(); }
 
-    Point2I const getMax() const { return _minimum + _dimensions - Extent2I(1); }
-    int getMaxX() const { return _minimum.getX() + _dimensions.getX() - 1; }
-    int getMaxY() const { return _minimum.getY() + _dimensions.getY() - 1; }
+    Point2I const getMax() const noexcept { return _minimum + _dimensions - Extent2I(1); }
+    int getMaxX() const noexcept { return _minimum.getX() + _dimensions.getX() - 1; }
+    int getMaxY() const noexcept { return _minimum.getY() + _dimensions.getY() - 1; }
     //@}
 
     /**
@@ -148,13 +154,13 @@ public:
      *  Return STL-style begin (inclusive) and end (exclusive) coordinates for the box.
      */
     //@{
-    Point2I const getBegin() const { return _minimum; }
-    int getBeginX() const { return _minimum.getX(); }
-    int getBeginY() const { return _minimum.getY(); }
+    Point2I const getBegin() const noexcept { return _minimum; }
+    int getBeginX() const noexcept { return _minimum.getX(); }
+    int getBeginY() const noexcept { return _minimum.getY(); }
 
-    Point2I const getEnd() const { return _minimum + _dimensions; }
-    int getEndX() const { return _minimum.getX() + _dimensions.getX(); }
-    int getEndY() const { return _minimum.getY() + _dimensions.getY(); }
+    Point2I const getEnd() const noexcept { return _minimum + _dimensions; }
+    int getEndX() const noexcept { return _minimum.getX() + _dimensions.getX(); }
+    int getEndY() const noexcept { return _minimum.getY() + _dimensions.getY(); }
     //@}
 
     /**
@@ -163,9 +169,9 @@ public:
      *  Return the size of the box in pixels.
      */
     //@{
-    Extent2I const getDimensions() const { return _dimensions; }
-    int getWidth() const { return _dimensions.getX(); }
-    int getHeight() const { return _dimensions.getY(); }
+    Extent2I const getDimensions() const noexcept { return _dimensions; }
+    int getWidth() const noexcept { return _dimensions.getX(); }
+    int getHeight() const noexcept { return _dimensions.getY(); }
     int getArea() const { return getWidth() * getHeight(); }
     //@}
 
@@ -173,24 +179,24 @@ public:
     ndarray::View<boost::fusion::vector2<ndarray::index::Range, ndarray::index::Range> > getSlices() const;
 
     /// Return true if the box contains no points.
-    bool isEmpty() const { return _dimensions.getX() == 0 && _dimensions.getY() == 0; }
+    bool isEmpty() const noexcept { return _dimensions.getX() == 0 && _dimensions.getY() == 0; }
 
     /// Return true if the box contains the point.
-    bool contains(Point2I const& point) const;
+    bool contains(Point2I const& point) const noexcept;
 
     /**
      *  Return true if all points contained by other are also contained by this.
      *
      *  An empty box is contained by every other box, including other empty boxes.
      */
-    bool contains(Box2I const& other) const;
+    bool contains(Box2I const& other) const noexcept;
 
     /**
      *  Return true if any points in other are also in this.
      *
      *  Any overlap operation involving an empty box returns false.
      */
-    bool overlaps(Box2I const& other) const;
+    bool overlaps(Box2I const& other) const noexcept;
 
     /**
      *  Increase the size of the box by the given buffer amount in all directions.
@@ -223,22 +229,27 @@ public:
     /// Expand this to ensure that this->contains(other).
     void include(Box2I const& other);
 
-    /// Shrink this to ensure that other.contains(*this).
-    void clip(Box2I const& other);
+    /** Shrink this to ensure that `other.contains(*this)`.
+     *
+     * In particular, if `other` and this box do not overlap this box will become empty.
+     *
+     * @param other the box that must contain this one
+     */
+    void clip(Box2I const& other) noexcept;
 
     /**
      *  Compare two boxes for equality.
      *
      *  All empty boxes are equal.
      */
-    bool operator==(Box2I const& other) const;
+    bool operator==(Box2I const& other) const noexcept;
 
     /**
      *  Compare two boxes for equality.
      *
      *  All empty boxes are equal.
      */
-    bool operator!=(Box2I const& other) const;
+    bool operator!=(Box2I const& other) const noexcept;
 
     /**
      * Get the corner points
@@ -292,7 +303,7 @@ public:
     static double const INVALID;
 
     /// Construct an empty box.
-    Box2D();
+    Box2D() noexcept;
 
     /**
      *  Construct a box from its minimum and maximum points.
@@ -304,7 +315,7 @@ public:
      *  @param[in] invert    If true (default), swap the minimum and maximum coordinates if
      *                       minimum > maximum instead of creating an empty box.
      */
-    Box2D(Point2D const& minimum, Point2D const& maximum, bool invert = true);
+    Box2D(Point2D const& minimum, Point2D const& maximum, bool invert = true) noexcept;
 
     /**
      *  Construct a box from one corner and dimensions.
@@ -316,7 +327,7 @@ public:
      *  @param[in] invert     If true (default), invert any negative dimensions instead of creating
      *                        an empty box.
      */
-    Box2D(Point2D const& corner, Extent2D const& dimensions, bool invert = true);
+    Box2D(Point2D const& corner, Extent2D const& dimensions, bool invert = true) noexcept;
 
     /**
      *  Construct a floating-point box from an integer box.
@@ -327,13 +338,13 @@ public:
      *  the same dimensions as the input integer box, its minimum/maximum coordinates
      *  are 0.5 smaller/greater.
      */
-    explicit Box2D(Box2I const& other);
+    explicit Box2D(Box2I const& other) noexcept;
 
     /// Standard copy constructor.
-    Box2D(Box2D const&) = default;
-    Box2D(Box2D&&) = default;
+    Box2D(Box2D const&) noexcept = default;
+    Box2D(Box2D&&) noexcept = default;
 
-    ~Box2D() = default;
+    ~Box2D() noexcept = default;
 
     /**
      * Create a box centered on a particular point.
@@ -345,16 +356,16 @@ public:
      *          an empty box. If the returned box is not empty, it shall be
      *          centered on `center`.
      */
-    static Box2D makeCenteredBox(Point2D const& center, Extent const& size);
+    static Box2D makeCenteredBox(Point2D const& center, Extent const& size) noexcept;
 
-    void swap(Box2D& other) {
+    void swap(Box2D& other) noexcept {
         _minimum.swap(other._minimum);
         _maximum.swap(other._maximum);
     }
 
     /// Standard assignment operator.
-    Box2D& operator=(Box2D const&) = default;
-    Box2D& operator=(Box2D&&) = default;
+    Box2D& operator=(Box2D const&) noexcept = default;
+    Box2D& operator=(Box2D&&) noexcept = default;
 
     /**
      *  @name Min/Max Accessors
@@ -362,13 +373,13 @@ public:
      *  Return the minimum (inclusive) and maximum (exclusive) coordinates of the box.
      */
     //@{
-    Point2D const getMin() const { return _minimum; }
-    double getMinX() const { return _minimum.getX(); }
-    double getMinY() const { return _minimum.getY(); }
+    Point2D const getMin() const noexcept { return _minimum; }
+    double getMinX() const noexcept { return _minimum.getX(); }
+    double getMinY() const noexcept { return _minimum.getY(); }
 
-    Point2D const getMax() const { return _maximum; }
-    double getMaxX() const { return _maximum.getX(); }
-    double getMaxY() const { return _maximum.getY(); }
+    Point2D const getMax() const noexcept { return _maximum; }
+    double getMaxX() const noexcept { return _maximum.getX(); }
+    double getMaxY() const noexcept { return _maximum.getY(); }
     //@}
 
     /**
@@ -377,10 +388,10 @@ public:
      *  Return the size of the box.
      */
     //@{
-    Extent2D const getDimensions() const { return isEmpty() ? Extent2D(0.0) : _maximum - _minimum; }
-    double getWidth() const { return isEmpty() ? 0 : _maximum.getX() - _minimum.getX(); }
-    double getHeight() const { return isEmpty() ? 0 : _maximum.getY() - _minimum.getY(); }
-    double getArea() const {
+    Extent2D const getDimensions() const noexcept { return isEmpty() ? Extent2D(0.0) : _maximum - _minimum; }
+    double getWidth() const noexcept { return isEmpty() ? 0 : _maximum.getX() - _minimum.getX(); }
+    double getHeight() const noexcept { return isEmpty() ? 0 : _maximum.getY() - _minimum.getY(); }
+    double getArea() const noexcept {
         Extent2D dim(getDimensions());
         return dim.getX() * dim.getY();
     }
@@ -392,30 +403,32 @@ public:
      *  Return the center coordinate of the box.
      */
     //@{
-    Point2D const getCenter() const { return Point2D((_minimum.asEigen() + _maximum.asEigen()) * 0.5); }
-    double getCenterX() const { return (_minimum.getX() + _maximum.getX()) * 0.5; }
-    double getCenterY() const { return (_minimum.getY() + _maximum.getY()) * 0.5; }
+    Point2D const getCenter() const noexcept {
+        return Point2D((_minimum.asEigen() + _maximum.asEigen()) * 0.5);
+    }
+    double getCenterX() const noexcept { return (_minimum.getX() + _maximum.getX()) * 0.5; }
+    double getCenterY() const noexcept { return (_minimum.getY() + _maximum.getY()) * 0.5; }
     //@}
 
     /// Return true if the box contains no points.
-    bool isEmpty() const { return _minimum.getX() != _minimum.getX(); }
+    bool isEmpty() const noexcept { return _minimum.getX() != _minimum.getX(); }
 
     /// Return true if the box contains the point.
-    bool contains(Point2D const& point) const;
+    bool contains(Point2D const& point) const noexcept;
 
     /**
      *  Return true if all points contained by other are also contained by this.
      *
      *  An empty box is contained by every other box, including other empty boxes.
      */
-    bool contains(Box2D const& other) const;
+    bool contains(Box2D const& other) const noexcept;
 
     /**
      *  Return true if any points in other are also in this.
      *
      *  Any overlap operation involving an empty box returns false.
      */
-    bool overlaps(Box2D const& other) const;
+    bool overlaps(Box2D const& other) const noexcept;
 
     /**
      *  Increase the size of the box by the given buffer amount in all directions.
@@ -449,27 +462,32 @@ public:
      *  be adjusted to ensure the point is actually contained
      *  by the box instead of sitting on its exclusive upper edge.
      */
-    void include(Point2D const& point);
+    void include(Point2D const& point) noexcept;
 
     /// Expand this to ensure that this->contains(other).
-    void include(Box2D const& other);
+    void include(Box2D const& other) noexcept;
 
-    /// Shrink this to ensure that other.contains(*this).
-    void clip(Box2D const& other);
+    /** Shrink this to ensure that `other.contains(*this)`.
+     *
+     * In particular, if `other` and this box do not overlap this box will become empty.
+     *
+     * @param other the box that must contain this one
+     */
+    void clip(Box2D const& other) noexcept;
 
     /**
      *  Compare two boxes for equality.
      *
      *  All empty boxes are equal.
      */
-    bool operator==(Box2D const& other) const;
+    bool operator==(Box2D const& other) const noexcept;
 
     /**
      *  Compare two boxes for equality.
      *
      *  All empty boxes are equal.
      */
-    bool operator!=(Box2D const& other) const;
+    bool operator!=(Box2D const& other) const noexcept;
 
     /**
      * Get the corner points
@@ -484,7 +502,7 @@ public:
     }
 
 private:
-    void _tweakMax(int n) {
+    void _tweakMax(int n) noexcept {
         if (_maximum[n] < 0.0) {
             _maximum[n] *= (1.0 - EPSILON);
         } else if (_maximum[n] > 0.0) {
