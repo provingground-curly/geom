@@ -73,14 +73,16 @@ public:
     Box2I(Point2I const& minimum, Point2I const& maximum, bool invert = true);
 
     /**
-     *  Construct a box from its minimum point and dimensions.
+     *  Construct a box from one corner and dimensions.
      *
-     *  @param[in] minimum    Minimum (lower left) coordinate.
+     *  @param[in] corner    Reference coordinate. This is the lower left corner if both
+     *                       dimensions are positive, but a right corner or upper corner if
+     *                       the corresponding dimension is negative and `invert` is set.
      *  @param[in] dimensions Box dimensions.  If either dimension coordinate is 0, the box will be empty.
      *  @param[in] invert     If true (default), invert any negative dimensions instead of creating
      *                        an empty box.
      */
-    Box2I(Point2I const& minimum, Extent2I const& dimensions, bool invert = true);
+    Box2I(Point2I const& corner, Extent2I const& dimensions, bool invert = true);
 
     /**
      *  Construct an integer box from a floating-point box.
@@ -103,6 +105,18 @@ public:
     Box2I(Box2I const&) = default;
     Box2I(Box2I&&) = default;
     ~Box2I() = default;
+
+    /**
+     * Create a box centered as closely as possible on a particular point.
+     *
+     * @param center The desired center of the box.
+     * @param size The desired width and height (in that order) of the box.
+     *
+     * @returns if `size` is positive, a box with size `size`; otherwise,
+     *          an empty box. If the returned box is not empty, its center
+     *          shall be within half a pixel of `center` in either dimension.
+     */
+    static Box2I makeCenteredBox(Point2D const& center, Extent const& size);
 
     void swap(Box2I& other) {
         _minimum.swap(other._minimum);
@@ -293,14 +307,16 @@ public:
     Box2D(Point2D const& minimum, Point2D const& maximum, bool invert = true);
 
     /**
-     *  Construct a box from its minimum point and dimensions.
+     *  Construct a box from one corner and dimensions.
      *
-     *  @param[in] minimum    Minimum (lower left) coordinate (inclusive).
+     *  @param[in] corner    Reference coordinate (inclusive). This is the lower left corner if
+     *                       both dimensions are positive, but a right corner or upper corner if
+     *                       the corresponding dimension is negative and `invert` is set.
      *  @param[in] dimensions Box dimensions.  If either dimension coordinate is 0, the box will be empty.
      *  @param[in] invert     If true (default), invert any negative dimensions instead of creating
      *                        an empty box.
      */
-    Box2D(Point2D const& minimum, Extent2D const& dimensions, bool invert = true);
+    Box2D(Point2D const& corner, Extent2D const& dimensions, bool invert = true);
 
     /**
      *  Construct a floating-point box from an integer box.
@@ -318,6 +334,18 @@ public:
     Box2D(Box2D&&) = default;
 
     ~Box2D() = default;
+
+    /**
+     * Create a box centered on a particular point.
+     *
+     * @param center The desired center of the box.
+     * @param size The desired width and height (in that order) of the box.
+     *
+     * @returns if `size` is positive, a box with size `size`; otherwise,
+     *          an empty box. If the returned box is not empty, it shall be
+     *          centered on `center`.
+     */
+    static Box2D makeCenteredBox(Point2D const& center, Extent const& size);
 
     void swap(Box2D& other) {
         _minimum.swap(other._minimum);

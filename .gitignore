@@ -8,6 +8,7 @@ _build.*
 *.cfgc
 *.pyc
 .cache
+.coverage
 .pytest_cache
 pytest_session.txt
 config.log

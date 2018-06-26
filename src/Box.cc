@@ -43,8 +43,8 @@ Box2I::Box2I(Point2I const& minimum, Point2I const& maximum, bool invert)
     _dimensions += Extent2I(1);
 }
 
-Box2I::Box2I(Point2I const& minimum, Extent2I const& dimensions, bool invert)
-        : _minimum(minimum), _dimensions(dimensions) {
+Box2I::Box2I(Point2I const& corner, Extent2I const& dimensions, bool invert)
+        : _minimum(corner), _dimensions(dimensions) {
     for (int n = 0; n < 2; ++n) {
         if (_dimensions[n] == 0) {
             *this = Box2I();
@@ -90,6 +90,14 @@ Box2I::Box2I(Box2D const& other, EdgeHandlingEnum edgeHandling) : _minimum(), _d
             }
             break;
     }
+}
+
+Box2I Box2I::makeCenteredBox(Point2D const& center, Box2I::Extent const& size) {
+    lsst::geom::Point2D corner(center);
+    corner.shift(-0.5 * lsst::geom::Extent2D(size));
+    // compensate for Box2I's coordinate conventions (where max = min + size - 1)
+    corner.shift(lsst::geom::Extent2D(0.5, 0.5));
+    return lsst::geom::Box2I(lsst::geom::Point2I(corner), size, false);
 }
 
 ndarray::View<boost::fusion::vector2<ndarray::index::Range, ndarray::index::Range> > Box2I::getSlices()
@@ -238,8 +246,8 @@ Box2D::Box2D(Point2D const& minimum, Point2D const& maximum, bool invert)
     }
 }
 
-Box2D::Box2D(Point2D const& minimum, Extent2D const& dimensions, bool invert)
-        : _minimum(minimum), _maximum(minimum + dimensions) {
+Box2D::Box2D(Point2D const& corner, Extent2D const& dimensions, bool invert)
+        : _minimum(corner), _maximum(corner + dimensions) {
     for (int n = 0; n < 2; ++n) {
         if (_minimum[n] == _maximum[n]) {
             *this = Box2D();
@@ -259,6 +267,12 @@ Box2D::Box2D(Box2I const& other)
         : _minimum(Point2D(other.getMin()) - Extent2D(0.5)),
           _maximum(Point2D(other.getMax()) + Extent2D(0.5)) {
     if (other.isEmpty()) *this = Box2D();
+}
+
+Box2D Box2D::makeCenteredBox(Point2D const& center, Box2D::Extent const& size) {
+    lsst::geom::Point2D corner(center);
+    corner.shift(-0.5 * size);
+    return lsst::geom::Box2D(corner, size, false);
 }
 
 bool Box2D::contains(Point2D const& point) const {

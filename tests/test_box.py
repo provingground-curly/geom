@@ -513,6 +513,92 @@ class Box2DTestCase(lsst.utils.tests.TestCase):
         self.assertAlmostEqual(box1.getMaxY(), tby11, places=6)
 
 
+class SharedBoxTestCase(lsst.utils.tests.TestCase):
+    """Tests of Box2I and Box2D where the code for both classes is the same,
+    and only the test fixtures need be different.
+    """
+    def setUp(self):
+        np.random.seed(1)
+
+    def testMakeCenteredBox(self):
+        dimensionsI = [geom.Extent2I(100, 50), geom.Extent2I(15, 15),
+                       geom.Extent2I(0, 10), geom.Extent2I(25, 30),
+                       geom.Extent2I(15, -5)]
+        dimensionsD = [geom.Extent2D(d) for d in dimensionsI] \
+            + [geom.Extent2D(1.5, 2.1), geom.Extent2D(4, 3.7),
+               geom.Extent2D(-0.1, -0.1), geom.Extent2D(5.5, 5.5)]
+        locations = [geom.Point2D(0, 0), geom.Point2D(0.2, 0.7),
+                     geom.Point2D(1, 1.5),
+                     geom.Point2D(-0.5 + 1e-4, -0.5 + 1e-4),
+                     geom.Point2D(-0.5 - 1e-4, -0.5 - 1e-4)]
+
+        for center in locations:
+            for size in dimensionsI:
+                self._checkBoxConstruction(geom.Box2I, size, center, np.sqrt(0.5))
+            for size in dimensionsD:
+                self._checkBoxConstruction(geom.Box2D, size, center, 1e-10)
+
+    def _checkBoxConstruction(self, boxClass, size, center, precision):
+        """Test attempts to create a centered box of a particular type
+        and parameters.
+
+        Parameters
+        ----------
+        boxClass : `type`
+            One of `lsst.geom.Box2I` or `lsst.geom.Box2D`.
+        size : ``boxClass.Extent``
+            The desired dimensions of the box.
+        center : `lsst.geom.Point2D`
+            The desired center of the box.
+        precision : `float`
+            The maximum distance by which the box can be offset from ``center``.
+        """
+        msg = 'Box size = %s, location = %s' % (size, center)
+        box = boxClass.makeCenteredBox(center, size)
+
+        if all(size.gt(0)):
+            self._checkBoxProperties(box, size, center, precision, msg)
+        else:
+            self.assertTrue(box.isEmpty(), msg=msg)
+
+    def _checkBoxProperties(self, box, size, center, precision, msg):
+        """Test whether a box has the desired size and position.
+
+        Parameters
+        ----------
+        box : `lsst.geom.Box2I` or `lsst.geom.Box2D`
+            The box to test.
+        size : ``box.Extent``
+            The expected dimensions of ``box``.
+        center : `lsst.geom.Point2D`
+            The expected center of ``box``.
+        precision : `float`
+            The maximum distance between the center of ``box`` and ``center``.
+        msg : `str`
+            An error message suffix describing test parameters.
+        """
+        newCenter = self._getBoxCenter(box)
+        self.assertIsNotNone(box, msg=msg)
+        self.assertPairsAlmostEqual(newCenter, center, maxDiff=precision, msg=msg)
+        self.assertPairsAlmostEqual(box.getDimensions(), size, msg=msg)
+
+    def _getBoxCenter(self, box):
+        """Return the coordinates of a Box's center.
+
+        Parameters
+        ----------
+        box : `lsst.geom.Box2I` or `lsst.geom.Box2D`
+            The box whose center is desired.
+
+        Returns
+        -------
+        center : `lsst.geom.Point2D`
+            The position at the center of ``box``. If ``box`` is a ``Box2I``,
+            this will always have integer or half-integer coordinates.
+        """
+        return geom.Box2D(box).getCenter()
+
+
 class MemoryTester(lsst.utils.tests.MemoryTestCase):
     pass
 
