@@ -107,6 +107,10 @@ AngleUnit constexpr degrees = AngleUnit(PI / 180.0);              ///< constant 
 AngleUnit constexpr hours = AngleUnit(PI * 15.0 / 180.0);         ///< constant with units of hours
 AngleUnit constexpr arcminutes = AngleUnit(PI / 60 / 180.0);      ///< constant with units of arcminutes
 AngleUnit constexpr arcseconds = AngleUnit(PI / 180.0 / 3600.0);  ///< constant with units of arcseconds
+// Note: if we use PI / 180.0 / 3.6e6 then 60*60*180*1000*lsst.geom.milliarcseconds
+// does not test exactly equal to 180*lsst.geom.degrees
+AngleUnit constexpr milliarcseconds =
+        AngleUnit(PI / (180.0 * 3.6e6));  ///< constant with units of milliarcseconds
 
 /**
  * A class representing an angle.
@@ -169,6 +173,9 @@ public:
 
     /// Return an Angle's value in arcseconds.
     constexpr double asArcseconds() const noexcept { return asAngularUnits(arcseconds); }
+
+    /// Return an Angle's value in milliarcseconds.
+    constexpr double asMilliarcseconds() const noexcept { return asAngularUnits(milliarcseconds); }
 
     /**
      * Wrap this angle to the range [0, 2&pi;).
