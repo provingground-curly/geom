@@ -38,7 +38,7 @@ import lsst.utils.tests
 import lsst.geom
 
 
-class AngleTestCase(unittest.TestCase):
+class AngleTestCase(lsst.utils.tests.TestCase):
     """A test case for Angle"""
 
     def setUp(self):
@@ -172,11 +172,9 @@ class AngleTestCase(unittest.TestCase):
         ):
             angRad = (offset + (wrap*math.pi)) * (1 + (eps*epsMult))
             ang = angRad * lsst.geom.radians
-            angDeg = ang.asDegrees()
-            sinAng = math.sin(angRad)
-            cosAng = math.cos(angRad)
 
             posAng = (angRad * lsst.geom.radians).wrap()
+            self.assertAnglesAlmostEqual(ang, posAng)
             posAngRad = posAng.asRadians()
             posAngDeg = posAng.asDegrees()
             posAngArcmin = posAng.asArcminutes()
@@ -195,15 +193,9 @@ class AngleTestCase(unittest.TestCase):
             self.assertLess(posAngArcmin, 360 * 60)
             self.assertLess(posAngArcsec, 360 * 3600)
             self.assertLess(posAngMilliarcsec, 360 * 3.6e6)
-            # prove that posAngDeg and angDeg are the same angle
-            posErrAng = ((posAngDeg - angDeg) * lsst.geom.degrees) \
-                .wrapCtr()
-            self.assertAlmostEqual(posErrAng.asDegrees(), 0)
-            # a sanity check in case wrapCtr gives the wrong answer
-            self.assertAlmostEqual(math.sin(posAngRad), sinAng)
-            self.assertAlmostEqual(math.cos(posAngRad), cosAng)
 
             ctrAng = (angRad * lsst.geom.radians).wrapCtr()
+            self.assertAnglesAlmostEqual(ang, ctrAng)
             ctrAngRad = ctrAng.asRadians()
             ctrAngDeg = ctrAng.asDegrees()
             ctrAngArcmin = ctrAng.asArcminutes()
@@ -220,13 +212,6 @@ class AngleTestCase(unittest.TestCase):
             self.assertLess(ctrAngDeg, 180)
             self.assertLess(ctrAngArcmin, 180 * 60)
             self.assertLess(ctrAngArcsec, 180 * 3600)
-            self.assertLess(ctrAngMilliarcsec, 180 * 3.6e6)
-            # prove that ctrAngDeg and ang are the same angle
-            ctrErrAng = ((ctrAngDeg - angDeg) * lsst.geom.degrees) \
-                .wrapCtr()
-            self.assertAlmostEqual(ctrErrAng.asDegrees(), 0)
-            self.assertAlmostEqual(math.sin(ctrAngRad), sinAng)
-            self.assertAlmostEqual(math.cos(ctrAngRad), cosAng)
 
             for refAngBase, refAngWrap, refEpsMult in itertools.product(
                 (-math.pi, 0.0, math.pi, math.pi*2.0),
@@ -240,6 +225,7 @@ class AngleTestCase(unittest.TestCase):
                 refAngArcsec = refAng.asArcseconds()
                 refAngMilliarcsec = refAng.asMilliarcseconds()
                 nearAng = (angRad * lsst.geom.radians).wrapNear(refAng)
+                self.assertAnglesAlmostEqual(ang, nearAng)
                 nearAngRad = nearAng.asRadians()
                 nearAngDeg = nearAng.asDegrees()
                 nearAngArcmin = nearAng.asArcminutes()
@@ -264,11 +250,6 @@ class AngleTestCase(unittest.TestCase):
                 self.assertLessEqual(nearAngArcmin - refAngArcmin, oneEightyWithSlop * 60)
                 self.assertLessEqual(nearAngArcsec - refAngArcsec, oneEightyWithSlop * 3600)
                 self.assertLessEqual(nearAngMilliarcsec - refAngMilliarcsec, oneEightyWithSlop * 3.6e6)
-                # prove that nearAng and ang are the same angle
-                nearErrAng = ((nearAngRad - angRad) * lsst.geom.radians).wrapCtr()
-                self.assertAlmostEqual(nearErrAng.asRadians(), 0)
-                self.assertAlmostEqual(math.sin(nearAngRad), sinAng)
-                self.assertAlmostEqual(math.cos(nearAngRad), cosAng)
 
 
 class MemoryTester(lsst.utils.tests.MemoryTestCase):
