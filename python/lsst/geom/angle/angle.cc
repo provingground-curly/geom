@@ -68,6 +68,7 @@ PYBIND11_PLUGIN(angle) {
     mod.attr("hours") = py::cast(hours);
     mod.attr("arcminutes") = py::cast(arcminutes);
     mod.attr("arcseconds") = py::cast(arcseconds);
+    mod.attr("milliarcseconds") = py::cast(milliarcseconds);
 
     /* Angle */
 
@@ -116,6 +117,7 @@ PYBIND11_PLUGIN(angle) {
     clsAngle.def("asHours", &Angle::asHours);
     clsAngle.def("asArcminutes", &Angle::asArcminutes);
     clsAngle.def("asArcseconds", &Angle::asArcseconds);
+    clsAngle.def("asMilliarcseconds", &Angle::asMilliarcseconds);
     clsAngle.def("wrap", &Angle::wrap);
     clsAngle.def("wrapCtr", &Angle::wrapCtr);
     clsAngle.def("wrapNear", &Angle::wrapNear);

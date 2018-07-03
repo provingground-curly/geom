@@ -38,7 +38,7 @@ import lsst.utils.tests
 import lsst.geom
 
 
-class AngleTestCase(unittest.TestCase):
+class AngleTestCase(lsst.utils.tests.TestCase):
     """A test case for Angle"""
 
     def setUp(self):
@@ -55,6 +55,8 @@ class AngleTestCase(unittest.TestCase):
         dd = lsst.geom.Angle(60*180, lsst.geom.arcminutes)
         self.assertEqual(self.d, dd)
         dd = lsst.geom.Angle(60*60*180, lsst.geom.arcseconds)
+        self.assertEqual(self.d, dd)
+        dd = lsst.geom.Angle(60*60*180*1000, lsst.geom.milliarcseconds)
         self.assertEqual(self.d, dd)
 
     def testArithmetic(self):
@@ -79,6 +81,7 @@ class AngleTestCase(unittest.TestCase):
         self.assertEqual((self.pi/2).asDegrees(), 90)
         self.assertEqual((self.pi*2).asArcminutes(), 360*60)
         self.assertEqual((self.pi*2).asArcseconds(), 360*60*60)
+        self.assertEqual((self.pi*2).asMilliarcseconds(), 360*60*60*1000)
         self.assertEqual((-self.pi).asRadians(), -math.pi)
 
         with self.assertRaises(TypeError):
@@ -169,55 +172,46 @@ class AngleTestCase(unittest.TestCase):
         ):
             angRad = (offset + (wrap*math.pi)) * (1 + (eps*epsMult))
             ang = angRad * lsst.geom.radians
-            angDeg = ang.asDegrees()
-            sinAng = math.sin(angRad)
-            cosAng = math.cos(angRad)
 
             posAng = (angRad * lsst.geom.radians).wrap()
+            self.assertAnglesAlmostEqual(ang, posAng)
             posAngRad = posAng.asRadians()
             posAngDeg = posAng.asDegrees()
             posAngArcmin = posAng.asArcminutes()
             posAngArcsec = posAng.asArcseconds()
+            posAngMilliarcsec = posAng.asMilliarcseconds()
             # the code promises 0 <= posAng for all units
             self.assertGreaterEqual(posAngRad, 0)
             self.assertGreaterEqual(posAngDeg, 0)
             self.assertGreaterEqual(posAngArcmin, 0)
             self.assertGreaterEqual(posAngArcsec, 0)
+            self.assertGreaterEqual(posAngMilliarcsec, 0)
             # wrap promises posAng < 2*pi only for radians,
             # but it seems to work for all units
             self.assertLess(posAngRad, 2*math.pi)
             self.assertLess(posAngDeg, 360)
             self.assertLess(posAngArcmin, 360 * 60)
             self.assertLess(posAngArcsec, 360 * 3600)
-            # prove that posAngDeg and angDeg are the same angle
-            posErrAng = ((posAngDeg - angDeg) * lsst.geom.degrees) \
-                .wrapCtr()
-            self.assertAlmostEqual(posErrAng.asDegrees(), 0)
-            # a sanity check in case wrapCtr gives the wrong answer
-            self.assertAlmostEqual(math.sin(posAngRad), sinAng)
-            self.assertAlmostEqual(math.cos(posAngRad), cosAng)
+            self.assertLess(posAngMilliarcsec, 360 * 3.6e6)
 
             ctrAng = (angRad * lsst.geom.radians).wrapCtr()
+            self.assertAnglesAlmostEqual(ang, ctrAng)
             ctrAngRad = ctrAng.asRadians()
             ctrAngDeg = ctrAng.asDegrees()
             ctrAngArcmin = ctrAng.asArcminutes()
             ctrAngArcsec = ctrAng.asArcseconds()
+            ctrAngMilliarcsec = ctrAng.asMilliarcseconds()
             # wrapCtr promises -pi <= ctrAngRad < pi only for radians,
             # but it seems to work for all units
             self.assertGreaterEqual(ctrAngRad, -math.pi)
             self.assertGreaterEqual(ctrAngDeg, -180)
             self.assertGreaterEqual(ctrAngArcmin, -180 * 60)
             self.assertGreaterEqual(ctrAngArcsec, -180 * 3600)
+            self.assertGreaterEqual(ctrAngMilliarcsec, -180 * 3.6e6)
             self.assertLess(ctrAngRad, math.pi)
             self.assertLess(ctrAngDeg, 180)
             self.assertLess(ctrAngArcmin, 180 * 60)
             self.assertLess(ctrAngArcsec, 180 * 3600)
-            # prove that ctrAngDeg and ang are the same angle
-            ctrErrAng = ((ctrAngDeg - angDeg) * lsst.geom.degrees) \
-                .wrapCtr()
-            self.assertAlmostEqual(ctrErrAng.asDegrees(), 0)
-            self.assertAlmostEqual(math.sin(ctrAngRad), sinAng)
-            self.assertAlmostEqual(math.cos(ctrAngRad), cosAng)
 
             for refAngBase, refAngWrap, refEpsMult in itertools.product(
                 (-math.pi, 0.0, math.pi, math.pi*2.0),
@@ -229,11 +223,14 @@ class AngleTestCase(unittest.TestCase):
                 refAngDeg = refAng.asDegrees()
                 refAngArcmin = refAng.asArcminutes()
                 refAngArcsec = refAng.asArcseconds()
+                refAngMilliarcsec = refAng.asMilliarcseconds()
                 nearAng = (angRad * lsst.geom.radians).wrapNear(refAng)
+                self.assertAnglesAlmostEqual(ang, nearAng)
                 nearAngRad = nearAng.asRadians()
                 nearAngDeg = nearAng.asDegrees()
                 nearAngArcmin = nearAng.asArcminutes()
                 nearAngArcsec = nearAng.asArcseconds()
+                nearAngMilliarcsec = nearAng.asMilliarcseconds()
 
                 fudgeFactor = 5  # 1 and 2 are too small for one case, 3 works; 5 has margin
                 relEps = max(1, nearAngRad / math.pi, refAngRad / math.pi) * eps * fudgeFactor
@@ -247,15 +244,12 @@ class AngleTestCase(unittest.TestCase):
                 self.assertGreaterEqual(nearAngDeg - refAngDeg, -oneEightyWithSlop)
                 self.assertGreaterEqual(nearAngArcmin - refAngArcmin, -oneEightyWithSlop * 60)
                 self.assertGreaterEqual(nearAngArcsec - refAngArcsec, -oneEightyWithSlop * 3600)
+                self.assertGreaterEqual(nearAngMilliarcsec - refAngMilliarcsec, -oneEightyWithSlop * 3.6e6)
                 self.assertLessEqual(nearAngRad - refAngRad, piWithSlop)
                 self.assertLessEqual(nearAngDeg - refAngDeg, oneEightyWithSlop)
                 self.assertLessEqual(nearAngArcmin - refAngArcmin, oneEightyWithSlop * 60)
                 self.assertLessEqual(nearAngArcsec - refAngArcsec, oneEightyWithSlop * 3600)
-                # prove that nearAng and ang are the same angle
-                nearErrAng = ((nearAngRad - angRad) * lsst.geom.radians).wrapCtr()
-                self.assertAlmostEqual(nearErrAng.asRadians(), 0)
-                self.assertAlmostEqual(math.sin(nearAngRad), sinAng)
-                self.assertAlmostEqual(math.cos(nearAngRad), cosAng)
+                self.assertLessEqual(nearAngMilliarcsec - refAngMilliarcsec, oneEightyWithSlop * 3.6e6)
 
 
 class MemoryTester(lsst.utils.tests.MemoryTestCase):
