@@ -121,6 +121,7 @@ public:
      *          shall be within half a pixel of `center` in either dimension.
      *
      * @throws lsst::pex::exceptions::OverflowError Thrown if the resulting box would overflow.
+     * @throws lsst::pex::exceptions::InvalidParameterError Thrown if `center` is not finite.
      */
     static Box2I makeCenteredBox(Point2D const& center, Extent const& size);
 
@@ -354,8 +355,10 @@ public:
      *
      * @returns if `size` is positive, a box with size `size`; otherwise,
      *          an empty box. If the returned box is not empty, it shall be
-     *          centered on `center`.
+     *          centered on `center`. Behavior is undefined if either `center`
+     *          or `size` is non-finite.
      */
+    // It's hard to guarantee postconditions (especially size) with non-finite inputs
     static Box2D makeCenteredBox(Point2D const& center, Extent const& size) noexcept;
 
     void swap(Box2D& other) noexcept {

@@ -93,6 +93,10 @@ Box2I::Box2I(Box2D const& other, EdgeHandlingEnum edgeHandling) : _minimum(), _d
 }
 
 Box2I Box2I::makeCenteredBox(Point2D const& center, Box2I::Extent const& size) {
+    if (!std::isfinite(center[0]) || !std::isfinite(center[1])) {
+        throw LSST_EXCEPT(pex::exceptions::InvalidParameterError, "Cannot make Box2I with non-finite center");
+    }
+
     lsst::geom::Point2D corner(center);
     corner.shift(-0.5 * lsst::geom::Extent2D(size));
     // compensate for Box2I's coordinate conventions (where max = min + size - 1)
