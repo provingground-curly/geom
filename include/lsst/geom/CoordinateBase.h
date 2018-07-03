@@ -47,6 +47,7 @@ class Extent;
 template <typename Derived, typename T, int N>
 class CoordinateBase {
 public:
+    static_assert(N > 0, "CoordinateBase must have a positive length.");
     typedef T Element;
     static int const dimensions = N;
     typedef Eigen::Matrix<T, N, 1, Eigen::DontAlign> EigenVector;
