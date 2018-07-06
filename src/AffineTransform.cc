@@ -29,13 +29,13 @@
 namespace lsst {
 namespace geom {
 
-AffineTransform::ParameterVector const AffineTransform::getParameterVector() const {
+AffineTransform::ParameterVector const AffineTransform::getParameterVector() const noexcept {
     ParameterVector r;
     r << (*this)[XX], (*this)[YX], (*this)[XY], (*this)[YY], (*this)[X], (*this)[Y];
     return r;
 }
 
-void AffineTransform::setParameterVector(AffineTransform::ParameterVector const &vector) {
+void AffineTransform::setParameterVector(AffineTransform::ParameterVector const &vector) noexcept {
     (*this)[XX] = vector[XX];
     (*this)[XY] = vector[XY];
     (*this)[X] = vector[X];
@@ -44,7 +44,7 @@ void AffineTransform::setParameterVector(AffineTransform::ParameterVector const 
     (*this)[Y] = vector[Y];
 }
 
-AffineTransform::Matrix const AffineTransform::getMatrix() const {
+AffineTransform::Matrix const AffineTransform::getMatrix() const noexcept {
     Matrix r;
     r << (*this)[XX], (*this)[XY], (*this)[X], (*this)[YX], (*this)[YY], (*this)[Y], 0.0, 0.0, 1.0;
     return r;
@@ -55,7 +55,7 @@ AffineTransform const AffineTransform::invert() const {
     return AffineTransform(inv, -inv(getTranslation()));
 }
 
-AffineTransform::TransformDerivativeMatrix AffineTransform::dTransform(Point2D const &input) const {
+AffineTransform::TransformDerivativeMatrix AffineTransform::dTransform(Point2D const &input) const noexcept {
     TransformDerivativeMatrix r = TransformDerivativeMatrix::Zero();
     r.block<2, 4>(0, 0) = getLinear().dTransform(input);
     r(0, X) = 1.0;
@@ -63,7 +63,7 @@ AffineTransform::TransformDerivativeMatrix AffineTransform::dTransform(Point2D c
     return r;
 }
 
-AffineTransform::TransformDerivativeMatrix AffineTransform::dTransform(Extent2D const &input) const {
+AffineTransform::TransformDerivativeMatrix AffineTransform::dTransform(Extent2D const &input) const noexcept {
     TransformDerivativeMatrix r = TransformDerivativeMatrix::Zero();
     r.block<2, 4>(0, 0) = getLinear().dTransform(input);
     return r;

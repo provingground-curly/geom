@@ -28,7 +28,8 @@ namespace geom {
 
 template <typename Derived, typename T, int N>
 bool allclose(CoordinateBase<Derived, T, N> const &a, CoordinateBase<Derived, T, N> const &b, T rtol,
-              T atol) {
+              T atol) noexcept(std::is_nothrow_copy_constructible<T>::value
+                                       &&std::is_nothrow_copy_assignable<T>::value) {
     Eigen::Array<T, N, 1> diff = (a.asEigen().array() - b.asEigen().array()).abs();
     Eigen::Array<T, N, 1> rhs = (0.5 * (a.asEigen().array() + b.asEigen().array())).abs();
     rhs *= rtol;

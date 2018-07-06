@@ -90,7 +90,7 @@ SpherePoint::SpherePoint(sphgeom::Vector3d const& vector) {
     _set(unitVector);
 }
 
-SpherePoint::SpherePoint(sphgeom::LonLat const& lonLat)
+SpherePoint::SpherePoint(sphgeom::LonLat const& lonLat) noexcept
         : SpherePoint(lonLat.getLon().asRadians(), lonLat.getLat().asRadians(), radians) {}
 
 void SpherePoint::_set(sphgeom::UnitVector3d const& unitVector) {
@@ -104,7 +104,7 @@ void SpherePoint::_set(sphgeom::UnitVector3d const& unitVector) {
     }
 }
 
-SpherePoint::SpherePoint() : _longitude(nan("")), _latitude(nan("")) {}
+SpherePoint::SpherePoint() noexcept : _longitude(nan("")), _latitude(nan("")) {}
 
 SpherePoint::SpherePoint(SpherePoint const& other) noexcept = default;
 
@@ -114,18 +114,18 @@ SpherePoint& SpherePoint::operator=(SpherePoint const& other) noexcept = default
 
 SpherePoint& SpherePoint::operator=(SpherePoint&& other) noexcept = default;
 
-SpherePoint::operator sphgeom::LonLat() const {
+SpherePoint::operator sphgeom::LonLat() const noexcept {
     return sphgeom::LonLat::fromRadians(getLongitude().asRadians(), getLatitude().asRadians());
 }
 
-SpherePoint::~SpherePoint() = default;
+SpherePoint::~SpherePoint() noexcept = default;
 
 sphgeom::UnitVector3d SpherePoint::getVector() const noexcept {
     return sphgeom::UnitVector3d::fromNormalized(cos(_longitude) * cos(_latitude),
                                                  sin(_longitude) * cos(_latitude), sin(_latitude));
 }
 
-Point2D SpherePoint::getPosition(AngleUnit unit) const {
+Point2D SpherePoint::getPosition(AngleUnit unit) const noexcept {
     return Point2D(getLongitude().asAngularUnits(unit), getLatitude().asAngularUnits(unit));
 }
 

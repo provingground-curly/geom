@@ -526,11 +526,14 @@ class SharedBoxTestCase(lsst.utils.tests.TestCase):
                        geom.Extent2I(15, -5)]
         dimensionsD = [geom.Extent2D(d) for d in dimensionsI] \
             + [geom.Extent2D(1.5, 2.1), geom.Extent2D(4, 3.7),
-               geom.Extent2D(-0.1, -0.1), geom.Extent2D(5.5, 5.5)]
+               geom.Extent2D(-0.1, -0.1), geom.Extent2D(5.5, 5.5),
+               geom.Extent2D(-np.nan, 5.5), geom.Extent2D(4, np.inf)]
         locations = [geom.Point2D(0, 0), geom.Point2D(0.2, 0.7),
                      geom.Point2D(1, 1.5),
                      geom.Point2D(-0.5 + 1e-4, -0.5 + 1e-4),
-                     geom.Point2D(-0.5 - 1e-4, -0.5 - 1e-4)]
+                     geom.Point2D(-0.5 - 1e-4, -0.5 - 1e-4),
+                     geom.Point2D(-np.nan, 0), geom.Point2D(1.0, np.inf),
+                     ]
 
         for center in locations:
             for size in dimensionsI:
@@ -554,12 +557,16 @@ class SharedBoxTestCase(lsst.utils.tests.TestCase):
             The maximum distance by which the box can be offset from ``center``.
         """
         msg = 'Box size = %s, location = %s' % (size, center)
-        box = boxClass.makeCenteredBox(center, size)
 
-        if all(size.gt(0)):
-            self._checkBoxProperties(box, size, center, precision, msg)
-        else:
-            self.assertTrue(box.isEmpty(), msg=msg)
+        if all(np.isfinite(center)):
+            box = boxClass.makeCenteredBox(center, size)
+            if all(size.gt(0)):
+                self._checkBoxProperties(box, size, center, precision, msg)
+            else:
+                self.assertTrue(box.isEmpty(), msg=msg)
+        elif boxClass == geom.Box2I:
+            with self.assertRaises(lsst.pex.exceptions.InvalidParameterError, msg=msg):
+                boxClass.makeCenteredBox(center, size)
 
     def _checkBoxProperties(self, box, size, center, precision, msg):
         """Test whether a box has the desired size and position.

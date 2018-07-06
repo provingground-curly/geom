@@ -33,7 +33,7 @@
 namespace lsst {
 namespace geom {
 
-Eigen::Vector3d asEigen(sphgeom::Vector3d const &vector) {
+Eigen::Vector3d asEigen(sphgeom::Vector3d const &vector) noexcept {
     return Eigen::Vector3d(vector.x(), vector.y(), vector.z());
 }
 

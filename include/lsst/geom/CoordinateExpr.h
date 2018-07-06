@@ -52,17 +52,17 @@ class CoordinateExpr : public CoordinateBase<CoordinateExpr<N>, bool, N> {
 
 public:
     /// Construct a CoordinateExpr with all elements set to the same scalar value.
-    explicit CoordinateExpr(bool val = false) : Super(val) {}
+    explicit CoordinateExpr(bool val = false) noexcept : Super(val) {}
 
     /// Construct a CoordinateExpr from an Eigen vector.
     template <typename Vector>
     explicit CoordinateExpr(Eigen::MatrixBase<Vector> const& vector) : Super(vector) {}
 
-    CoordinateExpr(CoordinateExpr const&) = default;
-    CoordinateExpr(CoordinateExpr&&) = default;
-    CoordinateExpr& operator=(CoordinateExpr const&) = default;
-    CoordinateExpr& operator=(CoordinateExpr&&) = default;
-    ~CoordinateExpr() = default;
+    CoordinateExpr(CoordinateExpr const&) noexcept = default;
+    CoordinateExpr(CoordinateExpr&&) noexcept = default;
+    CoordinateExpr& operator=(CoordinateExpr const&) noexcept = default;
+    CoordinateExpr& operator=(CoordinateExpr&&) noexcept = default;
+    ~CoordinateExpr() noexcept = default;
 
     /**
      *  @name Logical operators
@@ -70,15 +70,15 @@ public:
      *  These operators do not provide interoperability with scalars.
      */
     //@{
-    CoordinateExpr and_(CoordinateExpr const& rhs) const;
-    CoordinateExpr or_(CoordinateExpr const& rhs) const;
-    CoordinateExpr not_() const;
+    CoordinateExpr and_(CoordinateExpr const& rhs) const noexcept;
+    CoordinateExpr or_(CoordinateExpr const& rhs) const noexcept;
+    CoordinateExpr not_() const noexcept;
     //@}
 };
 
 /// Return true if all elements are true.
 template <int N>
-inline bool all(CoordinateExpr<N> const& expr) {
+inline bool all(CoordinateExpr<N> const& expr) noexcept {
     for (int n = 0; n < N; ++n)
         if (!expr[n]) return false;
     return true;
@@ -86,7 +86,7 @@ inline bool all(CoordinateExpr<N> const& expr) {
 
 /// Return true if any elements are true.
 template <int N>
-inline bool any(CoordinateExpr<N> const& expr) {
+inline bool any(CoordinateExpr<N> const& expr) noexcept {
     for (int n = 0; n < N; ++n)
         if (expr[n]) return true;
     return false;
