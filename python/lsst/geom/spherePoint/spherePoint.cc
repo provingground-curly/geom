@@ -43,9 +43,7 @@ namespace {
 
 using PySpherePoint = py::class_<SpherePoint, std::shared_ptr<SpherePoint>>;
 
-PYBIND11_PLUGIN(spherePoint) {
-    py::module mod("spherePoint");
-
+PYBIND11_MODULE(spherePoint, mod) {
     py::module::import("lsst.sphgeom");
     py::module::import("lsst.geom.angle");
     py::module::import("lsst.geom.coordinates");
@@ -92,8 +90,6 @@ PYBIND11_PLUGIN(spherePoint) {
         return py::make_tuple(cls,
                               py::make_tuple(py::cast(self.getLongitude()), py::cast(self.getLatitude())));
     });
-
-    return mod.ptr();
 }
 
 }  // namespace

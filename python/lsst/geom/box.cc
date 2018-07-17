@@ -34,9 +34,7 @@ namespace {
 using PyBox2I = py::class_<Box2I, std::shared_ptr<Box2I>>;
 using PyBox2D = py::class_<Box2D, std::shared_ptr<Box2D>>;
 
-PYBIND11_PLUGIN(box) {
-    py::module mod("box");
-
+PYBIND11_MODULE(box, mod) {
     py::object modCoordinates = py::module::import("lsst.geom.coordinates");
 
     /* Box2UI */
@@ -185,8 +183,6 @@ PYBIND11_PLUGIN(box) {
     /* module-level typedefs */
     mod.attr("BoxI") = clsBox2I;
     mod.attr("BoxD") = clsBox2D;
-
-    return mod.ptr();
 }
 
 }  // namespace
