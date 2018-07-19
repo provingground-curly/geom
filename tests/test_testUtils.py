@@ -103,12 +103,12 @@ class TestTestUtils(lsst.utils.tests.TestCase):
             min0 = lsst.geom.Point2D(*min0)
             for extent0 in ((2.01, 3.01), (5432, 2342)):
                 extent0 = lsst.geom.Extent2D(*extent0)
-                box0 = lsst.geom.Box2D(min0, extent0)
+                box0 = lsst.geom.Box2D(min0, extent0, invert=False)
                 self.assertBoxesAlmostEqual(box0, box0, maxDiff=1e-7)
                 for deltaExtent in ((0.001, -0.001), (2, -3)):
                     deltaExtent = lsst.geom.Extent2D(*deltaExtent)
                     box1 = lsst.geom.Box2D(
-                        box0.getMin() + deltaExtent, box0.getMax())
+                        box0.getMin() + deltaExtent, box0.getMax(), invert=False)
                     radDiff = math.hypot(*deltaExtent)
                     self.assertBoxesAlmostEqual(
                         box0, box1, maxDiff=radDiff*1.00001)
@@ -117,7 +117,7 @@ class TestTestUtils(lsst.utils.tests.TestCase):
                             box0, box1, maxDiff=radDiff*0.99999)
 
                     box2 = lsst.geom.Box2D(
-                        box0.getMin() - deltaExtent, box0.getMax())
+                        box0.getMin() - deltaExtent, box0.getMax(), invert=False)
                     self.assertBoxesAlmostEqual(
                         box0, box2, maxDiff=radDiff*1.00001)
                     with self.assertRaises(AssertionError):
@@ -125,7 +125,7 @@ class TestTestUtils(lsst.utils.tests.TestCase):
                             box0, box2, maxDiff=radDiff*0.999999)
 
                     box3 = lsst.geom.Box2D(
-                        box0.getMin(), box0.getMax() + deltaExtent)
+                        box0.getMin(), box0.getMax() + deltaExtent, invert=False)
                     self.assertBoxesAlmostEqual(
                         box0, box3, maxDiff=radDiff*1.00001)
                     with self.assertRaises(AssertionError):

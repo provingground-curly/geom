@@ -70,7 +70,7 @@ public:
      *  @param[in] invert    If true (default), swap the minimum and maximum coordinates if
      *                       minimum > maximum instead of creating an empty box.
      */
-    Box2I(Point2I const& minimum, Point2I const& maximum, bool invert = true);
+    Box2I(Point2I const& minimum, Point2I const& maximum, bool invert);
 
     /**
      *  Construct a box from one corner and dimensions.
@@ -84,7 +84,7 @@ public:
      *
      * @throws lsst::pex::exceptions::OverflowError Thrown if the maximum Point2I would overflow.
      */
-    Box2I(Point2I const& corner, Extent2I const& dimensions, bool invert = true);
+    Box2I(Point2I const& corner, Extent2I const& dimensions, bool invert);
 
     /**
      *  Construct an integer box from a floating-point box.
@@ -316,7 +316,7 @@ public:
      *  @param[in] invert    If true (default), swap the minimum and maximum coordinates if
      *                       minimum > maximum instead of creating an empty box.
      */
-    Box2D(Point2D const& minimum, Point2D const& maximum, bool invert = true) noexcept;
+    Box2D(Point2D const& minimum, Point2D const& maximum, bool invert) noexcept;
 
     /**
      *  Construct a box from one corner and dimensions.
@@ -328,7 +328,7 @@ public:
      *  @param[in] invert     If true (default), invert any negative dimensions instead of creating
      *                        an empty box.
      */
-    Box2D(Point2D const& corner, Extent2D const& dimensions, bool invert = true) noexcept;
+    Box2D(Point2D const& corner, Extent2D const& dimensions, bool invert) noexcept;
 
     /**
      *  Construct a floating-point box from an integer box.

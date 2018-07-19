@@ -53,9 +53,9 @@ PYBIND11_PLUGIN(box) {
 
     clsBox2I.def(py::init<>());
     clsBox2I.def(py::init<Point2I const &, Point2I const &, bool>(), "minimum"_a, "maximum"_a,
-                 "invert"_a = true);
+                 "invert"_a);
     clsBox2I.def(py::init<Point2I const &, Extent2I const &, bool>(), "corner"_a, "dimensions"_a,
-                 "invert"_a = true);
+                 "invert"_a);
     clsBox2I.def(py::init<Box2D const &, Box2I::EdgeHandlingEnum>(), "other"_a,
                  "edgeHandling"_a = Box2I::EXPAND);
     clsBox2I.def(py::init<Box2I const &>(), "other"_a);
@@ -108,7 +108,8 @@ PYBIND11_PLUGIN(box) {
                 .format(py::str(py::cast(self.getMin())), py::str(py::cast(self.getMax())));
     });
     clsBox2I.def("__reduce__", [clsBox2I](Box2I const &self) {
-        return py::make_tuple(clsBox2I, make_tuple(py::cast(self.getMin()), py::cast(self.getMax())));
+        return py::make_tuple(clsBox2I, make_tuple(py::cast(self.getMin()), py::cast(self.getMax()),
+                                                   py::cast(true)));
     });
     clsBox2I.def("getSlices", [](Box2I const &self) {
         return py::make_tuple(py::slice(self.getBeginY(), self.getEndY(), 1),
@@ -127,9 +128,9 @@ PYBIND11_PLUGIN(box) {
 
     clsBox2D.def(py::init<>());
     clsBox2D.def(py::init<Point2D const &, Point2D const &, bool>(), "minimum"_a, "maximum"_a,
-                 "invert"_a = true);
+                 "invert"_a);
     clsBox2D.def(py::init<Point2D const &, Extent2D const &, bool>(), "corner"_a, "dimensions"_a,
-                 "invert"_a = true);
+                 "invert"_a);
     clsBox2D.def(py::init<Box2I const &>());
     clsBox2D.def(py::init<Box2D const &>());
 
@@ -179,7 +180,8 @@ PYBIND11_PLUGIN(box) {
                 .format(py::str(py::cast(self.getMin())), py::str(py::cast(self.getMax())));
     });
     clsBox2D.def("__reduce__", [clsBox2D](Box2D const &self) {
-        return py::make_tuple(clsBox2D, make_tuple(py::cast(self.getMin()), py::cast(self.getMax())));
+        return py::make_tuple(clsBox2D, make_tuple(py::cast(self.getMin()), py::cast(self.getMax()),
+                                                   py::cast(true)));
     });
 
     /* module-level typedefs */
