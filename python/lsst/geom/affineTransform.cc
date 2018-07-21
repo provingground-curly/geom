@@ -36,9 +36,7 @@ namespace {
 
 using PyAffineTransform = py::class_<AffineTransform, std::shared_ptr<AffineTransform>>;
 
-PYBIND11_PLUGIN(affineTransform) {
-    py::module mod("affineTransform");
-
+PYBIND11_MODULE(affineTransform, mod) {
     py::module::import("lsst.geom.linearTransform");
     py::module::import("lsst.geom.coordinates");
 
@@ -110,8 +108,6 @@ PYBIND11_PLUGIN(affineTransform) {
 
     /* Non-members */
     mod.def("makeAffineTransformFromTriple", makeAffineTransformFromTriple);
-
-    return mod.ptr();
 }
 
 }  // namespace

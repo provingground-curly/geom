@@ -444,9 +444,7 @@ void declarePointOperators(py::module &mod, PyPoint<int, N> &clsI, PyPoint<doubl
     });
 }
 
-PYBIND11_PLUGIN(coordinates) {
-    py::module mod("coordinates");
-
+PYBIND11_MODULE(coordinates, mod) {
     // Only the interface-level classes are defined here, and these functions
     // call others to define their base classes, since those are never shared.
 
@@ -468,8 +466,6 @@ PYBIND11_PLUGIN(coordinates) {
     auto clsPoint3I = declarePoint3<int>(mod, "I");
     auto clsPoint3D = declarePoint3<double>(mod, "D");
     declarePointOperators(mod, clsPoint3I, clsPoint3D);
-
-    return mod.ptr();
 }
 
 }  // namespace

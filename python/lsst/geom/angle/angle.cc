@@ -48,9 +48,7 @@ void declareAngleComparisonOperators(PyAngle& cls) {
     cls.def("__gt__", [](Angle const& self, OtherT const& other) { return self > other; }, py::is_operator());
 }
 
-PYBIND11_PLUGIN(angle) {
-    py::module mod("angle");
-
+PYBIND11_MODULE(angle, mod) {
     /* AngleUnit */
 
     PyAngleUnit clsAngleUnit(mod, "AngleUnit");
@@ -141,8 +139,6 @@ PYBIND11_PLUGIN(angle) {
     mod.def("masToRad", masToRad);
     mod.def("isAngle", isAngle<Angle>);
     mod.def("isAngle", isAngle<double>);
-
-    return mod.ptr();
 }
 
 }  // namespace

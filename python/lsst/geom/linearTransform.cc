@@ -40,9 +40,7 @@ namespace {
 
 using PyLinearTransform = py::class_<LinearTransform, std::shared_ptr<LinearTransform>>;
 
-PYBIND11_PLUGIN(linearTransform) {
-    py::module mod("linearTransform");
-
+PYBIND11_MODULE(linearTransform, mod) {
     py::module::import("lsst.geom.coordinates");
 
     PyLinearTransform cls(mod, "LinearTransform");
@@ -100,8 +98,6 @@ PYBIND11_PLUGIN(linearTransform) {
     cls.def("__reduce__", [cls](LinearTransform const &self) {
         return py::make_tuple(cls, py::make_tuple(py::cast(self.getMatrix())));
     });
-
-    return mod.ptr();
 }
 
 }  // namespace
