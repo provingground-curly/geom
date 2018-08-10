@@ -50,7 +50,7 @@ AffineTransform::Matrix const AffineTransform::getMatrix() const noexcept {
     return r;
 }
 
-AffineTransform const AffineTransform::invert() const {
+AffineTransform const AffineTransform::inverted() const {
     LinearTransform inv(getLinear().invert());
     return AffineTransform(inv, -inv(getTranslation()));
 }

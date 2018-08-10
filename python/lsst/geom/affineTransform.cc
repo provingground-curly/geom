@@ -94,6 +94,7 @@ PYBIND11_MODULE(affineTransform, mod) {
     });
 
     /* Members */
+    cls.def("inverted", &AffineTransform::inverted);
     cls.def("invert", &AffineTransform::invert);
     cls.def("isIdentity", &AffineTransform::isIdentity);
     cls.def("getTranslation", (Extent2D & (AffineTransform::*)()) & AffineTransform::getTranslation);

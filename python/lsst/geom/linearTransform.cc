@@ -78,6 +78,7 @@ PYBIND11_MODULE(linearTransform, mod) {
     cls.def("getParameterVector", &LinearTransform::getParameterVector);
     cls.def("getMatrix",
             (LinearTransform::Matrix const &(LinearTransform::*)() const) & LinearTransform::getMatrix);
+    cls.def("inverted", &LinearTransform::inverted);
     cls.def("invert", &LinearTransform::invert);
     cls.def("computeDeterminant", &LinearTransform::computeDeterminant);
     cls.def("isIdentity", &LinearTransform::isIdentity);
