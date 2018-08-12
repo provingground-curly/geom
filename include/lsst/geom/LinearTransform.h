@@ -154,12 +154,17 @@ public:
     double& operator[](int i) { return _matrix(i % 2, i / 2); }
     double const& operator[](int i) const { return const_cast<Matrix&>(_matrix)(i % 2, i / 2); }
 
+    //@{
     /**
      * Return the inverse transform.
      *
-     * @throws lsst::geom::SingularTransformException
+     * @deprecated invert is deprecated in favor of inverted
+     *
+     * @throws lsst::geom::SingularTransformException if not invertible
      */
-    LinearTransform const invert() const;
+    LinearTransform const inverted() const;
+    LinearTransform const invert() const { return inverted(); };
+    //@}
 
     /**
      * Return the determinant of the 2x2 matrix

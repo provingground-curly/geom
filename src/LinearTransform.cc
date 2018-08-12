@@ -42,7 +42,7 @@ void LinearTransform::setParameterVector(LinearTransform::ParameterVector const&
     (*this)[YY] = vector[YY];
 }
 
-LinearTransform const LinearTransform::invert() const {
+LinearTransform const LinearTransform::inverted() const {
     Eigen::FullPivLU<Matrix> lu(getMatrix());
     if (!lu.isInvertible()) {
         throw LSST_EXCEPT(SingularTransformException, "Could not compute LinearTransform inverse");

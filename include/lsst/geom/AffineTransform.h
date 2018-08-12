@@ -112,12 +112,15 @@ public:
     AffineTransform(AffineTransform &&) noexcept = default;
     ~AffineTransform() noexcept = default;
 
+    //@{
     /**
      * Return the inverse transform
      *
-     * @throws lsst::geom::SingularTransformException is not invertible
+     * @throws lsst::geom::SingularTransformException if not invertible
      */
-    AffineTransform const invert() const;
+    AffineTransform const inverted() const;
+    AffineTransform const invert() const { return inverted(); };
+    //@}
 
     /** Whether the transform is a no-op. */
     bool isIdentity() const noexcept { return getMatrix().isIdentity(); }
