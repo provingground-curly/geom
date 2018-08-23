@@ -64,8 +64,8 @@ PolynomialFunction2d<packing> simplified(ScaledPolynomialFunction2d<packing> con
         }
     }
     Eigen::VectorXd result = Eigen::VectorXd::Zero(basis.size());
-    for (std::size_t n = 0; n < basis.size(); ++n) {
-        result[n] = static_cast<double>(sums[n]);
+    for (std::size_t i = 0; i < basis.size(); ++i) {
+        result[i] = static_cast<double>(sums[i]);
     }
     return makeFunction2d(basis.getNested(), result);
 }
