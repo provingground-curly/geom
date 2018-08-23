@@ -71,6 +71,7 @@ public:
         _basis(basis),
         _coefficients(basis.size())
     {
+        assert(std::distance(first, last) == static_cast<std::ptrdiff_t>(basis.size()));
         std::copy(first, last, &_coefficients[0]);
     }
 

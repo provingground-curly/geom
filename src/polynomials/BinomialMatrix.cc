@@ -20,16 +20,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include <mutex>
-
 #include "lsst/geom/polynomials/BinomialMatrix.h"
 
 namespace lsst { namespace geom { namespace polynomials {
 
 BinomialMatrix::BinomialMatrix(int nMax) : _matrix(Eigen::MatrixXd::Zero(nMax + 1, nMax + 1)) {
-    _matrix(0, 0) = 1.0;
-    if (nMax < 1) return;
-    _matrix.row(1).head(2).setConstant(1.0);
+    _matrix.col(0).setConstant(1);
+    _matrix.diagonal().setConstant(1);
     for (int i = 2; i <= nMax; ++i) {
         _matrix(i, 0) = 1.0;
         _matrix(i, i) = 1.0;
