@@ -21,6 +21,7 @@ doc/doxygen.conf
 examples/transform
 tests/.tests
 tests/.cache
+tests/test_polynomials
 tests/test_coordinates
 tests/test_spherePoint
 version.py
