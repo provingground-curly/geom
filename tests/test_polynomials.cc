@@ -378,11 +378,11 @@ BOOST_AUTO_TEST_CASE(simplified2d) {
         1.6, -3.0,
         0.2, -1.1, 0.8,
         1.2, 0.7, 1.9, -0.6,
-        5.0, 7.2, -9.1, -8.5
+        5.0, 7.2, -9.1, -8.5, 0.0
     });
     Box2D box(Point2D(-4.0, -3.5), Point2D(2.2, 1.8));
     auto sfunc = ScaledPolynomialFunction2dXY(
-        ScaledPolynomialBasis2dXY(5, box),
+        ScaledPolynomialBasis2dXY(4, box),
         coefficients.begin(), coefficients.end()
     );
     auto func = simplified(sfunc);
