@@ -19,7 +19,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef LSST_AFW_MATH_POLYNOMIALS_PackedInded_h_INCLUDED
+#ifndef LSST_AFW_MATH_POLYNOMIALS_PackedIndex_h_INCLUDED
 #define LSST_AFW_MATH_POLYNOMIALS_PackedIndex_h_INCLUDED
 
 namespace lsst { namespace geom { namespace polynomials {
