@@ -66,7 +66,7 @@ LSST_EXCEPTION_TYPE(SingularTransformException, lsst::pex::exceptions::RuntimeEr
  *  @f]
  *  evaluated at @f$(x_i,y_i)@f$.
  */
-class LinearTransform {
+class LinearTransform final {
 public:
     enum Parameters { XX = 0, YX = 1, XY = 2, YY = 3 };
 

@@ -51,7 +51,7 @@ class Box2D;
  *  Box2I sets the minimum point to the origin for an empty box, and returns -1 for both
  *  elements of the maximum point in that case.
  */
-class Box2I {
+class Box2I final {
 public:
     typedef Point2I Point;
     typedef Extent2I Extent;
@@ -288,7 +288,7 @@ private:
  *  emptiness would have been necessary anyhow, so there was little to gain in
  *  using the minimum > maximum condition to denote an empty box, as was used in Box2I.
  */
-class Box2D {
+class Box2D final {
 public:
     typedef Point2D Point;
     typedef Extent2D Extent;

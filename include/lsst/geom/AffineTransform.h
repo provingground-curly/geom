@@ -72,7 +72,7 @@ namespace geom {
  *  The 2x2 upper left corner of @f$ \mathbf{M} @f$ is the linear part of the transform is simply the
  *  Jacobian of the mapping between @f$(x_i,y_i)@f$ and @f$(x_f,y_f)@f$.
  */
-class AffineTransform {
+class AffineTransform final {
 public:
     enum Parameters { XX = 0, YX = 1, XY = 2, YY = 3, X = 4, Y = 5 };
 
