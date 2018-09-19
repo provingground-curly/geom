@@ -22,17 +22,21 @@
 __all__ = []
 
 from lsst.utils import continueClass
-
-from .spherePoint import SpherePoint
+from ._geom import Angle, AngleUnit
 
 
 @continueClass  # noqa F811
-class SpherePoint:
+class AngleUnit:
 
-    def __iter__(self):
-        for i in (0, 1):
-            yield self[i]
+    def __mul__(self, other):
+        if isinstance(other, (Angle, AngleUnit)):
+            raise NotImplementedError
+        return AngleUnit._mul(self, other)
 
-    def __repr__(self):
-        argList = ["%r*afwGeom.degrees" % (pos.asDegrees(),) for pos in self]
-        return "SpherePoint(%s)" % (", ".join(argList))
+    def __rmul__(self, other):
+        if isinstance(other, (Angle, AngleUnit)):
+            raise NotImplementedError
+        return AngleUnit._rmul(self, other)
+
+    def __reduce__(self):
+        return (AngleUnit, (1.0*self,))

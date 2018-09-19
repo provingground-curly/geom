@@ -1,13 +1,10 @@
 # -*- python -*-
 from lsst.sconsUtils import scripts
 scripts.BasicSConscript.pybind11(
-    [
-        'affineTransform',
-        'angle/angle',
-        'box',
-        'coordinates/coordinates',
-        'linearTransform',
-        'spherePoint/spherePoint',
-    ],
+    ['_geom'],
+    extraSrc={
+        "_geom": ["_AffineTransform.cc", "_Angle.cc", "_Box.cc", "_coordinates.cc",
+                  "_LinearTransform.cc", "_SpherePoint.cc"]
+    },
     addUnderscore=False
 )

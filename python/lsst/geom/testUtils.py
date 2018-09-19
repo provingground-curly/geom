@@ -30,7 +30,7 @@ import math
 import numpy as np
 
 import lsst.utils.tests
-from .angle import arcseconds
+from ._geom import arcseconds
 
 
 def extraMsg(msg):
