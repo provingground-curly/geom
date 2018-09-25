@@ -315,7 +315,7 @@ public:
 
 // Hash functions
 template <typename T, int N>
-std::size_t hash_value(Point<T, N> const &point);
+std::size_t hash_value(Point<T, N> const &point) noexcept;
 
 typedef Point<int, 2> PointI;
 typedef Point<int, 2> Point2I;
@@ -371,5 +371,14 @@ Extent<double, N> operator-(Point<int, N> const &lhs, Point<double, N> const &rh
 
 }  // namespace geom
 }  // namespace lsst
+
+namespace std {
+template <typename T, int N>
+struct hash<lsst::geom::Point<T, N>> {
+    using argument_type = lsst::geom::Point<T, N>;
+    using result_type = std::size_t;
+    result_type operator()(argument_type const &x) const noexcept { return lsst::geom::hash_value(x); }
+};
+}  // namespace std
 
 #endif

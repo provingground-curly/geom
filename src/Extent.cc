@@ -19,6 +19,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include "lsst/utils/hashCombine.h"
 #include "lsst/geom/CoordinateBase.h"
 #include "lsst/geom/Point.h"
 #include "lsst/geom/Extent.h"
@@ -122,6 +123,13 @@ Extent<int, N> ceil(Extent<double, N> const &input) noexcept {
     return result;
 }
 
+template <typename T, int N>
+std::size_t hash_value(Extent<T, N> const &extent) noexcept {
+    std::size_t result = 0;     // Completely arbitrary seed
+    for (int n = 0; n < N; ++n) result = utils::hashCombine(result, extent[n]);
+    return result;
+}
+
 #ifndef DOXYGEN
 
 template class ExtentBase<int, 2>;
@@ -143,6 +151,11 @@ template Extent<int, 2> floor(Extent<double, 2> const &);
 template Extent<int, 3> floor(Extent<double, 3> const &);
 template Extent<int, 2> ceil(Extent<double, 2> const &);
 template Extent<int, 3> ceil(Extent<double, 3> const &);
+
+template std::size_t hash_value(Extent<int, 2> const &extent) noexcept;
+template std::size_t hash_value(Extent<int, 3> const &extent) noexcept;
+template std::size_t hash_value(Extent<double, 2> const &extent) noexcept;
+template std::size_t hash_value(Extent<double, 3> const &extent) noexcept;
 
 #endif  // !DOXYGEN
 
