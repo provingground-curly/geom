@@ -24,6 +24,8 @@
 
 #include "boost/test/unit_test.hpp"
 
+#include "lsst/utils/tests.h"
+
 #include "lsst/sphgeom/Vector3d.h"
 #include "lsst/geom/SpherePoint.h"
 #include "lsst/pex/exceptions/Exception.h"
@@ -31,7 +33,7 @@
 /*
  * Unit tests for C++-only functionality in SpherePoint.
  *
- * See testSpherePoint.py for remaining unit tests.
+ * See test_spherePoint.py for remaining unit tests.
  */
 namespace lsst {
 namespace geom {
@@ -125,6 +127,15 @@ BOOST_AUTO_TEST_CASE(getItemError) {
 }
 
 // TODO: add a test for propagation of ostream errors
+
+BOOST_AUTO_TEST_CASE(Hash) {
+    utils::assertValidHash<SpherePoint>();
+
+    utils::assertHashesEqual(SpherePoint(0 * degrees, -24 * degrees),
+                             SpherePoint(0 * degrees, -24 * degrees));
+    utils::assertHashesEqual(SpherePoint(HALFPI * radians, 0.0 * radians),
+                             SpherePoint(sphgeom::Vector3d(0, 1, 0)));
+}
 
 }  // namespace geom
 }  // namespace lsst

@@ -285,6 +285,9 @@ public:
      */
     bool operator!=(SpherePoint const& other) const noexcept;
 
+    /// Return a hash of this object.
+    std::size_t hash_value() const noexcept;
+
     /**
      * Orientation at this point of the great circle arc to another point.
      *
@@ -407,5 +410,14 @@ std::ostream& operator<<(std::ostream& os, SpherePoint const& point);
 
 }  // namespace geom
 }  // namespace lsst
+
+namespace std {
+template <>
+struct hash<lsst::geom::SpherePoint> {
+    using argument_type = lsst::geom::SpherePoint;
+    using result_type = size_t;
+    size_t operator()(argument_type const& x) const noexcept { return x.hash_value(); }
+};
+}  // namespace std
 
 #endif /* LSST_GEOM_SPHEREPOINT_H_ */

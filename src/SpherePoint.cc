@@ -25,6 +25,7 @@
 
 #include "Eigen/Geometry"
 
+#include "lsst/utils/hashCombine.h"
 #include "lsst/geom/SpherePoint.h"
 #include "lsst/geom/sphgeomUtils.h"
 #include "lsst/pex/exceptions.h"
@@ -149,6 +150,11 @@ bool SpherePoint::operator==(SpherePoint const& other) const noexcept {
 }
 
 bool SpherePoint::operator!=(SpherePoint const& other) const noexcept { return !(*this == other); }
+
+std::size_t SpherePoint::hash_value() const noexcept {
+    // Completely arbitrary seed
+    return utils::hashCombine(17, _longitude, _latitude);
+}
 
 Angle SpherePoint::bearingTo(SpherePoint const& other) const {
     Angle const deltaLon = other.getLongitude() - this->getLongitude();

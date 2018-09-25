@@ -22,6 +22,7 @@
 #include <cmath>
 #include <limits>
 
+#include "lsst/utils/hashCombine.h"
 #include "lsst/geom/Box.h"
 
 namespace lsst {
@@ -218,6 +219,11 @@ bool Box2I::operator!=(Box2I const& other) const noexcept {
     return other._minimum != this->_minimum || other._dimensions != this->_dimensions;
 }
 
+std::size_t Box2I::hash_value() const noexcept {
+    // Completely arbitrary seed
+    return utils::hashCombine(17, _minimum, _dimensions);
+}
+
 std::vector<Point2I> Box2I::getCorners() const {
     std::vector<Point2I> retVec;
     retVec.push_back(getMin());
@@ -396,6 +402,16 @@ bool Box2D::operator==(Box2D const& other) const noexcept {
 bool Box2D::operator!=(Box2D const& other) const noexcept {
     return !(other.isEmpty() && other.isEmpty()) &&
            (other._minimum != this->_minimum || other._maximum != this->_maximum);
+}
+
+std::size_t Box2D::hash_value() const noexcept {
+    if (isEmpty()) {
+        // All empty boxes are equal and must have equal hashes
+        return 179;
+    } else {
+        // Completely arbitrary seed
+        return utils::hashCombine(17, _minimum, _maximum);
+    }
 }
 
 std::vector<Point2D> Box2D::getCorners() const {
