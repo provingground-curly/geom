@@ -127,7 +127,7 @@ void wrapAngle(utils::python::WrapperCollection & wrappers) {
         }
     );
 
-    wrappers.wrapFunctions(
+    wrappers.wrap(
         [](auto & mod) mutable {
             mod.attr("PI") = py::float_(PI);
             mod.attr("TWOPI") = py::float_(TWOPI);

@@ -225,7 +225,7 @@ PyExtent<T, 3> declareExtent3(utils::python::WrapperCollection & wrappers, const
 template <int N>
 void declareExtentOperators(utils::python::WrapperCollection & wrapper,
                          PyExtent<int, N> &clsI, PyExtent<double, N> &clsD) {
-    wrapper.wrapFunctions(
+    wrapper.wrap(
         [clsI, clsD](auto & mod) mutable {
             // Python's integer division works differently than C++'s for negative numbers - Python
             // uses floor (rounds towards more negative), while C++ truncates (rounds towards zero).
@@ -436,7 +436,7 @@ PyPoint<T, 3> declarePoint3(utils::python::WrapperCollection & wrappers, std::st
 template <int N>
 void declarePointOperators(utils::python::WrapperCollection & wrappers,
                         PyPoint<int, N> &clsI, PyPoint<double, N> &clsD) {
-    wrappers.wrapFunctions(
+    wrappers.wrap(
         [clsI, clsD](auto & mod) mutable {
             clsI.def("__iadd__", [](Point<int, N> &self, Extent<int, N> const &other) {
                 self += other;
