@@ -24,7 +24,7 @@ __all__ = ["CoordinateExpr", "Extent", "ExtentI", "ExtentD",
 
 from lsst.utils import TemplateMeta
 
-from . import coordinates
+from . import _geom
 
 
 def _coordinateStr(self):
@@ -50,8 +50,8 @@ class CoordinateExpr(metaclass=TemplateMeta):
     __reduce__ = _coordinateReduce
 
 
-CoordinateExpr.register(2, coordinates.CoordinateExpr2)
-CoordinateExpr.register(3, coordinates.CoordinateExpr3)
+CoordinateExpr.register(2, _geom.CoordinateExpr2)
+CoordinateExpr.register(3, _geom.CoordinateExpr3)
 
 
 class Extent(metaclass=TemplateMeta):
@@ -65,12 +65,12 @@ class Extent(metaclass=TemplateMeta):
     __reduce__ = _coordinateReduce
 
 
-Extent.register((int, 2), coordinates.Extent2I)
-Extent.register((float, 2), coordinates.Extent2D)
-Extent.register((int, 3), coordinates.Extent3I)
-Extent.register((float, 3), coordinates.Extent3D)
-ExtentI = coordinates.Extent2I
-ExtentD = coordinates.Extent2D
+Extent.register((int, 2), _geom.Extent2I)
+Extent.register((float, 2), _geom.Extent2D)
+Extent.register((int, 3), _geom.Extent3I)
+Extent.register((float, 3), _geom.Extent3D)
+ExtentI = _geom.Extent2I
+ExtentD = _geom.Extent2D
 
 
 class Point(metaclass=TemplateMeta):
@@ -84,9 +84,9 @@ class Point(metaclass=TemplateMeta):
     __reduce__ = _coordinateReduce
 
 
-Point.register((int, 2), coordinates.Point2I)
-Point.register((float, 2), coordinates.Point2D)
-Point.register((int, 3), coordinates.Point3I)
-Point.register((float, 3), coordinates.Point3D)
-PointI = coordinates.Point2I
-PointD = coordinates.Point2D
+Point.register((int, 2), _geom.Point2I)
+Point.register((float, 2), _geom.Point2D)
+Point.register((int, 3), _geom.Point3I)
+Point.register((float, 3), _geom.Point3D)
+PointI = _geom.Point2I
+PointD = _geom.Point2D

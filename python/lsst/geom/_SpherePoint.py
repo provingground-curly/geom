@@ -19,5 +19,20 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-from .coordinates import *
-from .coordinatesContinued import *
+__all__ = []
+
+from lsst.utils import continueClass
+
+from ._geom import SpherePoint
+
+
+@continueClass  # noqa F811
+class SpherePoint:
+
+    def __iter__(self):
+        for i in (0, 1):
+            yield self[i]
+
+    def __repr__(self):
+        argList = ["%r*afwGeom.degrees" % (pos.asDegrees(),) for pos in self]
+        return "SpherePoint(%s)" % (", ".join(argList))
