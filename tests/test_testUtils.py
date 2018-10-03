@@ -97,6 +97,14 @@ class TestTestUtils(lsst.utils.tests.TestCase):
                     maxDiff=0.009999*lsst.geom.arcseconds,
                 )
 
+        # Compare with NaN
+        ang0 = float("NaN")*lsst.geom.degrees
+        ang1 = 1.*lsst.geom.degrees
+        with self.assertRaises(AssertionError):
+            self.assertAnglesAlmostEqual(ang0, ang1)
+        with self.assertRaises(AssertionError):
+            self.assertAnglesAlmostEqual(ang1, ang0)
+
     def testAssertBoxesAlmostEqual(self):
         """Test assertBoxesAlmostEqual"""
         for min0 in ((0, 0), (-1000.5, 5000.1)):

@@ -46,6 +46,9 @@ def assertAnglesAlmostEqual(testCase, ang0, ang1, maxDiff=0.001*arcseconds,
                             ignoreWrap=True, msg="Angles differ"):
     r"""Assert that two `~lsst.afw.geom.Angle`\ s are almost equal, ignoring wrap differences by default
 
+    If both arguments are NaN the assert will pass.  If one of the arguments
+    is NaN but the other is not the assert will fail.
+
     Parameters
     ----------
     testCase : `unittest.TestCase`
@@ -68,6 +71,14 @@ def assertAnglesAlmostEqual(testCase, ang0, ang1, maxDiff=0.001*arcseconds,
     AssertionError
         Raised if the difference is greater than ``maxDiff``
     """
+    isNan0 = math.isnan(ang0.asRadians())
+    isNan1 = math.isnan(ang1.asRadians())
+    if isNan0 and isNan1:
+        return
+    if isNan0:
+        testCase.fail("ang0 is NaN")
+    if isNan1:
+        testCase.fail("ang1 is NaN")
     measDiff = ang1 - ang0
     if ignoreWrap:
         measDiff = measDiff.wrapCtr()
