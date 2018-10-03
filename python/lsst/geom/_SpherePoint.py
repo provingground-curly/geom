@@ -34,5 +34,5 @@ class SpherePoint:
             yield self[i]
 
     def __repr__(self):
-        argList = ["%r*afwGeom.degrees" % (pos.asDegrees(),) for pos in self]
+        argList = ["%r*geom.degrees" % (pos.asDegrees(),) for pos in self]
         return "SpherePoint(%s)" % (", ".join(argList))
