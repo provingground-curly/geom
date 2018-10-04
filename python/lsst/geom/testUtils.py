@@ -19,7 +19,8 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-"""Utilities that should be imported into the lsst.geom namespace when lsst.geom is used
+"""Utilities that should be imported into the lsst.geom namespace when
+lsst.geom is used
 
 In the case of the assert functions, importing them makes them available in lsst.utils.tests.TestCase
 """
@@ -44,22 +45,29 @@ def extraMsg(msg):
 @lsst.utils.tests.inTestCase
 def assertAnglesAlmostEqual(testCase, ang0, ang1, maxDiff=0.001*arcseconds,
                             ignoreWrap=True, msg="Angles differ"):
-    r"""Assert that two `~lsst.afw.geom.Angle`\ s are almost equal, ignoring wrap differences by default
+    r"""Assert that two `~lsst.geom.Angle`\ s are almost equal, ignoring
+    wrap differences by default.
+
+    If both arguments are NaN the assert will pass.  If one of the arguments
+    is NaN but the other is not the assert will fail.
 
     Parameters
     ----------
     testCase : `unittest.TestCase`
-        test case the test is part of; an object supporting one method: fail(self, msgStr)
-    ang0 : `lsst.afw.geom.Angle`
+        test case the test is part of; an object supporting one method:
+        fail(self, msgStr)
+    ang0 : `lsst.geom.Angle`
         angle 0
-    ang1 : `an lsst.afw.geom.Angle`
+    ang1 : `lsst.geom.Angle`
         angle 1
-    maxDiff : `an lsst.afw.geom.Angle`
+    maxDiff : `lsst.geom.Angle`
         maximum difference between the two angles
     ignoreWrap : `bool`
         ignore wrap when comparing the angles?
-        - if True then wrap is ignored, e.g. 0 and 360 degrees are considered equal
-        - if False then wrap matters, e.g. 0 and 360 degrees are considered different
+        - if True then wrap is ignored, e.g. 0 and 360 degrees are considered
+          equal
+        - if False then wrap matters, e.g. 0 and 360 degrees are considered
+          different
     msg : `str`
         exception message prefix; details of the error are appended after ": "
 
@@ -68,6 +76,14 @@ def assertAnglesAlmostEqual(testCase, ang0, ang1, maxDiff=0.001*arcseconds,
     AssertionError
         Raised if the difference is greater than ``maxDiff``
     """
+    isNan0 = math.isnan(ang0.asRadians())
+    isNan1 = math.isnan(ang1.asRadians())
+    if isNan0 and isNan1:
+        return
+    if isNan0:
+        testCase.fail("ang0 is NaN")
+    if isNan1:
+        testCase.fail("ang1 is NaN")
     measDiff = ang1 - ang0
     if ignoreWrap:
         measDiff = measDiff.wrapCtr()
@@ -168,20 +184,26 @@ def assertPairListsAlmostEqual(testCase, list0, list1, maxDiff=1e-7, msg=None):
 
 @lsst.utils.tests.inTestCase
 def assertSpherePointsAlmostEqual(testCase, sp0, sp1, maxSep=0.001*arcseconds, msg=""):
-    r"""Assert that two `~lsst.afw.geom.SpherePoint`\ s are almost equal
+    r"""Assert that two `~lsst.geom.SpherePoint`\ s are almost equal
 
     Parameters
     ----------
     testCase : `unittest.TestCase`
-        test case the test is part of; an object supporting one method: fail(self, msgStr)
-    sp0 : `lsst.afw.geom.SpherePoint`
+        test case the test is part of; an object supporting one method:
+        fail(self, msgStr)
+    sp0 : `lsst.geom.SpherePoint`
         SpherePoint 0
-    sp1 : `lsst.afw.geom.SpherePoint`
+    sp1 : `lsst.geom.SpherePoint`
         SpherePoint 1
-    maxSep : `lsst.afw.geom.Angle`
+    maxSep : `lsst.geom.Angle`
         maximum separation
     msg : `str`
         extra information to be printed with any error message
+
+    Raises
+    ------
+    AssertionError
+        The SpherePoints are not equal.
     """
     if sp0.separation(sp1) > maxSep:
         testCase.fail("Angular separation between %s and %s = %s\" > maxSep = %s\"%s" %
@@ -190,20 +212,26 @@ def assertSpherePointsAlmostEqual(testCase, sp0, sp1, maxSep=0.001*arcseconds, m
 
 @lsst.utils.tests.inTestCase
 def assertSpherePointListsAlmostEqual(testCase, splist0, splist1, maxSep=0.001*arcseconds, msg=None):
-    r"""Assert that two lists of `~lsst.afw.geom.SpherePoint`\ s are almost equal
+    r"""Assert that two lists of `~lsst.geom.SpherePoint`\ s are almost equal
 
     Parameters
     ----------
     testCase : `unittest.TestCase`
-        test case the test is part of; an object supporting one method: fail(self, msgStr)
-    splist0 : `list` of `lsst.afw.geom.SpherePoint`
+        test case the test is part of; an object supporting one method:
+        fail(self, msgStr)
+    splist0 : `list` of `lsst.geom.SpherePoint`
         list of SpherePoints 0
-    splist1 : `list` of `lsst.afw.geom.SpherePoint`
+    splist1 : `list` of `lsst.geom.SpherePoint`
         list of SpherePoints 1
-    maxSep : `lsst.afw.geom.Angle`
+    maxSep : `lsst.geom.Angle`
         maximum separation
     msg : `str`
         exception message prefix; details of the error are appended after ": "
+
+    Raises
+    ------
+    AssertionError
+        The SpherePoint lists are not equal.
     """
     testCase.assertEqual(len(splist0), len(splist1), msg=msg)
     sepArr = np.array([sp0.separation(sp1)
@@ -218,15 +246,17 @@ def assertSpherePointListsAlmostEqual(testCase, splist0, splist1, maxSep=0.001*a
 
 @lsst.utils.tests.inTestCase
 def assertBoxesAlmostEqual(testCase, box0, box1, maxDiff=1e-7, msg="Boxes differ"):
-    """Assert that two boxes (`~lsst.afw.geom.Box2D` or `~lsst.afw.geom.Box2I`) are almost equal
+    """Assert that two boxes (`~lsst.geom.Box2D` or `~lsst.geom.Box2I`) are
+    almost equal
 
     Parameters
     ----------
     testCase : `unittest.TestCase`
-        test case the test is part of; an object supporting one method: fail(self, msgStr)
-    box0 : `lsst.afw.geom.Box2D` or `lsst.afw.geom.Box2I`
+        test case the test is part of; an object supporting one method:
+        fail(self, msgStr)
+    box0 : `lsst.geom.Box2D` or `lsst.geom.Box2I`
         box 0
-    box1 : `lsst.afw.geom.Box2D` or `lsst.afw.geom.Box2I`
+    box1 : `lsst.geom.Box2D` or `lsst.geom.Box2I`
         box 1
     maxDiff : `float`
         maximum radial separation between the min points and max points
@@ -236,7 +266,8 @@ def assertBoxesAlmostEqual(testCase, box0, box1, maxDiff=1e-7, msg="Boxes differ
     Raises
     ------
     AssertionError
-        Raised if the radial difference of the min points or max points is greater than maxDiff
+        Raised if the radial difference of the min points or max points is
+        greater than maxDiff
 
     Notes
     -----

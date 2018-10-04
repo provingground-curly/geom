@@ -41,7 +41,7 @@ from numpy.testing import assert_allclose
 
 import lsst.utils.tests
 import lsst.sphgeom
-import lsst.geom as afwGeom
+import lsst.geom as geom
 import lsst.pex.exceptions as pexEx
 
 from lsst.geom import degrees, radians, SpherePoint
@@ -53,11 +53,11 @@ class SpherePointTestSuite(lsst.utils.tests.TestCase):
     def setUp(self):
         self._dataset = SpherePointTestSuite.positions()
         self._poleLatitudes = [
-            afwGeom.HALFPI*afwGeom.radians,
-            6.0*afwGeom.hours,
-            90.0*afwGeom.degrees,
-            5400.0*afwGeom.arcminutes,
-            324000.0*afwGeom.arcseconds,
+            geom.HALFPI*geom.radians,
+            6.0*geom.hours,
+            90.0*geom.degrees,
+            5400.0*geom.arcminutes,
+            324000.0*geom.arcseconds,
         ]
 
     @property
@@ -89,12 +89,12 @@ class SpherePointTestSuite(lsst.utils.tests.TestCase):
         # Ensure corner cases are tested.
         points += [
             (0.0*degrees, 0.0*degrees),
-            (afwGeom.PI*radians, -6.0*degrees),
+            (geom.PI*radians, -6.0*degrees),
             (42.0*degrees, -90.0*degrees),
-            (172.0*degrees, afwGeom.HALFPI*radians),
+            (172.0*degrees, geom.HALFPI*radians),
             (360.0*degrees, 45.0*degrees),
             (-278.0*degrees, -42.0*degrees),
-            (765.0*degrees, 0.25*afwGeom.PI*radians),
+            (765.0*degrees, 0.25*geom.PI*radians),
             (180.0*degrees, nan*radians),
             (inf*degrees, 45.0*degrees),
             (nan*degrees, -8.3*degrees),
@@ -196,7 +196,7 @@ class SpherePointTestSuite(lsst.utils.tests.TestCase):
                 SpherePoint(lon.asDegrees(), lat.asDegrees(), degrees),
                 SpherePoint(lon.asRadians(), lat.asRadians(), radians),
             ):
-                self.assertIsInstance(point.getLongitude(), afwGeom.Angle)
+                self.assertIsInstance(point.getLongitude(), geom.Angle)
                 # Behavior for non-finite points is undefined; depends on internal
                 # data representation
                 if point.isFinite():
@@ -216,7 +216,7 @@ class SpherePointTestSuite(lsst.utils.tests.TestCase):
 
     def testGetPosition(self):
         for sp in self.pointSet:
-            for units in (degrees, afwGeom.hours, radians):
+            for units in (degrees, geom.hours, radians):
                 point = sp.getPosition(units)
                 expectedPoint = [val.asAngularUnits(units) for val in sp]
                 assert_allclose(point, expectedPoint, atol=1e-15)
@@ -244,7 +244,7 @@ class SpherePointTestSuite(lsst.utils.tests.TestCase):
                 SpherePoint(lon.asDegrees(), lat.asDegrees(), degrees),
                 SpherePoint(lon.asRadians(), lat.asRadians(), radians),
             ):
-                self.assertIsInstance(point.getLatitude(), afwGeom.Angle)
+                self.assertIsInstance(point.getLatitude(), geom.Angle)
                 # Behavior for non-finite points is undefined; depends on internal
                 # data representation
                 if point.isFinite():
@@ -400,10 +400,10 @@ class SpherePointTestSuite(lsst.utils.tests.TestCase):
         """Test if indexing returns the expected value.
         """
         for point in self.pointSet:
-            self.assertIsInstance(point[-2], afwGeom.Angle)
-            self.assertIsInstance(point[-1], afwGeom.Angle)
-            self.assertIsInstance(point[0], afwGeom.Angle)
-            self.assertIsInstance(point[1], afwGeom.Angle)
+            self.assertIsInstance(point[-2], geom.Angle)
+            self.assertIsInstance(point[-1], geom.Angle)
+            self.assertIsInstance(point[0], geom.Angle)
+            self.assertIsInstance(point[1], geom.Angle)
 
             if not math.isnan(point.getLongitude().asRadians()):
                 self.assertEqual(point.getLongitude(), point[-2])
@@ -527,7 +527,7 @@ class SpherePointTestSuite(lsst.utils.tests.TestCase):
             end = SpherePoint(trial['lonEnd']*degrees, trial['latEnd']*degrees)
             bearing = origin.bearingTo(end)
 
-            self.assertIsInstance(bearing, afwGeom.Angle)
+            self.assertIsInstance(bearing, geom.Angle)
             if origin.isFinite() and end.isFinite():
                 self.assertGreaterEqual(bearing.asDegrees(), 0.0)
                 self.assertLess(bearing.asDegrees(), 360.0)
@@ -587,9 +587,9 @@ class SpherePointTestSuite(lsst.utils.tests.TestCase):
             180.0*degrees, self.nextDown(northPoleSame.getLatitude()))
 
         self.assertAnglesAlmostEqual(southPole.bearingTo(northPoleSame),
-                                     afwGeom.HALFPI*afwGeom.radians)
+                                     geom.HALFPI*geom.radians)
         self.assertAnglesAlmostEqual(southPole.bearingTo(northPoleOpposite),
-                                     (afwGeom.PI + afwGeom.HALFPI)*afwGeom.radians)
+                                     (geom.PI + geom.HALFPI)*geom.radians)
 
     def testSeparationValueGeneric(self):
         """Test if separation() returns the correct value.
@@ -610,7 +610,7 @@ class SpherePointTestSuite(lsst.utils.tests.TestCase):
                     expected = 0.0
 
                 sep = point1.separation(point2)
-                self.assertIsInstance(sep, afwGeom.Angle)
+                self.assertIsInstance(sep, geom.Angle)
                 if point1.isFinite() and point2.isFinite():
                     self.assertGreaterEqual(sep.asDegrees(), 0.0)
                     self.assertLessEqual(sep.asDegrees(), 180.0)
@@ -635,7 +635,7 @@ class SpherePointTestSuite(lsst.utils.tests.TestCase):
             32.7930, spica.separation(arcturus).asDegrees(), 4)
 
         # Verify small angles: along a constant ra, add an arcsec to spica dec.
-        epsilon = 1.0*afwGeom.arcseconds
+        epsilon = 1.0*geom.arcseconds
         spicaPlus = SpherePoint(spica.getLongitude(),
                                 spica.getLatitude() + epsilon)
 
@@ -732,7 +732,7 @@ class SpherePointTestSuite(lsst.utils.tests.TestCase):
         for lon, lat in self._dataset:
             point = SpherePoint(lon, lat)
             dist = point.separation(pole)
-            newPoint = point.rotated(pole, -32.4*afwGeom.radians)
+            newPoint = point.rotated(pole, -32.4*geom.radians)
 
             self.assertNotAlmostEqual(point.getLongitude().asDegrees(),
                                       newPoint.getLongitude().asDegrees())
@@ -860,20 +860,20 @@ class SpherePointTestSuite(lsst.utils.tests.TestCase):
     def testOffsetTangentPlane(self):
         """Test offsets on a tangent plane (good for small angles)"""
 
-        c0 = SpherePoint(0.0, 0.0, afwGeom.degrees)
+        c0 = SpherePoint(0.0, 0.0, geom.degrees)
 
         for dRaDeg in (0.0123, 0.0, -0.0321):
-            dRa = dRaDeg*afwGeom.degrees
+            dRa = dRaDeg*geom.degrees
             for dDecDeg in (0.0543, 0.0, -0.0987):
-                dDec = dDecDeg*afwGeom.degrees
+                dDec = dDecDeg*geom.degrees
                 c1 = SpherePoint(dRa, dDec)
 
                 offset = c0.getTangentPlaneOffset(c1)
 
                 # This more-or-less works for small angles because c0 is 0,0
                 expectedOffset = [
-                    math.tan(dRa.asRadians())*afwGeom.radians,
-                    math.tan(dDec.asRadians())*afwGeom.radians,
+                    math.tan(dRa.asRadians())*geom.radians,
+                    math.tan(dDec.asRadians())*geom.radians,
                 ]
 
                 for i in range(2):
@@ -942,7 +942,7 @@ class SpherePointTestSuite(lsst.utils.tests.TestCase):
     def testAverageSpherePoint(self):
         """Test the averageSpherePoint function"""
 
-        def checkCircle(center, start, numPts, maxSep=1.0e-9*afwGeom.arcseconds):
+        def checkCircle(center, start, numPts, maxSep=1.0e-9*geom.arcseconds):
             """Generate points in a circle; test that average is in the center
             """
             coords = []
@@ -950,17 +950,17 @@ class SpherePointTestSuite(lsst.utils.tests.TestCase):
             for ii in range(numPts):
                 new = start.rotated(center, ii*deltaAngle)
                 coords.append(new)
-            result = afwGeom.averageSpherePoint(coords)
+            result = geom.averageSpherePoint(coords)
             self.assertSpherePointsAlmostEqual(center, result, maxSep=maxSep)
 
         for numPts in (2, 3, 120):
             for center, start in (
                     # RA=0=360 border
-                    (SpherePoint(0, 0, afwGeom.degrees), SpherePoint(5, 0, afwGeom.degrees)),
+                    (SpherePoint(0, 0, geom.degrees), SpherePoint(5, 0, geom.degrees)),
                     # North pole
-                    (SpherePoint(0, 90, afwGeom.degrees), SpherePoint(0, 85, afwGeom.degrees)),
+                    (SpherePoint(0, 90, geom.degrees), SpherePoint(0, 85, geom.degrees)),
                     # South pole
-                    (SpherePoint(0, -90, afwGeom.degrees), SpherePoint(0, -85, afwGeom.degrees)),
+                    (SpherePoint(0, -90, geom.degrees), SpherePoint(0, -85, geom.degrees)),
             ):
                 checkCircle(center=center, start=start, numPts=numPts)
 
