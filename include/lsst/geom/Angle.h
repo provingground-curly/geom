@@ -94,6 +94,9 @@ public:
      */
     constexpr bool operator==(AngleUnit const& rhs) const noexcept;
 
+    /// Return a hash of this object.
+    std::size_t hash_value() const noexcept { return std::hash<double>()(_val); }
+
 private:
     double _val;
 };
@@ -271,6 +274,9 @@ public:
 
 #undef ANGLE_COMP
 
+    /// Return a hash of this object.
+    std::size_t hash_value() const noexcept { return std::hash<double>()(_val); }
+
 private:
     double _val;
 };
@@ -444,5 +450,21 @@ inline Angle Angle::separation(Angle const& other) const noexcept { return (*thi
 
 }  // namespace geom
 }  // namespace lsst
+
+namespace std {
+template <>
+struct hash<lsst::geom::AngleUnit> {
+    using argument_type = lsst::geom::AngleUnit;
+    using result_type = size_t;
+    size_t operator()(argument_type const& x) const noexcept { return x.hash_value(); }
+};
+
+template <>
+struct hash<lsst::geom::Angle> {
+    using argument_type = lsst::geom::Angle;
+    using result_type = size_t;
+    size_t operator()(argument_type const& x) const noexcept { return x.hash_value(); }
+};
+}  // namespace std
 
 #endif  // if !defined(LSST_GEOM_ANGLE_H)

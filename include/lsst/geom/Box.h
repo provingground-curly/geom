@@ -252,6 +252,9 @@ public:
      */
     bool operator!=(Box2I const& other) const noexcept;
 
+    /// Return a hash of this object.
+    std::size_t hash_value() const noexcept;
+
     /**
      * Get the corner points
      *
@@ -492,6 +495,9 @@ public:
      */
     bool operator!=(Box2D const& other) const noexcept;
 
+    /// Return a hash of this object.
+    std::size_t hash_value() const noexcept;
+
     /**
      * Get the corner points
      *
@@ -527,5 +533,21 @@ std::ostream& operator<<(std::ostream& os, Box2D const& box);
 
 }  // namespace geom
 }  // namespace lsst
+
+namespace std {
+template <>
+struct hash<lsst::geom::Box2I> {
+    using argument_type = lsst::geom::Box2I;
+    using result_type = size_t;
+    size_t operator()(argument_type const& x) const noexcept { return x.hash_value(); }
+};
+
+template <>
+struct hash<lsst::geom::Box2D> {
+    using argument_type = lsst::geom::Box2D;
+    using result_type = size_t;
+    size_t operator()(argument_type const& x) const noexcept { return x.hash_value(); }
+};
+}  // namespace std
 
 #endif

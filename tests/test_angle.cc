@@ -20,47 +20,25 @@
  */
 
 #define BOOST_TEST_DYN_LINK
-#define BOOST_TEST_MODULE coordinates
+#define BOOST_TEST_MODULE AngleCpp
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wunused-variable"
 #include "boost/test/unit_test.hpp"
 #pragma clang diagnostic pop
-#include "boost/format.hpp"
 
 #include "lsst/utils/tests.h"
 
-#include "lsst/geom/Point.h"
-#include "lsst/geom/Extent.h"
+#include "lsst/geom/Angle.h"
 
 namespace lsst {
 namespace geom {
 
-// Most Extent and Point operators are tested in coordinates.py in Python, but
-// division of negative integers has different behavior in the two languages,
-// so we test the C++ version here.
-BOOST_AUTO_TEST_CASE(Operators) {
-    lsst::geom::Extent2I e1(12, -23);
-    BOOST_CHECK_EQUAL(e1 / 4, lsst::geom::Extent2I(e1.getX() / 4, e1.getY() / 4));
-    lsst::geom::Extent2I e2(e1);
-    e2 /= 3;
-    BOOST_CHECK_EQUAL(e2, lsst::geom::Extent2I(e1.getX() / 3, e1.getY() / 3));
-}
-
 BOOST_AUTO_TEST_CASE(Hash) {
-    utils::assertValidHash<Extent2I>();
-    utils::assertValidHash<Extent2D>();
-    utils::assertValidHash<Extent3I>();
-    utils::assertValidHash<Extent3D>();
-    utils::assertValidHash<Point2I>();
-    utils::assertValidHash<Point2D>();
-    utils::assertValidHash<Point3I>();
-    utils::assertValidHash<Point3D>();
+    utils::assertValidHash<Angle>();
+    utils::assertHashesEqual(0.0 * radians, 0.0 * degrees);
 
-    utils::assertHashesEqual(Extent2I(12, -23), Extent2I(12, -23));
-    utils::assertHashesEqual(Extent2I(0, 0), Extent2I());
-
-    utils::assertHashesEqual(Point2D(3.4, -2.7), Point2D(3.4, -2.7));
-    utils::assertHashesEqual(Point2D(0, 0), Point2D());
+    utils::assertValidHash<AngleUnit>();
+    utils::assertHashesEqual(degrees, AngleUnit(PI / 180.0));
 }
 
 }  // namespace geom

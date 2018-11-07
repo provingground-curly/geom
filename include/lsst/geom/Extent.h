@@ -389,6 +389,10 @@ Extent<T, 3>::Extent(Point<U, 3> const &other) noexcept(IS_NOTHROW_CONVERTIBLE<T
     this->setZ(static_cast<T>(other.getZ()));
 };
 
+// Hash functions
+template <typename T, int N>
+std::size_t hash_value(Extent<T, N> const &extent) noexcept;
+
 typedef Extent<int, 2> ExtentI;
 typedef Extent<int, 2> Extent2I;
 typedef Extent<int, 3> Extent3I;
@@ -489,5 +493,14 @@ Extent<double, N> operator-(Extent<int, N> const &lhs, Extent<double, N> const &
 
 }  // namespace geom
 }  // namespace lsst
+
+namespace std {
+template <typename T, int N>
+struct hash<lsst::geom::Extent<T, N>> {
+    using argument_type = lsst::geom::Extent<T, N>;
+    using result_type = std::size_t;
+    result_type operator()(argument_type const &x) const noexcept { return lsst::geom::hash_value(x); }
+};
+}  // namespace std
 
 #endif
