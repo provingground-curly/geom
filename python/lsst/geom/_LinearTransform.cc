@@ -83,7 +83,6 @@ void wrapLinearTransform(utils::python::WrapperCollection & wrappers) {
             cls.def("getMatrix",
                     py::overload_cast<>(& LinearTransform::getMatrix, py::const_));
             cls.def("inverted", &LinearTransform::inverted);
-            cls.def("invert", &LinearTransform::invert);
             cls.def("computeDeterminant", &LinearTransform::computeDeterminant);
             cls.def("isIdentity", &LinearTransform::isIdentity);
 

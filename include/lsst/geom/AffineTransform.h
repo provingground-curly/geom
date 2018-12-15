@@ -119,7 +119,6 @@ public:
      * @throws lsst::geom::SingularTransformException if not invertible
      */
     AffineTransform const inverted() const;
-    AffineTransform const invert() const { return inverted(); };
     //@}
 
     /** Whether the transform is a no-op. */

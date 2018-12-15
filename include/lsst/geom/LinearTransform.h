@@ -163,7 +163,6 @@ public:
      * @throws lsst::geom::SingularTransformException if not invertible
      */
     LinearTransform const inverted() const;
-    LinearTransform const invert() const { return inverted(); };
     //@}
 
     /**

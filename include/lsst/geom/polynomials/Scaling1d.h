@@ -89,7 +89,7 @@ public:
     /**
      *  Invert the transform.
      *
-     *  If `r = t.invert()`, then `r.applyForward(x)` is equivalent to
+     *  If `r = t.inverted()`, then `r.applyForward(x)` is equivalent to
      *  `t.applyInverse(x)` and `r.applyInverse(y)` is equivalent to
      *  `t.applyForward(y)`.
      */
