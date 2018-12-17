@@ -97,7 +97,6 @@ void wrapAffineTransform(utils::python::WrapperCollection & wrappers) {
 
             /* Members */
             cls.def("inverted", &AffineTransform::inverted);
-            cls.def("invert", &AffineTransform::invert);
             cls.def("isIdentity", &AffineTransform::isIdentity);
             cls.def("getTranslation", (Extent2D & (AffineTransform::*)()) & AffineTransform::getTranslation);
             cls.def("getLinear", (LinearTransform & (AffineTransform::*)()) & AffineTransform::getLinear);

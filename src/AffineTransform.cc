@@ -51,7 +51,7 @@ AffineTransform::Matrix const AffineTransform::getMatrix() const noexcept {
 }
 
 AffineTransform const AffineTransform::inverted() const {
-    LinearTransform inv(getLinear().invert());
+    LinearTransform inv(getLinear().inverted());
     return AffineTransform(inv, -inv(getTranslation()));
 }
 
