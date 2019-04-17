@@ -19,13 +19,19 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+__all__ = ["IntervalI"]
 
-from ._geom import *
-from ._Angle import *
-from ._coordinates import *
-from ._SpherePoint import *
-from ._Interval import *
+import numpy as np
 
-from . import testUtils
+from lsst.utils import continueClass
+from ._geom import IntervalI
 
-from .version import *
+
+@continueClass  # noqa: F811
+class IntervalI:
+
+    def __iter__(self):
+        return iter(range(self.begin, self.end))
+
+    def arange(self, dtype=np.int32):
+        return np.arange(self.begin, self.end, 1, dtype=dtype)

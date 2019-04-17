@@ -35,6 +35,7 @@ using utils::python::WrapperCollection;
 void wrapAngle(WrapperCollection & wrappers);
 void wrapCoordinates(WrapperCollection & wrappers);
 void wrapSpherePoint(WrapperCollection & wrappers);
+void wrapInterval(WrapperCollection & wrappers);
 void wrapBox(WrapperCollection & wrappers);
 void wrapLinearTransform(WrapperCollection & wrappers);
 void wrapAffineTransform(WrapperCollection & wrappers);
@@ -44,6 +45,7 @@ PYBIND11_MODULE(_geom, mod) {
     wrapAngle(w);
     wrapCoordinates(w);
     wrapSpherePoint(w);
+    wrapInterval(w);
     wrapBox(w);
     wrapLinearTransform(w);
     wrapAffineTransform(w);
