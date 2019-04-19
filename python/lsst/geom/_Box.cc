@@ -68,18 +68,31 @@ void wrapBox(utils::python::WrapperCollection & wrappers) {
             cls.def("getMax", &Box2I::getMax);
             cls.def("getMaxX", &Box2I::getMaxX);
             cls.def("getMaxY", &Box2I::getMaxY);
+            cls.def_property_readonly("minX", &Box2I::getMinX);
+            cls.def_property_readonly("minY", &Box2I::getMinY);
+            cls.def_property_readonly("maxX", &Box2I::getMaxX);
+            cls.def_property_readonly("maxY", &Box2I::getMaxY);
             cls.def("getBegin", &Box2I::getBegin);
             cls.def("getBeginX", &Box2I::getBeginX);
             cls.def("getBeginY", &Box2I::getBeginY);
             cls.def("getEnd", &Box2I::getEnd);
             cls.def("getEndX", &Box2I::getEndX);
             cls.def("getEndY", &Box2I::getEndY);
+            cls.def_property_readonly("beginX", &Box2I::getBeginX);
+            cls.def_property_readonly("beginY", &Box2I::getBeginY);
+            cls.def_property_readonly("endX", &Box2I::getEndX);
+            cls.def_property_readonly("endY", &Box2I::getEndY);
             cls.def("getDimensions", &Box2I::getDimensions);
             cls.def("getWidth", &Box2I::getWidth);
             cls.def("getHeight", &Box2I::getHeight);
             cls.def("getArea", &Box2I::getArea);
+            cls.def_property_readonly("width", &Box2I::getWidth);
+            cls.def_property_readonly("height", &Box2I::getHeight);
+            cls.def_property_readonly("area", &Box2I::getArea);
             cls.def("getX", &Box2I::getX);
             cls.def("getY", &Box2I::getY);
+            cls.def_property_readonly("x", &Box2I::getX);
+            cls.def_property_readonly("y", &Box2I::getY);
             cls.def("isEmpty", &Box2I::isEmpty);
             cls.def("contains", (bool (Box2I::*)(Point2I const &) const) & Box2I::contains);
             cls.def("contains", (bool (Box2I::*)(Box2I const &) const) & Box2I::contains);
@@ -109,10 +122,12 @@ void wrapBox(utils::python::WrapperCollection & wrappers) {
             cls.def("__reduce__", [cls](Box2I const &self) {
                 return py::make_tuple(cls, make_tuple(py::cast(self.getMin()), py::cast(self.getMax())));
             });
-            cls.def("getSlices", [](Box2I const &self) {
+            auto getSlices = [](Box2I const &self) {
                 return py::make_tuple(py::slice(self.getBeginY(), self.getEndY(), 1),
                                       py::slice(self.getBeginX(), self.getEndX(), 1));
-            });
+            };
+            cls.def("getSlices", getSlices);
+            cls.def_property_readonly("slices", getSlices);
 
             mod.attr("BoxI") = cls;
         }
@@ -150,15 +165,26 @@ void wrapBox(utils::python::WrapperCollection & wrappers) {
             cls.def("getMax", &Box2D::getMax);
             cls.def("getMaxX", &Box2D::getMaxX);
             cls.def("getMaxY", &Box2D::getMaxY);
+            cls.def_property_readonly("minX", &Box2D::getMinX);
+            cls.def_property_readonly("minY", &Box2D::getMinY);
+            cls.def_property_readonly("maxX", &Box2D::getMaxX);
+            cls.def_property_readonly("maxY", &Box2D::getMaxY);
             cls.def("getDimensions", &Box2D::getDimensions);
             cls.def("getWidth", &Box2D::getWidth);
             cls.def("getHeight", &Box2D::getHeight);
             cls.def("getArea", &Box2D::getArea);
+            cls.def_property_readonly("width", &Box2D::getWidth);
+            cls.def_property_readonly("height", &Box2D::getHeight);
+            cls.def_property_readonly("area", &Box2D::getArea);
             cls.def("getX", &Box2D::getX);
             cls.def("getY", &Box2D::getY);
+            cls.def_property_readonly("x", &Box2D::getX);
+            cls.def_property_readonly("y", &Box2D::getY);
             cls.def("getCenter", &Box2D::getCenter);
             cls.def("getCenterX", &Box2D::getCenterX);
             cls.def("getCenterY", &Box2D::getCenterY);
+            cls.def_property_readonly("centerX", &Box2D::getCenterX);
+            cls.def_property_readonly("centerY", &Box2D::getCenterY);
             cls.def("isEmpty", &Box2D::isEmpty);
             cls.def("contains", (bool (Box2D::*)(Point2D const &) const) & Box2D::contains);
             cls.def("contains", (bool (Box2D::*)(Box2D const &) const) & Box2D::contains);

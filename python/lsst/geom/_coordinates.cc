@@ -187,10 +187,14 @@ PyExtent<T, 2> declareExtent2(utils::python::WrapperCollection & wrappers, std::
             cls.def(py::init<int, int>(), "x"_a, "y"_a);
             cls.def(py::init<double, double>(), "x"_a, "y"_a);
             /* Members */
-            cls.def("getX", [](Extent<T, 2> const &self) { return self[0]; });
-            cls.def("getY", [](Extent<T, 2> const &self) { return self[1]; });
-            cls.def("setX", [](Extent<T, 2> &self, T other) { self[0] = other; });
-            cls.def("setY", [](Extent<T, 2> &self, T other) { self[1] = other; });
+            auto getX = [](Extent<T, 2> const &self) { return self[0]; };
+            auto getY = [](Extent<T, 2> const &self) { return self[1]; };
+            cls.def("getX", getX);
+            cls.def("getY", getY);
+            cls.def("setX", &Extent<T, 2>::setX);
+            cls.def("setY", &Extent<T, 2>::setY);
+            cls.def_property("x", getX, &Extent<T, 2>::setX);
+            cls.def_property("y", getY, &Extent<T, 2>::setY);
         }
     );
 }
@@ -207,12 +211,18 @@ PyExtent<T, 3> declareExtent3(utils::python::WrapperCollection & wrappers, const
             cls.def(py::init<int, int, int>(), "x"_a, "y"_a, "z"_a);
             cls.def(py::init<double, double, double>(), "x"_a, "y"_a, "z"_a);
             /* Members */
-            cls.def("getX", [](Extent<T, 3> const &self) { return self[0]; });
-            cls.def("getY", [](Extent<T, 3> const &self) { return self[1]; });
-            cls.def("getZ", [](Extent<T, 3> const &self) { return self[2]; });
-            cls.def("setX", [](Extent<T, 3> &self, T other) { self[0] = other; });
-            cls.def("setY", [](Extent<T, 3> &self, T other) { self[1] = other; });
-            cls.def("setZ", [](Extent<T, 3> &self, T other) { self[2] = other; });
+            auto getX = [](Extent<T, 3> const &self) { return self[0]; };
+            auto getY = [](Extent<T, 3> const &self) { return self[1]; };
+            auto getZ = [](Extent<T, 3> const &self) { return self[2]; };
+            cls.def("getX", getX);
+            cls.def("getY", getY);
+            cls.def("getZ", getZ);
+            cls.def("setX", &Extent<T, 3>::setX);
+            cls.def("setY", &Extent<T, 3>::setY);
+            cls.def("setZ", &Extent<T, 3>::setZ);
+            cls.def_property("x", getX, &Extent<T, 3>::setX);
+            cls.def_property("y", getY, &Extent<T, 3>::setY);
+            cls.def_property("z", getZ, &Extent<T, 3>::setZ);
         }
     );
 }
@@ -398,10 +408,14 @@ PyPoint<T, 2> declarePoint2(utils::python::WrapperCollection & wrappers, std::st
             cls.def(py::init<int, int>(), "x"_a, "y"_a);
             cls.def(py::init<double, double>(), "x"_a, "y"_a);
             /* Members */
-            cls.def("getX", [](Point<T, 2> const &self) { return self[0]; });
-            cls.def("getY", [](Point<T, 2> const &self) { return self[1]; });
-            cls.def("setX", [](Point<T, 2> &self, T other) { self[0] = other; });
-            cls.def("setY", [](Point<T, 2> &self, T other) { self[1] = other; });
+            auto getX = [](Point<T, 2> const &self) { return self[0]; };
+            auto getY = [](Point<T, 2> const &self) { return self[1]; };
+            cls.def("getX", getX);
+            cls.def("getY", getY);
+            cls.def("setX", &Point<T, 2>::setX);
+            cls.def("setY", &Point<T, 2>::setY);
+            cls.def_property("x", getX, &Point<T, 2>::setX);
+            cls.def_property("y", getY, &Point<T, 2>::setY);
         }
     );
 }
@@ -418,12 +432,18 @@ PyPoint<T, 3> declarePoint3(utils::python::WrapperCollection & wrappers, std::st
             cls.def(py::init<int, int, int>(), "x"_a, "y"_a, "z"_a);
             cls.def(py::init<double, double, double>(), "x"_a, "y"_a, "z"_a);
             /* Members */
-            cls.def("getX", [](Point<T, 3> const &self) { return self[0]; });
-            cls.def("getY", [](Point<T, 3> const &self) { return self[1]; });
-            cls.def("getZ", [](Point<T, 3> const &self) { return self[2]; });
-            cls.def("setX", [](Point<T, 3> &self, T other) { self[0] = other; });
-            cls.def("setY", [](Point<T, 3> &self, T other) { self[1] = other; });
-            cls.def("setZ", [](Point<T, 3> &self, T other) { self[2] = other; });
+            auto getX = [](Point<T, 3> const &self) { return self[0]; };
+            auto getY = [](Point<T, 3> const &self) { return self[1]; };
+            auto getZ = [](Point<T, 3> const &self) { return self[2]; };
+            cls.def("getX", getX);
+            cls.def("getY", getY);
+            cls.def("getZ", getZ);
+            cls.def("setX", &Point<T, 3>::setX);
+            cls.def("setY", &Point<T, 3>::setY);
+            cls.def("setZ", &Point<T, 3>::setZ);
+            cls.def_property("x", getX, &Point<T, 3>::setX);
+            cls.def_property("y", getY, &Point<T, 3>::setY);
+            cls.def_property("z", getZ, &Point<T, 3>::setZ);
         }
     );
 }
