@@ -260,7 +260,6 @@ public:
      */
     bool isDisjointFrom(IntervalI const & other) const noexcept;
 
-
     //@{
     /**
      *  Increase the size of the interval by the given amount in both
@@ -593,8 +592,8 @@ public:
      *
      *  If `buffer` is negative, this is equivalent to dilating by `-buffer`.
      *
-     *  If the final size of the interval is less than or equal to zero (which
-     *  can happen if `buffer` is negative), the interval will be made empty.
+     *  If the final size of the interval is less than zero (which can happen
+     *  if `buffer` is negative), the interval will be made empty.
      *
      *  Empty intervals remain empty after erosion.
      *
@@ -632,9 +631,9 @@ public:
     /**
      *  Expand an interval to ensure that `contains(other)` is true.
      *
-     *  Expanding an empty interval with a single point yields an interval with
-     *  size=1 at that point; expanding an empty interval with a second interval
-     *  is equivalent to assignment.
+     *  Expanding an empty interval with a single point yields an interval
+     *  with `size == 0` at that point; expanding an empty interval with a
+     *  second interval is equivalent to assignment.
      *
      *  Expanding by NaN or an empty interval yields the original interval.
      */

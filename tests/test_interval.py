@@ -29,7 +29,7 @@ import lsst.pex.exceptions
 from lsst.geom import IntervalI, IntervalD
 
 
-class TestIntervals:
+class IntervalTestData:
 
     def __init__(self, IntervalClass, points, n=None):
         self.nonsingular = []
@@ -112,6 +112,9 @@ class IntervalTestMixin:
             for rhs in self.points:
                 with self.subTest(lhs=lhs, rhs=rhs):
                     self.assertEqual(lhs.contains(rhs), lhs.min <= rhs and lhs.max >= rhs)
+            array = np.array(self.points)
+            np.testing.assert_array_equal(lhs.contains(array),
+                                          np.logical_and(lhs.min <= array, lhs.max >= array))
         for lhs in self.intervals.empty:
             for rhs in self.intervals.finite:
                 with self.subTest(lhs=lhs, rhs=rhs):
@@ -220,7 +223,7 @@ class IntervalDTestCase(unittest.TestCase, IntervalTestMixin):
         self.points = [-1.5, 5.0, 6.75, 8.625]
         self.a = self.points[0]
         self.b = self.points[1]
-        self.intervals = TestIntervals(self.IntervalClass, self.points, n=3)
+        self.intervals = IntervalTestData(self.IntervalClass, self.points, n=3)
         self.ab = self.IntervalClass(min=self.a, max=self.b)
 
     def testCenter(self):
@@ -236,7 +239,7 @@ class IntervalITestCase(unittest.TestCase, IntervalTestMixin):
         self.points = [-2, 4, 7, 11]
         self.a = self.points[0]
         self.b = self.points[1]
-        self.intervals = TestIntervals(self.IntervalClass, self.points, n=3)
+        self.intervals = IntervalTestData(self.IntervalClass, self.points, n=3)
         self.ab = self.IntervalClass(min=self.a, max=self.b)
 
     def testExtensions(self):

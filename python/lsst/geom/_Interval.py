@@ -34,4 +34,16 @@ class IntervalI:
         return iter(range(self.begin, self.end))
 
     def arange(self, dtype=np.int32):
+        """Return an array containing all points in the interval.
+
+        Parameters
+        ----------
+        dtype : convertible to `numpy.dtype`
+            The data type of the returned arrays.
+
+        Returns
+        -------
+        points : `numpy.ndarray`
+            1-d array with `size == self.size` containing points.
+        """
         return np.arange(self.begin, self.end, 1, dtype=dtype)

@@ -29,6 +29,7 @@
 
 #include "lsst/geom/Point.h"
 #include "lsst/geom/Extent.h"
+#include "lsst/geom/Interval.h"
 
 namespace lsst {
 namespace geom {
@@ -56,6 +57,8 @@ public:
     typedef Point2I Point;
     typedef Extent2I Extent;
     typedef int Element;
+
+    using Interval = IntervalI;
 
     enum EdgeHandlingEnum { EXPAND, SHRINK };
 
@@ -85,6 +88,16 @@ public:
      * @throws lsst::pex::exceptions::OverflowError Thrown if the maximum Point2I would overflow.
      */
     Box2I(Point2I const& corner, Extent2I const& dimensions, bool invert = true);
+
+    /**
+     *  Construct a box from a pair of intervals.
+     *
+     *  @param[in] x   Extent in x direction.
+     *  @param[in] y   Extent in y direction.
+     */
+    Box2I(Interval const & x, Interval const & y) :
+        Box2I(Point(x.getMin(), y.getMin()), Point(x.getMax(), y.getMax()), false)
+    {}
 
     /**
      *  Construct an integer box from a floating-point box.
@@ -174,6 +187,12 @@ public:
     int getWidth() const noexcept { return _dimensions.getX(); }
     int getHeight() const noexcept { return _dimensions.getY(); }
     int getArea() const { return getWidth() * getHeight(); }
+    //@}
+
+    //@{
+    /// 1-d interval accessors
+    Interval getX() const { return Interval::fromMinSize(getMinX(), getWidth()); }
+    Interval getY() const { return Interval::fromMinSize(getMinY(), getHeight()); }
     //@}
 
     /// Return slices to extract the box's region from an ndarray::Array.
@@ -297,6 +316,8 @@ public:
     typedef Extent2D Extent;
     typedef double Element;
 
+    using Interval = IntervalD;
+
     /**
      *  Value the maximum coordinate is multiplied by to increase it by the smallest
      *  possible amount.
@@ -332,6 +353,16 @@ public:
      *                        an empty box.
      */
     Box2D(Point2D const& corner, Extent2D const& dimensions, bool invert = true) noexcept;
+
+    /**
+     *  Construct a box from a pair of intervals.
+     *
+     *  @param[in] x   Extent in x direction.
+     *  @param[in] y   Extent in y direction.
+     */
+    Box2D(Interval const & x, Interval const & y) :
+        Box2D(Point(x.getMin(), y.getMin()), Point(x.getMax(), y.getMax()), false)
+    {}
 
     /**
      *  Construct a floating-point box from an integer box.
@@ -401,6 +432,12 @@ public:
         Extent2D dim(getDimensions());
         return dim.getX() * dim.getY();
     }
+    //@}
+
+    //@{
+    /// 1-d interval accessors
+    Interval getX() const { return Interval::fromMinSize(getMinX(), getWidth()); }
+    Interval getY() const { return Interval::fromMinSize(getMinY(), getHeight()); }
     //@}
 
     /**
