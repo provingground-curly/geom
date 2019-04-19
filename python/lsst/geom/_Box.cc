@@ -21,6 +21,7 @@
 
 #include "pybind11/pybind11.h"
 #include "pybind11/stl.h"
+#include "pybind11/numpy.h"
 
 #include "lsst/geom/Box.h"
 #include "lsst/utils/python.h"
@@ -82,6 +83,8 @@ void wrapBox(utils::python::WrapperCollection & wrappers) {
             cls.def("isEmpty", &Box2I::isEmpty);
             cls.def("contains", (bool (Box2I::*)(Point2I const &) const) & Box2I::contains);
             cls.def("contains", (bool (Box2I::*)(Box2I const &) const) & Box2I::contains);
+            cls.def("contains", py::vectorize((bool (Box2I::*)(int x, int y) const)&Box2I::contains),
+                    "x"_a, "y"_a);
             cls.def("__contains__", (bool (Box2I::*)(Point2I const &) const) & Box2I::contains);
             cls.def("__contains__", (bool (Box2I::*)(Box2I const &) const) & Box2I::contains);
             cls.def("overlaps", &Box2I::overlaps);
@@ -159,6 +162,8 @@ void wrapBox(utils::python::WrapperCollection & wrappers) {
             cls.def("isEmpty", &Box2D::isEmpty);
             cls.def("contains", (bool (Box2D::*)(Point2D const &) const) & Box2D::contains);
             cls.def("contains", (bool (Box2D::*)(Box2D const &) const) & Box2D::contains);
+            cls.def("contains", py::vectorize((bool (Box2D::*)(double x, double y) const)&Box2D::contains),
+                    "x"_a, "y"_a);
             cls.def("__contains__", (bool (Box2D::*)(Point2D const &) const) & Box2D::contains);
             cls.def("__contains__", (bool (Box2D::*)(Box2D const &) const) & Box2D::contains);
             cls.def("overlaps", &Box2D::overlaps);

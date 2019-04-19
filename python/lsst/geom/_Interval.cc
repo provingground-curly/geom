@@ -21,6 +21,7 @@
 
 #include "pybind11/pybind11.h"
 #include "pybind11/stl.h"
+#include "pybind11/numpy.h"
 #include "ndarray/pybind11.h"
 
 #include "lsst/geom/Interval.h"
@@ -83,8 +84,8 @@ void declareCommonIntervalInterface(py::class_<T, Extra...> & cls) {
     cls.def("getSize", &T::getSize);
     cls.def_property_readonly("size", &T::getSize);
     cls.def("isEmpty", &T::isEmpty);
-    cls.def("contains", py::overload_cast<Element>(&T::contains, py::const_));
     cls.def("contains", py::overload_cast<T const &>(&T::contains, py::const_));
+    cls.def("contains", py::vectorize((bool (T::*)(Element) const noexcept)&T::contains));
     cls.def("__contains__", py::overload_cast<Element>(&T::contains, py::const_));
     cls.def("__contains__", py::overload_cast<T const &>(&T::contains, py::const_));
     cls.def("overlaps", &T::overlaps);
