@@ -214,12 +214,20 @@ public:
      */
     bool contains(Box2I const& other) const noexcept;
 
+    //@{
     /**
      *  Return true if any points in other are also in this.
      *
      *  Any overlap operation involving an empty box returns false.
      */
     bool overlaps(Box2I const& other) const noexcept;
+    bool intersects(Box2I const& other) const noexcept { return overlaps(other); }
+    //@}
+
+    /**
+     *  Return true if there a no points in both `this` and `other`.
+     */
+    bool isDisjointFrom(Box2I const & other) const noexcept;
 
     /**
      *  Increase the size of the box by the given buffer amount in all directions.
@@ -259,6 +267,124 @@ public:
      * @param other the box that must contain this one
      */
     void clip(Box2I const& other) noexcept;
+
+    //@{
+    /**
+     *  Increase the size of the box by the given amount(s) in all
+     *  directions.
+     *
+     *  If `buffer` is negative, this is equivalent to eroding by `-buffer`.
+     *
+     *  Empty boxes remain empty after dilation.
+     */
+    Box2I dilatedBy(Extent const & buffer) const;
+    Box2I & dilateBy(Extent const & buffer) {
+        return (*this = dilatedBy(buffer)); // delegate mutator to factory for exception safety.
+    }
+    Box2I dilatedBy(Element buffer) const {
+        return dilatedBy(Extent(buffer, buffer));
+    }
+    Box2I & dilateBy(Element buffer) {
+        return (*this = dilatedBy(buffer)); // delegate mutator to factory for exception safety.
+    }
+    //@}
+
+    //@{
+    /**
+     *  Decrease the size of the box by the given amount in both
+     *  directions.
+     *
+     *  If `buffer` is negative, this is equivalent to dilating by `-buffer`.
+     *
+     *  If a final dimension of the box is less than or equal to zero (which
+     *  can happen if `buffer` is negative), the box will be made empty.
+     *
+     *  Empty boxes remain empty after erosion.
+     */
+    Box2I erodedBy(Extent const & buffer) const { return dilatedBy(-buffer); }
+    Box2I & erodeBy(Extent const & buffer) { return dilateBy(-buffer); }
+    Box2I erodedBy(Element buffer) const { return dilatedBy(-buffer); }
+    Box2I & erodeBy(Element buffer) { return dilateBy(-buffer); }
+    //@}
+
+    //@{
+    /**
+     * Shift the position of the box by the given offset.
+     *
+     * Empty boxes remain empty when shifted.
+     */
+    Box2I shiftedBy(Extent const & offset) const;
+    Box2I & shiftBy(Extent const & offset) {
+        return (*this = shiftedBy(offset)); // delegate mutator to factory for exception safety.
+    }
+    //@}
+
+    //@{
+    /**
+     * Reflect the box about a vertical line.
+     *
+     * Empty boxes remain empty when reflected.
+     *
+     * @note This operation differs from `flipLR` in that it reflects about a
+     *       line at the given x coordinaate, while `flipLR` reflects around
+     *       the (inclusive) upper x bound of a hypothetical box with `xmin=0`
+     *       and a given width.  Because the width of a Box2I differs by one
+     *       from the difference between its minimum and maximum, `flipLR(x)`
+     *       is equivalent to `reflectAboutx(x - 1)`.
+     */
+    Box2I reflectedAboutX(Element x) const;
+    Box2I & reflectAboutX(Element x) {
+        return (*this = reflectedAboutX(x)); // delegate mutator to factory for exception safety.
+    }
+    //@}
+
+    //@{
+    /**
+     * Reflect the box about a horizontal line.
+     *
+     * Empty boxes remain empty when reflected.
+     *
+     * @note This operation differs from `flipTB` in that it reflects about a
+     *       line at the given y coordinaate, while `flipTB` reflects around
+     *       the (inclusive) upper y bound of a hypothetical box with `ymin=0`
+     *       and a given height.  Because the height of a Box2I differs by one
+     *       from the difference between its minimum and maximum, `flipTB(y)`
+     *       is equivalent to `reflectAboutY(y - 1)`.
+     */
+    Box2I reflectedAboutY(Element y) const;
+    Box2I & reflectAboutY(Element y) {
+        return (*this = reflectedAboutY(y)); // delegate mutator to factory for exception safety.
+    }
+    //@}
+
+    //@{
+    /**
+     * Expand the box to ensure that `contains(other)` is true.
+     *
+     * Expanding an empty box with a single point yields an box with size=1 at
+     * that point; expanding an empty box with a second box is equivalent to
+     * assignment.
+     */
+    Box2I expandedTo(Point const & other) const;
+    Box2I expandedTo(Box2I const & other) const;
+    Box2I & expandTo(Point const & other) {
+        return (*this = expandedTo(other)); // delegate mutator to factory for exception safety.
+    }
+    Box2I & expandTo(Box2I const & other) {
+        return (*this = expandedTo(other)); // delegate mutator to factory for exception safety.
+    }
+    //@}
+
+    //@{
+    /**
+     * Shrink an interval to ensure that it is contained by other.
+     *
+     * In particular, if `other` and this interval do not overlap this
+     * interval will become empty.
+     */
+    Box2I & clipTo(Box2I const& other) noexcept;
+    Box2I clippedTo(Box2I const & other) const noexcept { return Box2I(*this).clipTo(other); }
+    //@}
 
     /**
      *  Compare two boxes for equality.
@@ -439,8 +565,8 @@ public:
 
     //@{
     /// 1-d interval accessors
-    Interval getX() const { return Interval::fromMinSize(getMinX(), getWidth()); }
-    Interval getY() const { return Interval::fromMinSize(getMinY(), getHeight()); }
+    Interval getX() const { return Interval::fromMinMax(getMinX(), getMaxX()); }
+    Interval getY() const { return Interval::fromMinMax(getMinY(), getMaxY()); }
     //@}
 
     /**
@@ -472,12 +598,21 @@ public:
      */
     bool contains(Box2D const& other) const noexcept;
 
+    //@{
     /**
      *  Return true if any points in other are also in this.
      *
      *  Any overlap operation involving an empty box returns false.
      */
     bool overlaps(Box2D const& other) const noexcept;
+    bool intersects(Box2D const& other) const noexcept { return overlaps(other); }
+    //@}
+
+
+    /**
+     *  Return true if there a no points in both `this` and `other`.
+     */
+    bool isDisjointFrom(Box2D const & other) const noexcept;
 
     /**
      *  Increase the size of the box by the given buffer amount in all directions.
@@ -523,6 +658,101 @@ public:
      * @param other the box that must contain this one
      */
     void clip(Box2D const& other) noexcept;
+
+    //@{
+    /**
+     *  Increase the size of the box by the given amount in both
+     *  directions.
+     *
+     *  If `buffer` is negative, this is equivalent to eroding by `-buffer`.
+     *
+     *  Empty boxes remain empty after dilation.
+     *
+     *  Result is unspecified if `buffer` is NaN.
+     */
+    Box2D & dilateBy(Extent const & buffer) noexcept;
+    Box2D dilatedBy(Extent const & buffer) const noexcept { return Box2D(*this).dilateBy(buffer); }
+    Box2D & dilateBy(Element buffer) noexcept { return dilateBy(Extent(buffer, buffer)); }
+    Box2D dilatedBy(Element buffer) const noexcept { return Box2D(*this).dilateBy(buffer); }
+    //@}
+
+    //@{
+    /**
+     *  Decrease the size of the box by the given amount in both directions.
+     *
+     *  If `buffer` is negative, this is equivalent to dilating by `-buffer`.
+     *
+     *  If a final dimension of the box is less than or equal to zero (which
+     *  can happen if `buffer` is negative), the box will be made empty.
+     *
+     *  Empty boxes remain empty after erosion.
+     *
+     *  Result is unspecified if `buffer` is NaN.
+     */
+    Box2D & erodeBy(Extent const & buffer) noexcept { return dilateBy(-buffer); }
+    Box2D erodedBy(Extent const & buffer) const noexcept { return dilatedBy(-buffer); }
+    Box2D & erodeBy(Element buffer) noexcept { return dilateBy(-buffer); }
+    Box2D erodedBy(Element buffer) const noexcept { return dilatedBy(-buffer); }
+    //@}
+
+    //@{
+    /**
+     *  Shift the position of the box by the given offset.
+     *
+     *  Empty boxes remain empty when shifted.
+     *
+     *  Result is specified if `offset` is not finite.
+     */
+    Box2D & shiftBy(Extent const & offset) noexcept;
+    Box2D shiftedBy(Extent const & offset) const noexcept { return Box2D(*this).shiftBy(offset); }
+    //@}
+
+    //@{
+    /**
+     * Reflect the box about a vertical line.
+     *
+     * Empty boxes remain empty when reflected.
+     */
+    Box2D & reflectAboutX(Element x) noexcept;
+    Box2D reflectedAboutX(Element x) const noexcept { return Box2D(*this).reflectAboutX(x); }
+    //@}
+
+    //@{
+    /**
+     * Reflect the box about a horizontal line.
+     *
+     * Empty boxes remain empty when reflected.
+     */
+    Box2D & reflectAboutY(Element y) noexcept;
+    Box2D reflectedAboutY(Element y) const noexcept { return Box2D(*this).reflectAboutY(y); }
+    //@}
+
+    //@{
+    /**
+     *  Expand a box to ensure that `contains(other)` is true.
+     *
+     *  Expanding an empty box with a single point yields an box with
+     *  `dimensions == (0, 0)` at that point; expanding an empty box with a
+     *  second interval is equivalent to assignment.
+     *
+     *  Expanding by NaN or an empty box yields the original box.
+     */
+    Box2D & expandTo(Point const & other) noexcept;
+    Box2D & expandTo(Box2D const & other) noexcept;
+    Box2D expandedTo(Point const & other) const noexcept { return Box2D(*this).expandTo(other); }
+    Box2D expandedTo(Box2D const & other) const noexcept { return Box2D(*this).expandTo(other); }
+    //@}
+
+    //@{
+    /**
+     * Shrink a box to ensure that it is contained by other.
+     *
+     * In particular, if `other` and `this` do not overlap, the new box will
+     * become empty.
+     */
+    Box2D & clipTo(Box2D const& other) noexcept;
+    Box2D clippedTo(Box2D const & other) const noexcept { return Box2D(*this).clipTo(other); }
+    //@}
 
     /**
      *  Compare two boxes for equality.

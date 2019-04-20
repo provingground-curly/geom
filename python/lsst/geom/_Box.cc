@@ -101,6 +101,8 @@ void wrapBox(utils::python::WrapperCollection & wrappers) {
             cls.def("__contains__", (bool (Box2I::*)(Point2I const &) const) & Box2I::contains);
             cls.def("__contains__", (bool (Box2I::*)(Box2I const &) const) & Box2I::contains);
             cls.def("overlaps", &Box2I::overlaps);
+            cls.def("intersects", &Box2I::intersects);
+            cls.def("isDisjointFrom", &Box2I::isDisjointFrom);
             cls.def("grow", (void (Box2I::*)(int)) & Box2I::grow);
             cls.def("grow", (void (Box2I::*)(Extent2I const &)) & Box2I::grow);
             cls.def("shift", &Box2I::shift);
@@ -109,6 +111,16 @@ void wrapBox(utils::python::WrapperCollection & wrappers) {
             cls.def("include", (void (Box2I::*)(Point2I const &)) & Box2I::include);
             cls.def("include", (void (Box2I::*)(Box2I const &)) & Box2I::include);
             cls.def("clip", &Box2I::clip);
+            cls.def("dilatedBy", py::overload_cast<int>(&Box2I::dilatedBy, py::const_));
+            cls.def("dilatedBy", py::overload_cast<Extent2I const &>(&Box2I::dilatedBy, py::const_));
+            cls.def("erodedBy", py::overload_cast<int>(&Box2I::erodedBy, py::const_));
+            cls.def("erodedBy", py::overload_cast<Extent2I const &>(&Box2I::erodedBy, py::const_));
+            cls.def("shiftedBy", &Box2I::shiftedBy);
+            cls.def("reflectedAboutX", &Box2I::reflectedAboutX);
+            cls.def("reflectedAboutY", &Box2I::reflectedAboutY);
+            cls.def("expandedTo", py::overload_cast<Point2I const &>(&Box2I::expandedTo, py::const_));
+            cls.def("expandedTo", py::overload_cast<Box2I const &>(&Box2I::expandedTo, py::const_));
+            cls.def("clippedTo", &Box2I::clippedTo);
             cls.def("getCorners", &Box2I::getCorners);
             cls.def("toString", &Box2I::toString);
             cls.def("__repr__", [](Box2I const &self) {
@@ -192,6 +204,8 @@ void wrapBox(utils::python::WrapperCollection & wrappers) {
                     "x"_a, "y"_a);
             cls.def("__contains__", (bool (Box2D::*)(Point2D const &) const) & Box2D::contains);
             cls.def("__contains__", (bool (Box2D::*)(Box2D const &) const) & Box2D::contains);
+            cls.def("intersects", &Box2D::intersects);
+            cls.def("isDisjointFrom", &Box2D::isDisjointFrom);
             cls.def("overlaps", &Box2D::overlaps);
             cls.def("grow", (void (Box2D::*)(double)) & Box2D::grow);
             cls.def("grow", (void (Box2D::*)(Extent2D const &)) & Box2D::grow);
@@ -202,6 +216,16 @@ void wrapBox(utils::python::WrapperCollection & wrappers) {
             cls.def("include", (void (Box2D::*)(Point2D const &)) & Box2D::include);
             cls.def("include", (void (Box2D::*)(Box2D const &)) & Box2D::include);
             cls.def("clip", &Box2D::clip);
+            cls.def("dilatedBy", py::overload_cast<double>(&Box2D::dilatedBy, py::const_));
+            cls.def("dilatedBy", py::overload_cast<Extent2D const &>(&Box2D::dilatedBy, py::const_));
+            cls.def("erodedBy", py::overload_cast<double>(&Box2D::erodedBy, py::const_));
+            cls.def("erodedBy", py::overload_cast<Extent2D const &>(&Box2D::erodedBy, py::const_));
+            cls.def("shiftedBy", &Box2D::shiftedBy);
+            cls.def("reflectedAboutX", &Box2D::reflectedAboutX);
+            cls.def("reflectedAboutY", &Box2D::reflectedAboutY);
+            cls.def("expandedTo", py::overload_cast<Point2D const &>(&Box2D::expandedTo, py::const_));
+            cls.def("expandedTo", py::overload_cast<Box2D const &>(&Box2D::expandedTo, py::const_));
+            cls.def("clippedTo", &Box2D::clippedTo);
             cls.def("getCorners", &Box2D::getCorners);
             cls.def("toString", &Box2D::toString);
             cls.def("__repr__", [](Box2D const &self) {

@@ -19,14 +19,32 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+__all__ = ["Box2I"]
 
-from ._geom import *
-from ._Angle import *
-from ._coordinates import *
-from ._SpherePoint import *
-from ._Interval import *
-from ._Box import *
+import numpy as np
 
-from . import testUtils
+from lsst.utils import continueClass
+from ._geom import Box2I
 
-from .version import *
+
+@continueClass  # noqa: F811
+class Box2I:
+
+    def grid(self, dtype=np.int32):
+        """Return pair of arrays with the centers of all pixels in the box.
+
+        Parameters
+        ----------
+        dtype : convertible to `numpy.dtype`
+            The data type of the returned arrays.
+
+        Returns
+        -------
+        x : `numpy.ndarray`
+            Array with shape `(self.height, self.width)` containing x
+            coordinate values.
+        y : `numpy.ndarray`
+            Array with shape `(self.height, self.width)` containing x
+            coordinate values.
+        """
+        return np.meshgrid(self.x.arange(dtype=dtype), self.y.arange(dtype=dtype))

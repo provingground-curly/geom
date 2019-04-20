@@ -111,43 +111,35 @@ ndarray::View<boost::fusion::vector2<ndarray::index::Range, ndarray::index::Rang
 }
 
 bool Box2I::contains(Point2I const& point) const noexcept {
-    return all(point.ge(this->getMin())) && all(point.le(this->getMax()));
+    return getX().contains(point.getX()) && getY().contains(point.getY());
 }
 
 bool Box2I::contains(Box2I const& other) const noexcept {
-    return other.isEmpty() ||
-           (all(other.getMin().ge(this->getMin())) && all(other.getMax().le(this->getMax())));
+    return getX().contains(other.getX()) && getY().contains(other.getY());
 }
 
 bool Box2I::overlaps(Box2I const& other) const noexcept {
-    return !(other.isEmpty() || this->isEmpty() || any(other.getMax().lt(this->getMin())) ||
-             any(other.getMin().gt(this->getMax())));
+    return !isDisjointFrom(other);
+}
+
+bool Box2I::isDisjointFrom(Box2I const& other) const noexcept {
+    return getX().isDisjointFrom(other.getX()) || getY().isDisjointFrom(other.getY());
 }
 
 void Box2I::grow(Extent2I const& buffer) {
-    if (isEmpty()) return;  // should we throw an exception here instead of a no-op?
-    _minimum -= buffer;
-    _dimensions += buffer * 2;
-    if (any(_dimensions.le(0))) *this = Box2I();
+    dilateBy(buffer);
 }
 
 void Box2I::shift(Extent2I const& offset) {
-    if (isEmpty()) return;  // should we throw an exception here instead of a no-op?
-    _minimum += offset;
+    shiftBy(offset);
 }
 
 void Box2I::flipLR(int xextent) {
-    if (isEmpty()) return;  // should we throw an exception here instead of a no-op?
-    // Apply flip about y-axis assumine parent coordinate system
-    _minimum[0] = xextent - (_minimum[0] + _dimensions[0]);
-    // _dimensions should remain unchanged
+    reflectAboutX(xextent - 1);
 }
 
 void Box2I::flipTB(int yextent) {
-    if (isEmpty()) return;  // should we throw an exception here instead of a no-op?
-    // Apply flip about y-axis assumine parent coordinate system
-    _minimum[1] = yextent - (_minimum[1] + _dimensions[1]);
-    // _dimensions should remain unchanged
+    reflectAboutY(yextent - 1);
 }
 
 void Box2I::include(Point2I const& point) {
@@ -209,6 +201,38 @@ void Box2I::clip(Box2I const& other) noexcept {
         return;
     }
     _dimensions = Extent2I(1) + maximum - _minimum;
+}
+
+Box2I Box2I::dilatedBy(Extent const& buffer) const {
+    return Box2I(getX().dilatedBy(buffer.getX()), getY().dilatedBy(buffer.getY()));
+}
+
+Box2I Box2I::shiftedBy(Extent const& offset) const {
+    return Box2I(getX().shiftedBy(offset.getX()), getY().shiftedBy(offset.getY()));
+}
+
+Box2I Box2I::reflectedAboutX(Element x) const {
+    return Box2I(getX().reflectedAbout(x), getY());
+}
+
+Box2I Box2I::reflectedAboutY(Element y) const {
+    return Box2I(getX(), getY().reflectedAbout(y));
+}
+
+Box2I Box2I::expandedTo(Point const & other) const {
+    return Box2I(getX().expandedTo(other.getX()), getY().expandedTo(other.getY()));
+}
+
+Box2I Box2I::expandedTo(Box2I const & other) const {
+    return Box2I(getX().expandedTo(other.getX()), getY().expandedTo(other.getY()));
+}
+
+Box2I & Box2I::clipTo(Box2I const& other) noexcept {
+    // Existing clip() is noexcept, so there's no advantage to delegating to
+    // the interval implementation as long as Box2I's data members (min, dims)
+    // instead of (x, y) intervals.
+    clip(other);
+    return *this;
 }
 
 bool Box2I::operator==(Box2I const& other) const noexcept {
@@ -286,17 +310,24 @@ Box2D Box2D::makeCenteredBox(Point2D const& center, Box2D::Extent const& size) n
 }
 
 bool Box2D::contains(Point2D const& point) const noexcept {
+    // Can't delegate to IntervalD here because IntervalID is closed while
+    // Box2D is half-open.
     return all(point.ge(this->getMin())) && all(point.lt(this->getMax()));
 }
 
 bool Box2D::contains(Box2D const& other) const noexcept {
-    return other.isEmpty() ||
-           (all(other.getMin().ge(this->getMin())) && all(other.getMax().le(this->getMax())));
+    return getX().contains(other.getX()) && getY().contains(other.getY());
 }
 
 bool Box2D::overlaps(Box2D const& other) const noexcept {
+    // Can't delegate to IntervalD here because IntervalID is closed while
+    // Box2D is half-open.
     return !(other.isEmpty() || this->isEmpty() || any(other.getMax().le(this->getMin())) ||
              any(other.getMin().ge(this->getMax())));
+}
+
+bool Box2D::isDisjointFrom(Box2D const& other) const noexcept {
+    return !overlaps(other);
 }
 
 void Box2D::grow(Extent2D const& buffer) {
@@ -313,27 +344,11 @@ void Box2D::shift(Extent2D const& offset) {
 }
 
 void Box2D::flipLR(float xextent) {
-    if (isEmpty()) return;  // should we throw an exception here instead of a no-op?
-    // Swap min and max values for x dimension
-    _minimum[0] += _maximum[0];
-    _maximum[0] = _minimum[0] - _maximum[0];
-    _minimum[0] -= _maximum[0];
-    // Apply flip assuming coordinate system of parent.
-    _minimum[0] = xextent - _minimum[0];
-    _maximum[0] = xextent - _maximum[0];
-    // _dimensions should remain unchanged
+    reflectAboutX(xextent);
 }
 
 void Box2D::flipTB(float yextent) {
-    if (isEmpty()) return;  // should we throw an exception here instead of a no-op?
-    // Swap min and max values for y dimension
-    _minimum[1] += _maximum[1];
-    _maximum[1] = _minimum[1] - _maximum[1];
-    _minimum[1] -= _maximum[1];
-    // Apply flip assuming coordinate system of parent.
-    _minimum[1] = yextent - _minimum[1];
-    _maximum[1] = yextent - _maximum[1];
-    // _dimensions should remain unchanged
+    reflectAboutY(yextent);
 }
 
 void Box2D::include(Point2D const& point) noexcept {
@@ -392,6 +407,51 @@ void Box2D::clip(Box2D const& other) noexcept {
         *this = Box2D();
         return;
     }
+}
+
+Box2D & Box2D::dilateBy(Extent const & buffer) noexcept {
+    // No advantage to delegating to IntervalD until Box2D is represented
+    // in terms of x and y intervals.
+    grow(buffer);
+    return *this;
+}
+
+Box2D & Box2D::shiftBy(Extent const & offset) noexcept {
+    // No advantage to delegating to IntervalD until Box2D is represented
+    // in terms of x and y intervals.
+    shift(offset);
+    return *this;
+}
+
+Box2D & Box2D::reflectAboutX(Element x) noexcept {
+    *this = Box2D(getX().reflectedAbout(x), getY());
+    return *this;
+}
+
+Box2D & Box2D::reflectAboutY(Element y) noexcept {
+    *this = Box2D(getX(), getY().reflectedAbout(y));
+    return *this;
+}
+
+Box2D & Box2D::expandTo(Point const & other) noexcept {
+    // Can't delegate to IntervalD here because IntervalID is closed while
+    // Box2D is half-open.
+    include(other);
+    return *this;
+}
+
+Box2D & Box2D::expandTo(Box2D const & other) noexcept {
+    // Can't delegate to IntervalD here because IntervalID is closed while
+    // Box2D is half-open.
+    include(other);
+    return *this;
+}
+
+Box2D & Box2D::clipTo(Box2D const& other) noexcept {
+    // No advantage to delegating to IntervalD until Box2D is represented
+    // in terms of x and y intervals.
+    clip(other);
+    return *this;
 }
 
 bool Box2D::operator==(Box2D const& other) const noexcept {
