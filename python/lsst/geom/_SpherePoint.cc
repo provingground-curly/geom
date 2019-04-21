@@ -21,7 +21,9 @@
 
 #include "pybind11/pybind11.h"
 #include "pybind11/stl.h"
+#include "pybind11/numpy.h"
 
+#include <cmath>
 #include <memory>
 
 #include "lsst/utils/python.h"
@@ -37,6 +39,23 @@ using namespace py::literals;
 
 namespace lsst {
 namespace geom {
+
+namespace {
+
+double toUnitX(double longitude, double latitude) {
+    return std::cos(longitude) * std::cos(latitude);
+}
+
+double toUnitY(double longitude, double latitude) {
+    return std::sin(longitude) * std::cos(latitude);
+}
+
+double toUnitZ(double longitude, double latitude) {
+    return std::sin(latitude);
+}
+
+} // anonymous
+
 
 using PySpherePoint = py::class_<SpherePoint, std::shared_ptr<SpherePoint>>;
 
@@ -85,8 +104,14 @@ void wrapSpherePoint(utils::python::WrapperCollection & wrappers) {
                                                           py::cast(self.getLatitude())));
             });
 
+
             /* Module level */
             mod.def("averageSpherePoint", averageSpherePoint);
+
+            // Used only by pure-Python extension toUnitXYZ in _SpherePoint.py.
+            mod.def("_toUnitX", py::vectorize(&toUnitX), "longitude"_a, "latitude"_a);
+            mod.def("_toUnitY", py::vectorize(&toUnitY), "longitude"_a, "latitude"_a);
+            mod.def("_toUnitZ", py::vectorize(&toUnitZ), "longitude"_a, "latitude"_a);
         }
     );
 }
