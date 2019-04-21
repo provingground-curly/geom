@@ -22,6 +22,7 @@
 #include "pybind11/pybind11.h"
 #include "pybind11/eigen.h"
 #include "pybind11/stl.h"
+#include "pybind11/numpy.h"
 
 #include "ndarray/pybind11.h"
 
@@ -57,6 +58,12 @@ void wrapLinearTransform(utils::python::WrapperCollection & wrappers) {
                     py::overload_cast<Point2D const &>(&LinearTransform::operator(), py::const_));
             cls.def("__call__",
                     py::overload_cast<Extent2D const &>(&LinearTransform::operator(), py::const_));
+            cls.def("__call__",
+                    [](py::object self, py::object x, py::object y) mutable {
+                        return py::make_tuple(self.attr("applyX")(x, y),
+                                              self.attr("applyY")(x, y));
+                    },
+                    "x"_a, "y"_a);
             cls.def("__getitem__",
                     [](LinearTransform const &self, int i) { return self[utils::python::cppIndex(4, i)]; });
             cls.def("__getitem__", [](LinearTransform const &self, std::pair<int, int> i) {
@@ -85,6 +92,8 @@ void wrapLinearTransform(utils::python::WrapperCollection & wrappers) {
             cls.def("inverted", &LinearTransform::inverted);
             cls.def("computeDeterminant", &LinearTransform::computeDeterminant);
             cls.def("isIdentity", &LinearTransform::isIdentity);
+            cls.def("applyX", py::vectorize(&LinearTransform::applyX), "x"_a, "y"_a);
+            cls.def("applyY", py::vectorize(&LinearTransform::applyY), "x"_a, "y"_a);
 
             cls.def("set",
                     [](LinearTransform &self, double xx, double yx, double xy, double yy) {

@@ -138,6 +138,17 @@ public:
      */
     Extent2D operator()(Extent2D const &p) const noexcept { return Extent2D(_linear(p)); }
 
+    //@{
+    /**
+     *  Transform a point given and returned as separate double values.
+     *
+     *  This interface is intended primarily for use in Python (where it is
+     *  vectorized to support NumPy array arguments).
+     */
+    double applyX(double x, double y) const noexcept { return _linear.applyX(x, y) + _translation.getX(); }
+    double applyY(double x, double y) const noexcept { return _linear.applyY(x, y) + _translation.getY(); }
+    //@}
+
     Extent2D const &getTranslation() const noexcept { return _translation; }
     Extent2D &getTranslation() noexcept { return _translation; }
 

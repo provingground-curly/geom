@@ -189,6 +189,17 @@ public:
      */
     Extent2D operator()(Extent2D const& p) const noexcept { return Extent2D(getMatrix() * p.asEigen()); }
 
+    //@{
+    /**
+     *  Transform a point given and returned as separate double values.
+     *
+     *  This interface is intended primarily for use in Python (where it is
+     *  vectorized to support NumPy array arguments).
+     */
+    double applyX(double x, double y) const noexcept { return _matrix(0, 0)*x + _matrix(0, 1)*y; }
+    double applyY(double x, double y) const noexcept { return _matrix(1, 0)*x + _matrix(1, 1)*y; }
+    //@}
+
     /**
      * Derivative of (*this)(input) with respect to the transform elements (for Point).
      */

@@ -64,6 +64,12 @@ void wrapAffineTransform(utils::python::WrapperCollection & wrappers) {
                     py::overload_cast<Point2D const &>(&AffineTransform::operator(), py::const_));
             cls.def("__call__",
                     py::overload_cast<Extent2D const &>(&AffineTransform::operator(), py::const_));
+            cls.def("__call__",
+                    [](py::object self, py::object x, py::object y) mutable {
+                        return py::make_tuple(self.attr("applyX")(x, y),
+                                              self.attr("applyY")(x, y));
+                    },
+                    "x"_a, "y"_a);
             cls.def("__setitem__", [](AffineTransform &self, int i, double value) {
                 if (i < 0 || i > 5) {
                     PyErr_Format(PyExc_IndexError, "Invalid index for AffineTransform: %d", i);
@@ -103,6 +109,8 @@ void wrapAffineTransform(utils::python::WrapperCollection & wrappers) {
             cls.def("getMatrix", &AffineTransform::getMatrix);
             cls.def("getParameterVector", &AffineTransform::getParameterVector);
             cls.def("setParameterVector", &AffineTransform::setParameterVector);
+            cls.def("applyX", py::vectorize(&AffineTransform::applyX), "x"_a, "y"_a);
+            cls.def("applyY", py::vectorize(&AffineTransform::applyY), "x"_a, "y"_a);
             cls.def_static("makeScaling", py::overload_cast<double>(&AffineTransform::makeScaling));
             cls.def_static("makeScaling", py::overload_cast<double, double>(&AffineTransform::makeScaling));
             cls.def_static("makeRotation", &AffineTransform::makeRotation, "angle"_a);
