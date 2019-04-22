@@ -308,6 +308,22 @@ class SpherePointTestSuite(lsst.utils.tests.TestCase):
                 for element in SpherePoint(nonFiniteVector).getVector():
                     self.assertTrue(math.isnan(element))
 
+    def testToUnitXZY(self):
+        """Test that the numpy-vectorized transformation from (lat, lon) to
+        (x, y, z) matches SpherePoint.getVector().
+        """
+        for units in (degrees, radians):
+            scale = float(180.0*degrees)/float(1.0*units)
+            lon = scale*np.random.rand(5, 3)
+            lat = scale*(np.random.rand(5, 3) - 0.5)
+        x, y, z = SpherePoint.toUnitXYZ(longitude=lon, latitude=lat, units=units)
+        for i in range(lon.shape[0]):
+            for j in range(lon.shape[1]):
+                s = SpherePoint(lon[i, j], lat[i, j], units)
+                u1 = s.getVector()
+                u2 = lsst.sphgeom.UnitVector3d(x=x[i, j], y=y[i, j], z=z[i, j])
+                self.assertFloatsAlmostEqual(np.array(u1, dtype=float), np.array(u2, dtype=float))
+
     def testTicket1761(self):
         """Regression test for Ticket 1761.
 

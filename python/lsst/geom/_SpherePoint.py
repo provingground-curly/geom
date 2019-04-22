@@ -46,7 +46,7 @@ class SpherePoint:
         return "SpherePoint(%s)" % (", ".join(argList))
 
     @staticmethod
-    def toUnitXYZ(self, *, longitude=None, latitude=None, ra=None, dec=None, units):
+    def toUnitXYZ(*, longitude=None, latitude=None, ra=None, dec=None, units):
         """Compute the unit 3-vectors (as separate arrays) corresponding to
         arrays of longitude and latitude.
 
@@ -71,6 +71,14 @@ class SpherePoint:
             Y coordinates of unit 3-vectors.
         z : `float` or numpy.ndarray`
             Z coordinates of unit 3-vectors.
+
+        Notes
+        -----
+        The returned Cartesian coordinate values are not guaranteed to be
+        normalized according to the conventions of `sphgeom.UnitVector3d`, but
+        are nevertheless compatible with the various vectorized `contains`
+        methods in `sphgeom` because those apply that normalization
+        internally.
         """
         factor = (1.0*units).asRadians()
         lon = factor*_pickExactlyOne(longitude, ra, "Exactly one of ra and longitude must be provided.")
