@@ -76,6 +76,9 @@ void wrapBox(utils::python::WrapperCollection & wrappers) {
             cls.def("getWidth", &Box2I::getWidth);
             cls.def("getHeight", &Box2I::getHeight);
             cls.def("getArea", &Box2I::getArea);
+            cls.def("getCenter", &Box2I::getCenter);
+            cls.def("getCenterX", &Box2I::getCenterX);
+            cls.def("getCenterY", &Box2I::getCenterY);
             cls.def("isEmpty", &Box2I::isEmpty);
             cls.def("contains", (bool (Box2I::*)(Point2I const &) const) & Box2I::contains);
             cls.def("contains", (bool (Box2I::*)(Box2I const &) const) & Box2I::contains);
