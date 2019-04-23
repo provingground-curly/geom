@@ -176,6 +176,17 @@ public:
     int getArea() const { return getWidth() * getHeight(); }
     //@}
 
+    /**
+     *  @name Center Accessors
+     *
+     *  Return the center coordinate of the box.
+     */
+    //@{
+    Point2D const getCenter() const noexcept;
+    double getCenterX() const noexcept { return this->getCenter().getX(); }
+    double getCenterY() const noexcept { return this->getCenter().getY(); }
+    //@}
+
     /// Return slices to extract the box's region from an ndarray::Array.
     ndarray::View<boost::fusion::vector2<ndarray::index::Range, ndarray::index::Range> > getSlices() const;
 

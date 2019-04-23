@@ -93,6 +93,10 @@ Box2I::Box2I(Box2D const& other, EdgeHandlingEnum edgeHandling) : _minimum(), _d
     }
 }
 
+Point2D const Box2I::getCenter() const noexcept {
+    return Box2D(*this).getCenter();
+}
+
 Box2I Box2I::makeCenteredBox(Point2D const& center, Box2I::Extent const& size) {
     if (!std::isfinite(center[0]) || !std::isfinite(center[1])) {
         throw LSST_EXCEPT(pex::exceptions::InvalidParameterError, "Cannot make Box2I with non-finite center");

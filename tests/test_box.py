@@ -194,6 +194,10 @@ class Box2ITestCase(lsst.utils.tests.TestCase):
         self.assertEqual(box.getHeight(), (ymax - ymin + 1))
         self.assertAlmostEqual(box.getArea(), box.getWidth() * box.getHeight(),
                                places=14)
+        self.assertEqual(box.getCenterX(), 0.5*(pmax.getX() + pmin.getX()))
+        self.assertEqual(box.getCenterY(), 0.5*(pmax.getY() + pmin.getY()))
+        self.assertEqual(box.getCenter().getX(), box.getCenterX())
+        self.assertEqual(box.getCenter().getY(), box.getCenterY())
         corners = box.getCorners()
         self.assertEqual(corners[0], box.getMin())
         self.assertEqual(corners[1].getX(), box.getMaxX())
@@ -561,49 +565,14 @@ class SharedBoxTestCase(lsst.utils.tests.TestCase):
         if all(np.isfinite(center)):
             box = boxClass.makeCenteredBox(center, size)
             if all(size.gt(0)):
-                self._checkBoxProperties(box, size, center, precision, msg)
+                self.assertIsNotNone(box, msg=msg)
+                self.assertPairsAlmostEqual(box.getCenter(), center, maxDiff=precision, msg=msg)
+                self.assertPairsAlmostEqual(box.getDimensions(), size, msg=msg)
             else:
                 self.assertTrue(box.isEmpty(), msg=msg)
         elif boxClass == geom.Box2I:
             with self.assertRaises(lsst.pex.exceptions.InvalidParameterError, msg=msg):
                 boxClass.makeCenteredBox(center, size)
-
-    def _checkBoxProperties(self, box, size, center, precision, msg):
-        """Test whether a box has the desired size and position.
-
-        Parameters
-        ----------
-        box : `lsst.geom.Box2I` or `lsst.geom.Box2D`
-            The box to test.
-        size : ``box.Extent``
-            The expected dimensions of ``box``.
-        center : `lsst.geom.Point2D`
-            The expected center of ``box``.
-        precision : `float`
-            The maximum distance between the center of ``box`` and ``center``.
-        msg : `str`
-            An error message suffix describing test parameters.
-        """
-        newCenter = self._getBoxCenter(box)
-        self.assertIsNotNone(box, msg=msg)
-        self.assertPairsAlmostEqual(newCenter, center, maxDiff=precision, msg=msg)
-        self.assertPairsAlmostEqual(box.getDimensions(), size, msg=msg)
-
-    def _getBoxCenter(self, box):
-        """Return the coordinates of a Box's center.
-
-        Parameters
-        ----------
-        box : `lsst.geom.Box2I` or `lsst.geom.Box2D`
-            The box whose center is desired.
-
-        Returns
-        -------
-        center : `lsst.geom.Point2D`
-            The position at the center of ``box``. If ``box`` is a ``Box2I``,
-            this will always have integer or half-integer coordinates.
-        """
-        return geom.Box2D(box).getCenter()
 
 
 class MemoryTester(lsst.utils.tests.MemoryTestCase):
